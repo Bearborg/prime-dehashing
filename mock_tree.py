@@ -30,10 +30,10 @@ asset_db_path = r'./database/mp_resources.db'
 
 config = tomllib.load(open(config_path, 'rb'))
 mock_tree_enabled = config['features']['enable_mock_tree']
-unmatched_txtrs_enabled = config['features']['enable_unused_txtrs_folder']
+unmatched_txtrs_enabled = config['features']['enable_unmatched_txtrs_folder']
 mock_root = config['paths']['mp1_mock_tree_root']
 hecl_root = config['paths']['mp1_hecl_root']
-unmatched_root = config['paths']['mp1_unused_txtrs_root']
+unmatched_root = config['paths']['mp1_unmatched_txtrs_root']
 
 if mock_tree_enabled or unmatched_txtrs_enabled:
     if os.path.exists(hecl_root):
