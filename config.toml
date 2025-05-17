@@ -1,0 +1,13 @@
+[features]
+# Creates a folder tree in the structure of the game's original assets, with shortcuts to HECL assets
+enable_mock_tree = false
+# Creates a folder containing (almost) all unmatched TXTR files as PNGs, for easy visual inspection
+enable_unused_txtrs_folder = false
+
+[paths]
+# Root directory of mock tree
+mp1_mock_tree_root = 'E:\MP1 mock tree'
+# Root directory of an existing HECL extract of MP1
+mp1_hecl_root = 'E:\HECL\Metroid Prime (NTSC)'
+# Root directory of unmatched TXTRs folder
+mp1_unused_txtrs_root = 'E:\Unmatched TXTRs'
