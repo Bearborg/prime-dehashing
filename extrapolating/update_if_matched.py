@@ -31,10 +31,10 @@ def update_if_matched(path: str, target_suffix: str, res_dict: Dict[int, str], c
     if key in res_dict:
         if res_dict[key].endswith(target_suffix):
             if commit:
-                print(f'{start_green}{res_dict[key]} -> {path}{end_color}')
+                print(f'{start_green}Match: {res_dict[key]} -> {path}{end_color}')
                 res_dict[key] = path
             else:
-                print(f'{start_yellow}{res_dict[key]} -?> {path}{end_color}')
+                print(f'{start_yellow}Potential match: {res_dict[key]} -?> {path}{end_color}')
             return MatchType.NewMatch
         elif target_suffix.endswith('!!') and res_dict[key].endswith(target_suffix[:-2]):
             return MatchType.HadMatch

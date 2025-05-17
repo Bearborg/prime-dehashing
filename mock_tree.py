@@ -101,7 +101,7 @@ def update_mock_tree(resource_dict):
             assert os.path.exists(abs_hecl_path), f'Missing HECL resource for {asset}, path "{abs_hecl_path}"'
 
             if not is_first_run:
-                print(f'Updated mock tree: {asset} - "{hecl_path}"" => "{abs_shortcut_path[:-4]}')
+                print(f'Updated mock tree: {asset} - "{hecl_path}" => "{abs_shortcut_path[:-4]}"')
             tree_cache[asset] = [abs_shortcut_path, abs_hecl_path]
 
             os.makedirs(os.path.split(abs_shortcut_path)[0], exist_ok=True)
