@@ -9,6 +9,8 @@ game = 'MP1/1.00'
 start_red = '\033[91m'
 end_color = '\033[0m'
 
+res_cache = set()
+
 def color(path: str, hash_str: str):
     if path.endswith('!!'):
         return f'{start_red}{path}: {hash_str}{end_color}'
@@ -40,12 +42,17 @@ def recurse_deps(asset_id: str, level = 1):
         (asset_id, game)
     ).fetchall()
     for row in resource_results:
-        print(f'{"  " * level}{color(row[0], row[1])}')
-        recurse_deps(row[1], level + 1)
+        if row[1] not in res_cache:
+            print(f'{"  " * level}{color(row[0], row[1])}')
+            res_cache.add(row[1])
+            recurse_deps(row[1], level + 1)
+        else:
+            print(f'{"  " * level}Duplicate asset: {row[0].rstrip('!')}')
+
 
 def show_all_deps(asset_id: str):
     print_self(asset_id)
     recurse_deps(asset_id)
 
 if __name__ == '__main__':
-    show_all_deps('04D6C285')
+    show_all_deps('144778B8')

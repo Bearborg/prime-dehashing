@@ -28,7 +28,7 @@ tex_words = [ 'a', 'b', 'c', 'i', 'y', 's', 'color', 'reflected', 'reflectivity'
 rare_tex_words = ['incan', 'incandes', 'incandescent', 'incandescence',]
 colors = ['red', 'purple', 'green', 'orange', 'blue', 'white', 'black', 'grey', 'gray', 'yellow', 'brown']
 world_tex_words = [
-    'anim'
+    'anim',
     'wall',
     'floor',
     'door',
@@ -70,6 +70,8 @@ world_tex_words = [
     'ring',
     'triangle',
     'square',
+    'hex',
+    'hexagon',
     'monitor',
     'hydrolic',
     'light',
@@ -88,7 +90,7 @@ lava_words = ['lava', 'magma', 'molten', 'hot', 'heated', 'ash', 'cinder', 'cool
 mine_words = ['shaft', 'mine', 'gravel', 'track', 'cement', 'dirt', 'shroom', 'mushroom', 'fungus', 'fungal', 'phason', 'phazon', 'phas', 'phaz']
 crater_words = ['web', 'webbing', 'bone', 'membrane', 'floss', 'egg', 'alive', 'dead', 'glow', 'glowing', 'vein', 'cancer', 'barnacle', 'growth', 'pale', 'sphincter', 'pucker', 'tumor', 'scab', 'flesh', 'brain', 'nub', 'organ', 'tissue', 'tooth', 'teeth', 'phazon', 'phason', 'phaz', 'phas', 'cell']
 organic_words = ['paper', 'honeycomb', 'dry', 'dried', 'wood', 'war', 'wasp', 'hive', 'nest', 'water', 'toxic', 'poison', 'poisoned', 'poisonous', 'root', 'moss', 'vine', 'grass', 'leaf', 'leaves', 'tree', 'trunk', 'bark', 'mossy', 'fern', 'lichen', 'ivy', 'plant', 'glow', 'foliage']
-character_words = ['alpha', 'beta', 'gamma']
+character_words = ['alpha', 'beta', 'gamma', 'bound']
 char_tex_words = [
     'limbs',
     'body',
@@ -177,7 +179,7 @@ def dictionary_attack(goals, prefix, suffix, depth):
     :return: None
     """
     print(f'Matching [{", ".join([hex(g) for g in goals])}] for "{prefix}[...]{suffix}" at depth {depth}')
-    words = list(set(dictionary))
+    words = list(dict.fromkeys(dictionary)) # remove duplicate words while preserving order
     len_words = len(words)
     currents = [0 for _ in range(depth)]
     prefix_hash = crc32(prefix)
@@ -226,7 +228,7 @@ def dictionary_attack_multi_prefix(goals, prefixes, suffix, depth):
     """
     for prefix in prefixes:
         print(f'Matching [{", ".join([hex(g) for g in goals])}] for "{prefix}[...]{suffix}" at depth {depth}')
-    words = list(set(dictionary))
+    words = list(dict.fromkeys(dictionary))
     len_words = len(words)
     currents = [0 for _ in range(depth)]
     prefix_hashes: List[int] = [crc32(prefix) for prefix in prefixes]

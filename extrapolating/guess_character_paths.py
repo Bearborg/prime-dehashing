@@ -245,5 +245,51 @@ def guess_character_paths(res_dict):
                 match_result = update_if_matched(new_path, new_path.split('.')[-1] + '!!', res_dict)
                 if match_result.value == 1:
                     matched += 1
+        elif res_dict[key].split('.')[-1] == 'cmdl' and res_dict[key].startswith('$/Characters/'):
+            path, filename = os.path.split(res_dict[key][:-5])
+            possible_paths = [
+                f'{path}/{filename}.cskr',
+                f'{path}/{filename}.cin',
+                f'{path}/{filename}_frozen.cmdl',
+                f'{path}/{filename}_frozen.cskr',
+                f'{path}/{filename}_frozen.cin',
+                f'{path}/{filename}_frozen_bound.cmdl',
+                f'{path}/{filename}_ice_bound.cmdl',
+                f'{path}/{filename}_ice_bound.cskr',
+                f'{path}/{filename}_ice_bound.cin',
+                f'{path}/{filename}_ice.cmdl',
+                f'{path}/{filename}_ice.cskr',
+                f'{path}/{filename}_ice.cin',
+                f'{path}/{filename}_frozen_bound.cskr',
+                f'{path}/{filename}_frozen_bound.cin',
+                f'{path}/{filename}_bound_frozen.cmdl',
+                f'{path}/{filename}_bound_frozen.cskr',
+                f'{path}/{filename}_bound_frozen.cin',
+                f'{path}/frozen_{filename}.cmdl',
+                f'{path}/frozen_{filename}.cskr',
+                f'{path}/frozen_{filename}.cin',
+                f'{path}/frozen_{filename}_bound.cmdl',
+                f'{path}/frozen_{filename}_bound.cskr',
+                f'{path}/frozen_{filename}_bound.cin',
+                f'{path}/{filename}_bound_xray.cmdl',
+                f'{path}/{filename}_bound_xray.cskr',
+                f'{path}/{filename}_bound_xray.cin',
+                f'{path}/{filename}_xray_bound.cmdl',
+                f'{path}/{filename}_xray_bound.cskr',
+                f'{path}/{filename}_xray_bound.cin',
+                f'{path}/{filename}_xray.cmdl',
+                f'{path}/{filename}_xray.cskr',
+                f'{path}/{filename}_xray.cin',
+                f'{path}/xray_{filename}.cmdl',
+                f'{path}/xray_{filename}.cskr',
+                f'{path}/xray_{filename}.cin',
+                f'{path}/xray_{filename}_bound.cmdl',
+                f'{path}/xray_{filename}_bound.cskr',
+                f'{path}/xray_{filename}_bound.cin',
+            ]
+            for new_path in possible_paths:
+                match_result = update_if_matched(new_path, new_path.split('.')[-1] + '!!', res_dict)
+                if match_result.value == 1:
+                    matched += 1
     return matched
 

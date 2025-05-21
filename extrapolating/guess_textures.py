@@ -25,6 +25,7 @@ def guess_textures(res_dict, deep_search: bool = False):
         '$/AnimatedObjects/MinesWorld/sourceimages',
         '$/AnimatedObjects/Overworld/sourceimages',
         '$/AnimatedObjects/RuinsWorld/sourceimages',
+        '$/AnimatedObjects/General/pickups/powerbomb/sourceimages'
     ])
     tex_names: Set[str] = set()
     tex_names.update([
@@ -32,6 +33,11 @@ def guess_textures(res_dict, deep_search: bool = False):
     ])
 
     for key in res_dict:
+        if (deep_search
+                and (res_dict[key].endswith('cmdl') or res_dict[key].endswith('ani'))
+                and (cooked_i := res_dict[key].find('/cooked/')) != -1
+        ):
+            tex_folders.add(res_dict[key][:cooked_i] + '/sourceimages')
         if res_dict[key].endswith('txtr'):
             tex_folder, tex_name = os.path.split(res_dict[key])
             if 'lightmap' in tex_name:
@@ -66,11 +72,17 @@ def guess_textures(res_dict, deep_search: bool = False):
                     elif tex_name.lower().endswith('c.txtr'):
                         tex_names.add(tex_name[:-6] + 'I.txtr')
                         tex_names.add(tex_name[:-6] + '_I.txtr')
+                        tex_names.add(tex_name[:-6] + '_incan.txtr')
+                        tex_names.add(tex_name[:-6] + '_reflectivity.txtr')
+                        tex_names.add(tex_name[:-6] + '_reflected.txtr')
                         tex_names.update([tex_name[:-6] + n + 'C.txtr' for n in alpha_num])
                         tex_names.update([tex_name[:-6] + '0' + n + 'C.txtr' for n in alpha_num])
                     else:
                         tex_names.add(tex_name[:-5] + 'I.txtr')
                         tex_names.add(tex_name[:-5] + '_I.txtr')
+                        tex_names.add(tex_name[:-5] + '_incan.txtr')
+                        tex_names.add(tex_name[:-5] + '_reflectivity.txtr')
+                        tex_names.add(tex_name[:-5] + '_reflected.txtr')
                         tex_names.update([tex_name[:-5] + n + 'C.txtr' for n in alpha_num])
                         tex_names.update([tex_name[:-5] + '0' + n + 'C.txtr' for n in alpha_num])
 

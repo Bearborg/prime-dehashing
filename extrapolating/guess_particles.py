@@ -21,6 +21,7 @@ def guess_particles(res_dict, deep_search: bool = False):
 
     part_folders: Set[str] = set()
     part_folders.update([
+        '$/Effects/particles/cinematics/SpaceBootsPickUp',
         '$/Effects/particles/ruins/Group01/A',
         '$/Effects/particles/ruins/Group02/A',
         '$/Effects/particles/ruins/Group02/B',

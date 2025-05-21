@@ -31,6 +31,7 @@ from extrapolating.unscramble_lightmaps import unscramble_lightmaps
 from extrapolating.guess_character_paths import guess_character_paths
 from extrapolating.guess_scan_images import guess_scan_images
 from extrapolating.guess_room_names import guess_room_names
+from extrapolating.guess_adjacent_files import guess_adjacent_files
 
 def check_manual_guesses(res_dict, guesses: List[str]):
     """
@@ -51,7 +52,7 @@ def check_manual_guesses(res_dict, guesses: List[str]):
     for path in guesses:
         key = crc32(path.lower())
         if key in res_dict and res_dict[key].endswith(path[path.rfind('.'):] + "!!"):
-            print(f'{start_green}{res_dict[key]} -> {path}{end_color}')
+            print(f'{start_green}Match: {res_dict[key]} -> {path}{end_color}')
             res_dict[key] = path
             matched += 1
 
@@ -96,12 +97,13 @@ def main(guesses: List[str], read_from_json = False):
     matched += guess_character_paths(resource_dict)
     # matched += guess_buttons(resource_dict)
     matched += guess_fonts(resource_dict)
-    matched += unscramble_lightmaps(resource_dict)
-    matched += guess_lightmaps(resource_dict)
+    #matched += unscramble_lightmaps(resource_dict)
+    #matched += guess_lightmaps(resource_dict)
     #matched += guess_scans_old(resource_dict, False, True)
     #matched += guess_scan_images(resource_dict, connection)
     matched += guess_frmes(resource_dict)
     # matched += guess_room_names(resource_dict)
+    matched += guess_adjacent_files(resource_dict)
     matched += guess_textures(resource_dict, False)
     matched += guess_particles(resource_dict, False)
     # todo: scrape mpr cmdl names

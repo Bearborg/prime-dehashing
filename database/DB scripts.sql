@@ -195,3 +195,23 @@ order by ap.path;
 select ap.hash as hash, ap.path as path, ap.path_matches as path_matches from asset_paths ap
 inner join asset_usages au on au.hash = ap.hash
 where au.game like 'MP2%' and ap.path like '$/worlds/%' and ap.path_matches = 1 group by ap.hash order by ap.path asc
+
+--Unmatched character assets
+select ap_ancs.*, ap2.* from asset_references ar
+inner join asset_paths ap_ancs on ar.source = ap_ancs.hash
+inner join asset_paths ap2 on ar.target = ap2.hash
+where ap_ancs.path like '%.acs'
+and ap2.path not like '%.part'
+and ap_ancs.path_matches <> ap2.path_matches
+and (ap_ancs.path_matches = 1 or (ap2.path not like '$/Characters/Samus/cooked/%' or ap2.path like '%.ani'))
+and ar.game = 'MP1/1.00'
+order by ap_ancs.path
+
+--Unmatched model textures
+select ap_cmdl.*, ap2.* from asset_references ar
+inner join asset_paths ap_cmdl on ar.source = ap_cmdl.hash
+inner join asset_paths ap2 on ar.target = ap2.hash
+where ap_cmdl.path like '%.cmdl'
+and ap_cmdl.path_matches = 1 and ap2.path_matches = 0
+and ar.game = 'MP1/1.00'
+order by ap_cmdl.path
