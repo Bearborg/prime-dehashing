@@ -1,5 +1,5 @@
 import os
-from extrapolating.update_if_matched import update_if_matched
+from extrapolating.update_if_matched import update_if_matched, start_green, end_color
 from utils.crc32 import crc32
 
 def guess_character_paths(res_dict):
@@ -21,7 +21,7 @@ def guess_character_paths(res_dict):
             filename, ext = os.path.splitext(os.path.split(res_dict[key])[-1])
             if filename.endswith('_0'):
                 filename = filename[:-2]
-            # filename = 'minnowglow'
+            # filename = 'samusGunMotion'
             actor_name = filename
             for new_path in {
                 f'$/Characters/{actor_name}/cooked/{filename}{ext[:-2]}',
@@ -74,9 +74,11 @@ def guess_character_paths(res_dict):
 
             }:
                 if crc32(new_path.lower()) == key:
-                    print(f'{res_dict[key]} -> {new_path}')
+                    print(f'{start_green}Match: {res_dict[key]} -> {new_path}{end_color}')
                     res_dict[key] = new_path
                     matched += 1
+                else:
+                    update_if_matched(new_path, ext, res_dict, False)
         elif res_dict[key].split('.')[-1] == 'ani':
             cooked_dir = os.path.split(res_dict[key])[0]
             name = res_dict[key].split('/')[-3]
