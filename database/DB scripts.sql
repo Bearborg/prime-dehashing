@@ -3,7 +3,11 @@
 
 -- Display match stats
 with const as (select 'MP1/1.00' as game, null as pak),
-meta as (select count(distinct(hash)) as total_assets from const, asset_usages us where us.game = const.game),
+meta as (
+	select count(distinct(hash)) as total_assets from const, asset_usages us
+	where us.game = const.game
+	and iif(const.pak is not null, us.pak = const.pak COLLATE NOCASE, 1)
+),
 match_groups as (
 	select au.type, ap.path_matches as matches, count(distinct au.hash) as hits
 	from const, asset_paths ap
@@ -65,10 +69,10 @@ select * from asset_paths ap
 inner join asset_usages us on ap.hash = us.hash
 where ap.path_matches = 0
 and us.game like 'MP1/1.00'
---and us.pak = 'Metroid2.pak' COLLATE NOCASE
-and us.type = 'ANCS'
+--and us.pak = 'MiscData.pak' COLLATE NOCASE
+and us.type = 'ANIM'
 group by ap.hash
-order by ap.path
+order by us.pak, ap.path
 
 --Nearby unmatched PARTs
 select ap.hash, ap2.path from asset_paths ap

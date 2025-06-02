@@ -26,6 +26,7 @@ def guess_particles(res_dict, deep_search: bool = False):
         '$/Effects/particles/ruins/Group02/A',
         '$/Effects/particles/ruins/Group02/B',
         '$/Effects/particles/mines',
+        '$/Effects/particles/overworld',
         '$/Effects/particles/lava',
         '$/Effects/particles/crater',
         '$/Effects/particles/introunderwater',
@@ -92,9 +93,9 @@ def guess_particles(res_dict, deep_search: bool = False):
         'pollen1'
     ])
     alpha_num = set()
-    alpha_num.update(['a', 'b', 'c', 'd'])
+    alpha_num.update([*'abcdefxy'])
     for i in range(10):
-        for x in ['', 'a', 'b', 'c', 'd']:
+        for x in ['', *'abcdefxy']:
             alpha_num.add(f'{i}{x}')
             alpha_num.add(f'0{i}{x}')
 
@@ -106,9 +107,13 @@ def guess_particles(res_dict, deep_search: bool = False):
             part_names.add(part_name[:-10] + '.crsm.crsc')
             part_names.add(part_name[:-10] + '.wpsm.wpsc')
             if deep_search:
-                if part_name[-11].isdigit():
-                    part_names.update([part_name[:-11] + n + part_name[-10:] for n in alpha_num])
-                    part_names.add(part_name[:-11] + part_name[-10:])
+                if part_name[-11].isdigit() or part_name[-12].isdigit():
+                    end = -11
+                    for i in [-11, -12, -13]:
+                        if part_name[i].isdigit():
+                            end = i
+                    part_names.update([part_name[:end] + n + part_name[-10:] for n in alpha_num])
+                    part_names.add(part_name[:end] + part_name[-10:])
                 else:
                     part_names.update([part_name[:-10] + n + part_name[-10:] for n in alpha_num])
 

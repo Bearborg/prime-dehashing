@@ -18,6 +18,9 @@ def guess_adjacent_files(res_dict):
     for key in res_dict:
         if not res_dict[key].endswith('!!'):
             filename, ext = os.path.splitext(res_dict[key])
+            if len(os.path.splitext(filename)[1]) == 5:
+                filename, ext2 = os.path.splitext(filename)
+                ext = ext2 + ext
             hash_without_ext = remove_suffix(key, ext)
             if hash_without_ext not in matched_files:
                 matched_files[hash_without_ext] = filename
@@ -28,6 +31,9 @@ def guess_adjacent_files(res_dict):
 
     for key in unmatched_files:
         filename, ext = os.path.splitext(unmatched_files[key][:-2])
+        if len(os.path.splitext(filename)[1]) == 5:
+            filename, ext2 = os.path.splitext(filename)
+            ext = ext2 + ext
         hash_without_ext = remove_suffix(key, ext.lower())
         if hash_without_ext in matched_files:
 
