@@ -1,4 +1,8 @@
 # Metroid Prime dehashing scripts
+![MP1 badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2FBearborg%2Fee95a1c1692c93f03ccf1fc684583c7a%2Fraw%2F19ae16986a3d1e9a746768ac50888a4637dd8459%2Fmp1_progress.json)
+![MP2 badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2FBearborg%2Fee95a1c1692c93f03ccf1fc684583c7a%2Fraw%2F19ae16986a3d1e9a746768ac50888a4637dd8459%2Fmp2_progress.json)
+![All hashes badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2FBearborg%2Fee95a1c1692c93f03ccf1fc684583c7a%2Fraw%2F19ae16986a3d1e9a746768ac50888a4637dd8459%2Fall_progress.json)
+
 This is a collection of scripts and resources I've used while attempting to match the filename hashes found in the PAK
 files of Metroid Prime 1 and 2.
 
