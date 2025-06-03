@@ -31,7 +31,7 @@ jobs:
           gistID: ee95a1c1692c93f03ccf1fc684583c7a
           filename: mp1_progress.json
           label: MP1
-          message: ${{ env.MP1_MATCHED_PCT }}
+          message: ${{ env.MP1_MATCHED_PCT }}%
           valColorRange: ${{ env.MP1_MATCHED_PCT }}
           maxColorRange: 100
           minColorRange: 0
@@ -43,7 +43,7 @@ jobs:
           gistID: ee95a1c1692c93f03ccf1fc684583c7a
           filename: mp2_progress.json
           label: MP2
-          message: ${{ env.MP2_MATCHED_PCT }}
+          message: ${{ env.MP2_MATCHED_PCT }}%
           valColorRange: ${{ env.MP2_MATCHED_PCT }}
           maxColorRange: 100
           minColorRange: 0
@@ -55,7 +55,7 @@ jobs:
           gistID: ee95a1c1692c93f03ccf1fc684583c7a
           filename: all_progress.json
           label: All hashes
-          message: ${{ env.ALL_MATCHED_PCT }}
+          message: ${{ env.ALL_MATCHED_PCT }}%
           valColorRange: ${{ env.ALL_MATCHED_PCT }}
           maxColorRange: 100
           minColorRange: 0
