@@ -8,7 +8,7 @@ from sys import stdout
 env_file = os.getenv('GITHUB_ENV')
 
 with open(env_file, "a") if env_file else stdout as env_out:
-    asset_db_path = r'./database/mp_resources.db'
+    asset_db_path = r'database/mp_resources.db'
     with sqlite3.connect(asset_db_path) as connection:
         mp1_total, mp1_matched = connection.execute(
             r"with mp1_matches as (select ap.hash, ap.path_matches from asset_paths ap "
