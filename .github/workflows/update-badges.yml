@@ -19,6 +19,21 @@ jobs:
         with:
           python-version: 3.13
 
+      - name: Check sqlite3 version (pre-upgrade)
+        run: sqlite3 --version
+
+      # The ubuntu-latest runner for GitHub Actions (currently 24.04) uses an older
+      # version of sqlite3. For more details, see:
+      # <https://github.com/actions/runner-images/issues/9033#issuecomment-1857780470>
+      - name: Upgrade sqlite3
+        run: |
+          download_link="https://www.sqlite.org/2025/sqlite-tools-linux-x64-3500000.zip"
+          wget "$download_link" -P /tmp
+          unzip "/tmp/$(basename "$download_link")" -d /tmp
+          sudo install /tmp/sqlite3 /usr/local/bin/
+      - name: Check sqlite3 version (post-upgrade)
+        run: sqlite3 --version
+
       - name: Generate stats
         run:  python utils/generate_readme_stats.py
 
