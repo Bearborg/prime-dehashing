@@ -44,6 +44,8 @@ def guess_character_paths(res_dict):
                 f'$/Characters/{actor_name}/cooked/{actor_name}_bound_xray{ext[:-2]}',
                 f'$/AnimatedObjects/General/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/AnimatedObjects/General/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                f'$/AnimatedObjects/General/pickups/{actor_name}/cooked/{filename}{ext[:-2]}',
+                f'$/AnimatedObjects/General/pickups/{actor_name}/cooked/{actor_name}{ext[:-2]}',
                 f'$/AnimatedObjects/Introlevel/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/AnimatedObjects/Introlevel/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/AnimatedObjects/RuinsWorld/{actor_name}/cooked/{filename}{ext[:-2]}',

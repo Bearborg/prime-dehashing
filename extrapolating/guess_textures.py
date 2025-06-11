@@ -25,11 +25,11 @@ def guess_textures(res_dict, deep_search: bool = False):
         '$/AnimatedObjects/MinesWorld/sourceimages',
         '$/AnimatedObjects/Overworld/sourceimages',
         '$/AnimatedObjects/RuinsWorld/sourceimages',
-        '$/AnimatedObjects/General/pickups/powerbomb/sourceimages'
+        '$/AnimatedObjects/General/pickups/powerbomb/sourceimages',
     ])
     tex_names: Set[str] = set()
     tex_names.update([
-        'ballight3C', 'ballight3I', 'jomama' 'jomama1'
+        'ballight3C.txtr', 'ballight3I.txtr', 'jomama.txtr' 'jomama1.txtr', 'wallkarlc.txtr'
     ])
 
     for key in res_dict:

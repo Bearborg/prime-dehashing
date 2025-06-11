@@ -27,15 +27,16 @@ def guess_anim_paths(res_dict):
                     actor_name = filename[:filename.rfind('_')]
                 else:
                     actor_name = filename[filename.rfind('_') + 1:]
-                # actor_name = '22_Flaa_disk'
+               # actor_name = '22_ruins_flaa_disks'
                 for new_path in {
                     f'$/Characters/{actor_name}/cooked/{filename}{ext[:-2]}',
-                    f'$/Characters/Magdalite/cooked/{actor_name}/{filename}{ext[:-2]}',
-                    f'$/Characters/Magdalite/{filename}{ext[:-2]}',
+                    f'$/Characters/Samus/cooked/{filename}{ext[:-2]}',
                     f'$/Characters/metroid/cooked/{actor_name}/{filename}{ext[:-2]}',
                     f'$/Characters/metroid_prime/cooked/{actor_name}/{filename}{ext[:-2]}',
                     f'$/AnimatedObjects/General/{actor_name}/cooked/{filename}{ext[:-2]}',
                     f'$/AnimatedObjects/General/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                    f'$/AnimatedObjects/General/pickups/{actor_name}/cooked/{filename}{ext[:-2]}',
+                    f'$/AnimatedObjects/General/pickups/{actor_name}/cooked/{actor_name}{ext[:-2]}',
                     f'$/AnimatedObjects/Introlevel/{actor_name}/cooked/{filename}{ext[:-2]}',
                     f'$/AnimatedObjects/Introlevel/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
                     f'$/AnimatedObjects/RuinsWorld/{actor_name}/cooked/{filename}{ext[:-2]}',
