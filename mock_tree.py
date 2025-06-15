@@ -140,7 +140,7 @@ def update_unmatched_txtrs(resource_dict):
             "select path, ap.hash from asset_paths ap "
             "inner join asset_usages au on au.hash = ap.hash "
             "where au.game = 'MP1/1.00' AND ap.path_matches = 0 "
-            "and ap.path like '%$/Uncategorized%' "
+            #"and ap.path like '%$/Uncategorized%' "
             "and au.type = 'TXTR' "
             "order by path"
         ).fetchall()
