@@ -29,7 +29,7 @@ jobs:
         with:
           auth: ${{ secrets.BADGE_GIST_TOKEN }}
           gistID: ee95a1c1692c93f03ccf1fc684583c7a
-          filename: mp1_progress.json
+          filename: mp1_progress.svg
           label: MP1
           message: ${{ env.MP1_MATCHED_PCT }}%
           valColorRange: ${{ env.MP1_MATCHED_PCT }}
@@ -41,7 +41,7 @@ jobs:
         with:
           auth: ${{ secrets.BADGE_GIST_TOKEN }}
           gistID: ee95a1c1692c93f03ccf1fc684583c7a
-          filename: mp2_progress.json
+          filename: mp2_progress.svg
           label: MP2
           message: ${{ env.MP2_MATCHED_PCT }}%
           valColorRange: ${{ env.MP2_MATCHED_PCT }}
@@ -53,7 +53,7 @@ jobs:
         with:
           auth: ${{ secrets.BADGE_GIST_TOKEN }}
           gistID: ee95a1c1692c93f03ccf1fc684583c7a
-          filename: all_progress.json
+          filename: all_progress.svg
           label: All hashes
           message: ${{ env.ALL_MATCHED_PCT }}%
           valColorRange: ${{ env.ALL_MATCHED_PCT }}
