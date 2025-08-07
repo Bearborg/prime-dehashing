@@ -138,7 +138,6 @@ def main(guesses: List[str], read_from_json = False):
                            'ON CONFLICT DO UPDATE '
                            'SET path = excluded.path, path_matches = excluded.path_matches', matched_paths_for_db)
     mp1_stats = generate_readme_stats.total_matched_per_game(connection, 'MP1/1.00')
-    all_stats = Fraction(matched, total)
 
     connection.commit()
     connection.close()
@@ -148,8 +147,8 @@ def main(guesses: List[str], read_from_json = False):
         mock_tree.update_unmatched_txtrs(printed_id_dict)
 
     print()
-    print(f'Overall progress: {all_stats} - {all_stats:.2%}')
-    print(f'Prime 1 progress: {mp1_stats} - {mp1_stats:.2%}')
+    print(f'Overall progress: {matched}/{total} - {matched/total:.2%}')
+    print(f'Prime 1 progress: {mp1_stats[0]}/{mp1_stats[1]} - {mp1_stats[0]/mp1_stats[1]:.2%}')
 
 if __name__ == '__main__':
     manual_guesses = [

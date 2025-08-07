@@ -12,18 +12,19 @@ def total_matched_overall(resource_db_connection: sqlite3.Connection):
     matched, total = resource_db_connection.execute(
         "select sum(path_matches), count(hash) from asset_paths"
     ).fetchone()
-    return Fraction(matched, total)
+    return matched, total
 
-def total_matched_per_game(resource_db_connection: sqlite3.Connection, game: str):
+def total_matched_per_game(resource_db_connection: sqlite3.Connection, game: str, pak: str = None):
     matched, total = resource_db_connection.execute(
         "with matches as (select ap.hash, ap.path_matches from asset_paths ap "
         "inner join asset_usages us on ap.hash = us.hash "
+        "where iif(:pak is not null, us.game = :game and us.pak = :pak, 1)"
         "group by ap.hash "
-        "having SUM(us.game = ?) > 0) "
+        "having SUM(us.game = :game) > 0) "
         "select sum(path_matches), count(hash) from matches",
-        (game,)
+        {"game": game, "pak": pak}
     ).fetchone()
-    return Fraction(matched, total)
+    return matched, total
 
 def detailed_breakdown(resource_db_connection: sqlite3.Connection, game: str, pak: str = None):
     result = resource_db_connection.execute(
@@ -79,11 +80,11 @@ if __name__ == '__main__':
     with open(env_file, "a") if env_file else stdout as env_out:
         asset_db_path = r'database/mp_resources.db'
         with sqlite3.connect(asset_db_path) as connection:
-            mp1_stats = total_matched_per_game(connection, 'MP1/1.00')
+            mp1_stats = Fraction(*total_matched_per_game(connection, 'MP1/1.00'))
             print(f'MP1_MATCHED_PCT={100 * mp1_stats:05.2f}', file=env_out)
-            mp2_stats = total_matched_per_game(connection, 'MP2/NTSC')
+            mp2_stats = Fraction(*total_matched_per_game(connection, 'MP2/NTSC'))
             print(f'MP2_MATCHED_PCT={100 * mp2_stats:05.2f}', file=env_out)
-            all_stats = total_matched_overall(connection)
+            all_stats = Fraction(*total_matched_overall(connection))
             print(f'ALL_MATCHED_PCT={100 * all_stats:05.2f}', file=env_out)
             os.makedirs(out_folder, exist_ok=True)
             mp1_breakdown = detailed_breakdown(connection, 'MP1/1.00')
