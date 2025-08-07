@@ -1,6 +1,6 @@
 # Metroid Prime dehashing scripts
-![MP1 badge](https://gist.githubusercontent.com/Bearborg/ee95a1c1692c93f03ccf1fc684583c7a/raw/mp1_progress.svg)
-![MP2 badge](https://gist.githubusercontent.com/Bearborg/ee95a1c1692c93f03ccf1fc684583c7a/raw/mp2_progress.svg)
+[![MP1 badge](https://gist.githubusercontent.com/Bearborg/ee95a1c1692c93f03ccf1fc684583c7a/raw/mp1_progress.svg)](https://gist.githubusercontent.com/Bearborg/a23984b8b0d1ef0bf3757ca4fa5bed05)
+[![MP2 badge](https://gist.githubusercontent.com/Bearborg/ee95a1c1692c93f03ccf1fc684583c7a/raw/mp2_progress.svg)](https://gist.githubusercontent.com/Bearborg/0ea3960f15a095bff320b9672d3b85a3)
 ![All hashes badge](https://gist.githubusercontent.com/Bearborg/ee95a1c1692c93f03ccf1fc684583c7a/raw/all_progress.svg)
 
 This is a collection of scripts and resources I've used while attempting to match the filename hashes found in the PAK

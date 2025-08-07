@@ -12,6 +12,8 @@ import json
 from utils.crc32 import crc32
 from typing import Dict, List
 import sqlite3
+from utils import generate_readme_stats
+from fractions import Fraction
 try:
     import mock_tree
 except ModuleNotFoundError as e:
@@ -135,13 +137,8 @@ def main(guesses: List[str], read_from_json = False):
     connection.executemany('INSERT INTO asset_paths VALUES(?, ?, ?) '
                            'ON CONFLICT DO UPDATE '
                            'SET path = excluded.path, path_matches = excluded.path_matches', matched_paths_for_db)
-    mp1_total, mp1_matched = connection.execute(
-        r"with mp1_matches as (select ap.hash, ap.path_matches from asset_paths ap "
-        "inner join asset_usages us on ap.hash = us.hash "
-        "group by ap.hash "
-        "having SUM(us.game = 'MP1/1.00') > 0) "
-        "select count(hash), sum(path_matches) from mp1_matches"
-    ).fetchone()
+    mp1_stats = generate_readme_stats.total_matched_per_game(connection, 'MP1/1.00')
+    all_stats = Fraction(matched, total)
 
     connection.commit()
     connection.close()
@@ -151,8 +148,8 @@ def main(guesses: List[str], read_from_json = False):
         mock_tree.update_unmatched_txtrs(printed_id_dict)
 
     print()
-    print(f'Overall progress: {matched}/{total} - {matched / total:.2%}')
-    print(f'Prime 1 progress: {mp1_matched}/{mp1_total} - {mp1_matched / mp1_total:.2%}')
+    print(f'Overall progress: {all_stats} - {all_stats:.2%}')
+    print(f'Prime 1 progress: {mp1_stats} - {mp1_stats:.2%}')
 
 if __name__ == '__main__':
     manual_guesses = [
@@ -162,4 +159,4 @@ if __name__ == '__main__':
         "$/AnimatedObjects/RuinsWorld/scenes/chozoStatue/cooked/chozoStatue_bound.cskr",
         "$/AnimatedObjects/RuinsWorld/scenes/chozoStatue/cooked/chozoStatue_bound.cin",
     ]
-    main(manual_guesses, False)
+    main(manual_guesses, True)

@@ -36,6 +36,13 @@ jobs:
           maxColorRange: 100
           minColorRange: 0
 
+      - name: MP1 Breakdown
+        uses: exuanbo/actions-deploy-gist@v1
+        with:
+          token: ${{ secrets.BADGE_GIST_TOKEN }}
+          gist_id: a23984b8b0d1ef0bf3757ca4fa5bed05
+          file_path: output_gists/mp1_breakdown.md
+
       - name: MP2 Badge
         uses: Schneegans/dynamic-badges-action@v1.7.0
         with:
@@ -47,6 +54,13 @@ jobs:
           valColorRange: ${{ env.MP2_MATCHED_PCT }}
           maxColorRange: 100
           minColorRange: 0
+
+      - name: MP2 Breakdown
+        uses: exuanbo/actions-deploy-gist@v1
+        with:
+          token: ${{ secrets.BADGE_GIST_TOKEN }}
+          gist_id: 0ea3960f15a095bff320b9672d3b85a3
+          file_path: output_gists/mp2_breakdown.md
 
       - name: All Badge
         uses: Schneegans/dynamic-badges-action@v1.7.0

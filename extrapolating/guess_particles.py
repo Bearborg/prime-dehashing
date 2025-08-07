@@ -78,6 +78,17 @@ def guess_particles(res_dict, deep_search: bool = False):
         '$/Effects/particles/characters/Sova',
         '$/Effects/particles/characters/Sovas',
         '$/Effects/particles/bosses/Thardus',
+        '$/Effects/particles/bosses/ThardusBoss',
+        '$/Effects/particles/bosses/Thardus_Boss',
+        '$/Effects/particles/bosses/Thardus/elem',
+        '$/Effects/particles/bosses/Thardas',
+        '$/Effects/particles/bosses/ThardasBoss',
+        '$/Effects/particles/bosses/Thardas_Boss',
+        '$/Effects/particles/bosses/IceBoss',
+        '$/Effects/particles/bosses/IceBoss/elem',
+        '$/Effects/particles/bosses/Ice_Boss',
+        '$/Effects/particles/bosses/RockBoss',
+        '$/Effects/particles/bosses/Rock_Boss',
         '$/Effects/particles/characters/Tryclops',
         '$/Effects/particles/characters/Triclops',
         '$/Effects/particles/characters/WarWasp',
@@ -137,6 +148,8 @@ def guess_particles(res_dict, deep_search: bool = False):
             part_names.add(part_name[:-10] + '.crsm.crsc')
             part_names.add(part_name[:-10] + '.wpsm.wpsc')
             if deep_search:
+                part_folders.add(part_folder + '/elem')
+                part_folders.add(part_folder + '/elements')
                 if part_name[-11].isdigit() or part_name[-12].isdigit():
                     end = -11
                     for i in [-11, -12, -13]:

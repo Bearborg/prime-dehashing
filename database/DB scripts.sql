@@ -70,7 +70,7 @@ inner join asset_usages us on ap.hash = us.hash
 where ap.path_matches = 0
 and us.game like 'MP1/1.00'
 --and us.pak = 'MiscData.pak' COLLATE NOCASE
-and us.type = 'ANIM'
+and us.type = 'STRG'
 group by ap.hash
 order by us.pak, ap.path
 
@@ -137,9 +137,9 @@ group by ap.hash
 order by ap.path
 
 --Name but no path
-select assets.*, MAX(us.name), MAX(us.type), group_concat(us.game, ','), group_concat(us.pak, ',') from assets
+select ap.path, assets.*, MAX(us.name), MAX(us.type), group_concat(us.game, ','), group_concat(us.pak, ',') from assets
 inner join asset_usages us on assets.hash = us.hash
-left join asset_paths ap on assets.hash = ap.hash 
+left join asset_paths ap on assets.hash = ap.hash
 where coalesce(ap.path_matches, 0) = 0
 GROUP BY assets.hash
 HAVING SUM(us.name is not null) > 0 and SUM(us.game like 'MP1/1.00') > 0
@@ -148,7 +148,7 @@ order by MAX(us.type), MAX(us.name);
 --Unmatched MP1 SCANs
 select assets.*, MAX(us.name), ap.path, group_concat(us.game, ','), group_concat(us.pak, ',') from assets
 inner join asset_usages us on assets.hash = us.hash
-left join asset_paths ap on assets.hash = ap.hash 
+left join asset_paths ap on assets.hash = ap.hash
 where coalesce(ap.path_matches, 0) = 0
 GROUP BY assets.hash
 HAVING SUM(us.game like 'MP1%') > 0 and MAX(us.type) = 'SCAN' order by path;
@@ -156,7 +156,7 @@ HAVING SUM(us.game like 'MP1%') > 0 and MAX(us.type) = 'SCAN' order by path;
 --Unmatched scan images
 select assets.*, ap.path from assets
 inner join asset_usages us on assets.hash = us.hash
-left join asset_paths ap on assets.hash = ap.hash 
+left join asset_paths ap on assets.hash = ap.hash
 where coalesce(ap.path_matches, 0) = 0
 GROUP BY assets.hash
 HAVING SUM(us.game like 'MP1%') > 0 and MAX(us.type) = 'TXTR' and ap.path like '$/ScannableObjects%' order by path;
@@ -189,11 +189,11 @@ select * from scans where path_matches <> 1 order by path_matches desc, path asc
 --Unmatched MP1/2 shared files
 select assets.*, ap.path, group_concat(us.game, ','), group_concat(us.pak, ',')  from assets
 inner join asset_usages us on assets.hash = us.hash
-inner join asset_paths ap on assets.hash = ap.hash 
+inner join asset_paths ap on assets.hash = ap.hash
 where ap.path_matches = 0
 GROUP BY assets.hash
-HAVING SUM(us.game = 'MP1/1.00') > 0 and SUM(us.game = 'MP2/NTSC') > 0 
-order by ap.path;
+HAVING SUM(us.game = 'MP1/1.00') > 0 and SUM(us.game = 'MP2/NTSC') > 0
+order by us.type, ap.path;
 
 --MP2 $/Worlds matches
 select ap.hash as hash, ap.path as path, ap.path_matches as path_matches from asset_paths ap
@@ -218,4 +218,16 @@ inner join asset_paths ap2 on ar.target = ap2.hash
 where ap_cmdl.path like '%.cmdl'
 and ap_cmdl.path_matches = 1 and ap2.path_matches = 0
 and ar.game = 'MP1/1.00'
+order by ap_cmdl.path
+
+--Unmatched single-referenced textures
+with singly_linked as(select * from asset_references ar group by ar.target having count(ar.source) = 1)
+select ap_cmdl.*, ap2.*
+from singly_linked ar
+inner join asset_paths ap_cmdl on ar.source = ap_cmdl.hash
+inner join asset_paths ap2 on ar.target = ap2.hash
+where ap_cmdl.path_matches = 1 and ap2.path_matches = 0
+and ar.game = 'MP1/1.00'
+--and ap_cmdl.path like '%.cmdl'
+and ap2.path like '%.txtr'
 order by ap_cmdl.path
