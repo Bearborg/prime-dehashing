@@ -16,7 +16,7 @@ def unscramble_lightmaps(res_dict):
         if 'lit_lightmap' in res_dict[key]:
             new_key = crc32(res_dict[key][:-2].lower())
             if new_key in res_dict and res_dict[new_key].endswith("!!"):
-                new_dict[new_key] = res_dict[key]
+                new_dict[new_key] = res_dict[key][:-2]
 
     for key in new_dict:
         print(f'{res_dict[key]} -> {new_dict[key]}')
