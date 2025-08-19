@@ -48,7 +48,7 @@ from asset_paths ap
 inner join asset_references ar on ar.source = ap.hash
 inner join asset_usages us on us.hash = ar.target
 inner join asset_paths ap2 on ap2.hash = ar.target
-where ap.hash = '76A743BC' COLLATE NOCASE
+where ap.hash = '5CAE05DD' COLLATE NOCASE
 --and us.game = 'MP1/1.00'
 group by ap2.hash
 order by us.type, ap2.path
@@ -59,20 +59,20 @@ from asset_paths ap
 inner join asset_references ar on ar.target = ap.hash
 inner join asset_usages us on us.hash = ar.source
 inner join asset_paths ap2 on ap2.hash = ar.source
-where ap.hash = '681f3907' COLLATE NOCASE
+where ap.hash = 'f3859d5e' COLLATE NOCASE
 --and us.game = 'MP2/NTSC'
 group by ap2.hash
 order by us.type, ap2.path
 
 --Matches by pak and type
-select * from asset_paths ap
+select *, group_concat(us.game, ',') from asset_paths ap
 inner join asset_usages us on ap.hash = us.hash
 where ap.path_matches = 0
-and us.game like 'MP1/1.00'
+--and us.game like 'MP1/1.00'
 --and us.pak = 'MiscData.pak' COLLATE NOCASE
-and us.type = 'STRG'
+and us.type = 'ANIM'
 group by ap.hash
-order by us.pak, ap.path
+order by us.game, us.pak, ap.path
 
 --Nearby unmatched PARTs
 select ap.hash, ap2.path from asset_paths ap
@@ -130,8 +130,8 @@ order by ap2.path
 select * from asset_paths ap
 inner join asset_usages us on ap.hash = us.hash
 where ap.path_matches = 0
-and us.game like 'MP1%'
-and ap.path like '%Strings/English/Worlds%' COLLATE NOCASE
+--and us.game like 'MP1%'
+and ap.path like '%/Worlds%' COLLATE NOCASE
 and us.type = 'STRG'
 group by ap.hash
 order by ap.path
@@ -195,11 +195,6 @@ GROUP BY assets.hash
 HAVING SUM(us.game = 'MP1/1.00') > 0 and SUM(us.game = 'MP2/NTSC') > 0
 order by us.type, ap.path;
 
---MP2 $/Worlds matches
-select ap.hash as hash, ap.path as path, ap.path_matches as path_matches from asset_paths ap
-inner join asset_usages au on au.hash = ap.hash
-where au.game like 'MP2%' and ap.path like '$/worlds/%' and ap.path_matches = 1 group by ap.hash order by ap.path asc
-
 --Unmatched character assets
 select ap_ancs.*, ap2.* from asset_references ar
 inner join asset_paths ap_ancs on ar.source = ap_ancs.hash
@@ -231,3 +226,36 @@ and ar.game = 'MP1/1.00'
 --and ap_cmdl.path like '%.cmdl'
 and ap2.path like '%.txtr'
 order by ap_cmdl.path
+
+--Dark World scan strings
+select aps.path, ap_strg.* from asset_references ar
+inner join asset_paths aps on ar.source = aps.hash
+inner join asset_paths apt on ar.target = apt.hash
+inner join asset_references ar_strg on ar_strg.source = ar.target
+inner join asset_paths ap_strg on ap_strg.hash = ar_strg.target
+where aps.path like '%_dark.mrea'
+and apt.path like '%.scan'
+and apt.path_matches = 0
+and ap_strg.path like '%.strg'
+group by ar.target
+having count(ar.source) = 1
+order by aps.path
+
+--Unmatched MP2 SCANs with matched strings
+select * from asset_references ar
+inner join asset_paths aps on ar.source = aps.hash
+inner join asset_paths apt on ar.target = apt.hash
+where apt.path like '%.strg'
+and aps.path like '%.scan'
+and apt.path_matches = 1
+and aps.path_matches = 0
+order by apt.path
+
+--Unmatched MP2 logbook SCANs
+select apt.* from asset_references ar
+inner join asset_paths aps on ar.source = aps.hash
+inner join asset_paths apt on ar.target = apt.hash
+where apt.path like '%.scan'
+and aps.path like '%.dat'
+and apt.path_matches = 0
+order by apt.path
