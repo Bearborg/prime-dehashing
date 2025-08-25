@@ -23,17 +23,31 @@ def guess_anim_paths(res_dict):
             if True:
                 if filename.endswith('_0'):
                     filename = filename[:-2]
-                if filename.endswith('_ready'):
+                if filename.lower().endswith('_ready'):
                     actor_name = filename[:filename.rfind('_')]
+                elif filename.lower().startswith('ready_'):
+                    actor_name = filename[filename.find('_'):]
                 else:
                     actor_name = filename[filename.rfind('_') + 1:]
-               # actor_name = '22_ruins_flaa_disks'
+                # actor_name = 'tentacle_tip'
                 for new_path in {
                     f'$/Characters/{actor_name}/cooked/{filename}{ext[:-2]}',
                     f'$/Characters/Samus/cooked/{filename}{ext[:-2]}',
                     f'$/Characters/metroid/cooked/{actor_name}/{filename}{ext[:-2]}',
                     f'$/Characters/metroid_prime/cooked/{actor_name}/{filename}{ext[:-2]}',
                     f'$/AnimatedObjects/General/{actor_name}/cooked/{filename}{ext[:-2]}',
+                    f'$/Worlds2/Animated_Objects/General/{actor_name}/cooked/{filename}{ext[:-2]}',
+                    f'$/Worlds2/Animated_Objects/General/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                    f'$/Worlds2/Animated_Objects/General/pickups/{actor_name}/cooked/{filename}{ext[:-2]}',
+                    f'$/Worlds2/Animated_Objects/General/pickups/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                    f'$/Worlds2/Animated_Objects/Sandlands/{actor_name}/cooked/{filename}{ext[:-2]}',
+                    f'$/Worlds2/Animated_Objects/Sandlands/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                    f'$/Worlds2/Animated_Objects/Swamplands/{actor_name}/cooked/{filename}{ext[:-2]}',
+                    f'$/Worlds2/Animated_Objects/Swamplands/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                    f'$/Worlds2/Animated_Objects/Cliffside/{actor_name}/cooked/{filename}{ext[:-2]}',
+                    f'$/Worlds2/Animated_Objects/Cliffside/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                    f'$/Worlds2/Animated_Objects/Temple/{actor_name}/cooked/{filename}{ext[:-2]}',
+                    f'$/Worlds2/Animated_Objects/Temple/{actor_name}/cooked/{actor_name}{ext[:-2]}',
                     f'$/AnimatedObjects/General/{actor_name}/cooked/{actor_name}{ext[:-2]}',
                     f'$/AnimatedObjects/General/pickups/{actor_name}/cooked/{filename}{ext[:-2]}',
                     f'$/AnimatedObjects/General/pickups/{actor_name}/cooked/{actor_name}{ext[:-2]}',
@@ -66,6 +80,8 @@ def guess_anim_paths(res_dict):
             match_result = update_if_matched(new_path, 'evnt!!', res_dict)
             if match_result.value == 1:
                 matched += 1
+        elif res_dict[key].endswith('.acs'):
+            anim_folders.add(os.path.split(res_dict[key])[0])
         elif res_dict[key].endswith('.evnt'):
             new_path = res_dict[key][:-4] + 'ani'
             match_result = update_if_matched(new_path, 'ani!!', res_dict)
