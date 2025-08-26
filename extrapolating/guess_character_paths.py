@@ -60,6 +60,30 @@ def guess_character_paths(res_dict):
                 f'$/AnimatedObjects/LavaWorld/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/AnimatedObjects/CraterWorld/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/AnimatedObjects/CraterWorld/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/General/{actor_name}/cooked/{filename}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/General/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/General/pickups/{actor_name}/cooked/{filename}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/General/pickups/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Sandlands/{actor_name}/cooked/{filename}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Sandlands/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Swamplands/{actor_name}/cooked/{filename}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Swamplands/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Cliffside/{actor_name}/cooked/{filename}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Cliffside/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Temple/{actor_name}/cooked/{filename}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Temple/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/General/{actor_name}/cooked/{filename}_bound{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/General/{actor_name}/cooked/{actor_name}_bound{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/General/pickups/{actor_name}/cooked/{filename}_bound{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/General/pickups/{actor_name}/cooked/{actor_name}_bound{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Sandlands/{actor_name}/cooked/{filename}_bound{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Sandlands/{actor_name}/cooked/{actor_name}_bound{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Swamplands/{actor_name}/cooked/{filename}_bound{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Swamplands/{actor_name}/cooked/{actor_name}_bound{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Cliffside/{actor_name}/cooked/{filename}_bound{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Cliffside/{actor_name}/cooked/{actor_name}_bound{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Temple/{actor_name}/cooked/{filename}_bound{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/Temple/{actor_name}/cooked/{actor_name}_bound{ext[:-2]}',
                 f'$/Characters/samusgun/cooked/{actor_name}actions/{filename}{ext[:-2]}',
                 f'$/Characters/samusgun/cooked/models/{filename}{ext[:-2]}',
                 f'$/Characters/Samus/samus_low_res/cooked/{actor_name}/{filename}{ext[:-2]}',
@@ -83,19 +107,37 @@ def guess_character_paths(res_dict):
                     update_if_matched(new_path, ext, res_dict, False)
         elif res_dict[key].split('.')[-1] == 'ani':
             cooked_dir = os.path.split(res_dict[key])[0]
-            name = res_dict[key].split('/')[-3]
-            new_path = f'{cooked_dir}/{name}.acs'
-            match_result = update_if_matched(new_path, 'acs!!', res_dict)
-            if match_result.value == 1:
-                matched += 1
+            base_name: str = res_dict[key].split('/')[-3]
+            names = {
+                base_name,
+                base_name.lstrip('1234567890_'),
+                base_name.replace('_', ''),
+                base_name.lstrip('1234567890_').replace('_', '')
+            }
+            new_paths = []
+            for name in names:
+                new_paths.extend([
+                f'{cooked_dir}/{name}.acs',
+                f'{cooked_dir}/{name}_logbook.acs',
+                f'{cooked_dir}/{name}_bound.acs',
+                f'{cooked_dir}/{name}.cmdl',
+                f'{cooked_dir}/{name}_bound.cmdl',
+                f'{cooked_dir}/{name}.cin',
+                f'{cooked_dir}/{name}_bound.cin',
+            ])
+            for new_path in new_paths:
+                match_result = update_if_matched(new_path, new_path.split('.')[-1] + '!!', res_dict)
+                if match_result.value == 1:
+                    matched += 1
         elif res_dict[key].split('.')[-1] == 'acs' and 'Swimmer_Swarm' not in res_dict[key]:
             # Swimmer_Swarm is excluded here to avoid constant false positives from a match in MP2.
             path, filename = os.path.split(res_dict[key][:-4])
             # filename = filename.replace('_','')
             # filename = re.sub(r"([a-z])([A-Z])", r"\1_\2", filename)
             # path = '$/Characters/spank_weed/cooked'
-            # filename = 'petals'
+            # filename = 'war_wasp'
             possible_paths = [
+                f'{path}/{filename}_logbook.acs',
                 f'{path}/{filename}.cmdl',
                 f'{path}/{filename}.cskr',
                 f'{path}/{filename}.cin',
@@ -142,7 +184,12 @@ def guess_character_paths(res_dict):
                 f'{path}/xray_{filename}_bound.cskr',
                 f'{path}/xray_{filename}_bound.cin',
             ]
-            tex_dirs = [f'{path[:-7]}/sourceimages/', f'{path[:-7]}/textures/', '$/Characters/common_textures/']
+            tex_dirs = [
+                f'{path[:-7]}/sourceimages/',
+                f'{path[:-7]}/textures/',
+                f'$/Characters/common_textures/',
+                f'$/Characters/common_textures/{filename}/'
+            ]
             tex_names = [
                 f'limbs.txtr',
                 f'body.txtr',
@@ -229,7 +276,10 @@ def guess_character_paths(res_dict):
                 f'{filename}_incandes.txtr',
                 f'{filename}_incandescence.txtr',
                 f'{filename}C.txtr',
+                f'{filename}C_low.txtr',
                 f'{filename}_C.txtr',
+                f'{filename}_C_low.txtr',
+                f'{filename}_low.txtr',
                 f'{filename}_color.txtr',
                 f'{filename}I.txtr',
                 f'{filename}_I.txtr',

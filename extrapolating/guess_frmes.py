@@ -21,6 +21,10 @@ def guess_frmes(res_dict):
                 f'$/GUI_ART/{un_cameled_filename}/{un_cameled_filename}.frme',
                 f'$/GUI_ART/{filename}/{filename}.frme',
                 f'$/GUI_ART/{filename}/{un_cameled_filename}.frme'
+                f'$/mp2_interface_art/{un_cameled_filename}/{filename}.frme',
+                f'$/mp2_interface_art/{un_cameled_filename}/{un_cameled_filename}.frme',
+                f'$/mp2_interface_art/{filename}/{filename}.frme',
+                f'$/mp2_interface_art/{filename}/{un_cameled_filename}.frme'
             }
             for new_path in new_paths:
                 match_type = update_if_matched(new_path, '.frme!!', res_dict)
