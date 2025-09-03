@@ -28,7 +28,7 @@ jobs:
         uses: Schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.BADGE_GIST_TOKEN }}
-          gistID: ee95a1c1692c93f03ccf1fc684583c7a
+          gistID: 2ca5b0cd1fe23420c3e20f09288d7356
           filename: mp1_progress.svg
           label: MP1
           message: ${{ env.MP1_MATCHED_PCT }}%
@@ -47,7 +47,7 @@ jobs:
         uses: Schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.BADGE_GIST_TOKEN }}
-          gistID: ee95a1c1692c93f03ccf1fc684583c7a
+          gistID: 8eab5de40a81ddb3466faf15e650dd4a
           filename: mp2_progress.svg
           label: MP2
           message: ${{ env.MP2_MATCHED_PCT }}%
@@ -66,7 +66,7 @@ jobs:
         uses: Schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.BADGE_GIST_TOKEN }}
-          gistID: ee95a1c1692c93f03ccf1fc684583c7a
+          gistID: 61acf4b94ac82edd024350a926c5d428
           filename: all_progress.svg
           label: All hashes
           message: ${{ env.ALL_MATCHED_PCT }}%
