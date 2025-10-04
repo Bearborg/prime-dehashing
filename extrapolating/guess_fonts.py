@@ -13,13 +13,13 @@ def guess_fonts(res_dict):
     matched = 0
 
     for key in res_dict:
-        if res_dict[key].endswith('rpff!!'):
-            filename = os.path.split(res_dict[key])[-1]
+        if res_dict[key].rstrip('!').endswith('rpff'):
+            filename = os.path.split(res_dict[key].rstrip('!'))[-1]
             new_paths = [
-                f'$/GUI_ART/Common_Fonts/{filename[:-2]}',
-                f'$/GUI_ART/Common_Fonts/{filename[:-7]}_tex.txtr',
-                f'$/fonts/{filename[:-2]}',
-                f'$/fonts/{filename[:-7]}_tex.txtr',
+                f'$/GUI_ART/Common_Fonts/{filename}',
+                f'$/GUI_ART/Common_Fonts/{filename[:-5]}_tex.txtr',
+                f'$/fonts/{filename}',
+                f'$/fonts/{filename[:-5]}_tex.txtr',
             ]
             for new_path in new_paths:
                 match_type = update_if_matched(new_path, os.path.splitext(new_path)[1] + "!!", res_dict)

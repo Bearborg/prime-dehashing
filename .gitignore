@@ -1,4 +1,6 @@
-/output_json/mock_tree_cache.json
+/output_json/mp1_mock_tree_cache.json
+/output_json/mp2_mock_tree_cache.json
+/output_json/mp2_tag_cache.json
 /.venv/
 /.idea/
 /__pycache__/

@@ -1,5 +1,6 @@
 import os
 from typing import Set
+import utils.crc32
 from extrapolating.update_if_matched import update_if_matched, MatchType
 
 def guess_textures(res_dict, deep_search: bool = False):
@@ -29,7 +30,71 @@ def guess_textures(res_dict, deep_search: bool = False):
     ])
     tex_names: Set[str] = set()
     tex_names.update([
-        'ballight3C.txtr', 'ballight3I.txtr', 'jomama.txtr' 'jomama1.txtr', 'wallkarlc.txtr'
+        'redfloornewc.txtr',
+        'redfloornew_c.txtr',
+        'redfloornew.txtr',
+        'redfloorc.txtr',
+        'redfloor.txtr',
+        'g2j9tdvod8jj3i.txtr', #pickup room floor
+        'g2j9tdvod8jj3c.txtr',
+        'kmnqvwa0vv2d4c.txtr', # mines greeble
+        'kmnqvwa0vv2d4i.txtr',
+        #'vvstsvlkdvqesjocc.txtr', # vine
+        'sjxpzopaglatowroc.txtr', # vine
+        'mnngoudvrzmtbtabc.txtr', # ridged brown metal
+        'jxqyuxmaryziwtc.txtr', # mossy striated rock
+        'jxqyuxmaryziwtcc.txtr', # mossy striated rock
+        'jxqyuxmaryziwt.txtr', # mossy striated rock
+        'gbliwebbaftxvqhnc.txtr', # rock mud blend
+        'gbliwebbaftxvqhn.txtr', # rock mud blend
+        'gbliwebbaftxvqhncc.txtr', # rock mud blend
+        'f_balljrnb60hp38c.txtr', # mirror
+        'ms_morphballtubeC.txtr',
+        'ms_morphballtube2C.txtr',
+        'ms_morphballtubeI.txtr',
+        'brace2c.txtr',
+        'brace2.txtr',
+        'cylinder1.txtr',
+        'cylinder1c.txtr'
+        'cylinder.txtr',
+        'turbines_misc3.txtr',
+        'verticalbraceC.txtr',
+        'enspikec.txtr',
+        'enspikesmallc.txtr',
+        'enspikecsmall.txtr',
+        'enspike.txtr',
+        'spike.txtr',
+        'spikec.txtr',
+        'enspikesmall.txtr',
+        'pipe_r.txtr',
+        '02circletC.txtr'
+        'rbrace_r.txtr',
+        'spout3c.txtr',
+        'spout3.txtr',
+        'roc_r.txtr',
+        'archc.txtr',
+        'mossrockdirt.txtr',
+        'brockblendC.txtr',
+        'brockblend.txtr',
+        'platebracesC.txtr',
+        'fountainnecc.txtr',
+        'conc128C.txtr',
+        'flo_R.txtr',
+        '_walR.txtr',
+        '_floB.txtr',
+        'rubleC.txtr',
+        'ruble.txtr',
+        'rubble.txtr',
+        'rubbleC.txtr',
+        'tingC.txtr',
+        'ting.txtr',
+        '_latch13_r.txtr',
+        '_latch2_r.txtr',
+        '_latch3_r.txtr',
+        '_trimtest.txtr',
+        'rockbaseD_r.txtr',
+        'rbrace_r.txtr',
+        'toppanel2C.txtr',
     ])
 
     for key in res_dict:
@@ -45,6 +110,7 @@ def guess_textures(res_dict, deep_search: bool = False):
             else:
                 tex_folders.add(tex_folder)
                 tex_names.add(tex_name)
+                tex_names.add(tex_name.lstrip('_0123456789'))
                 if deep_search:
                     alpha_num = set()
                     alpha_num.update(['a', 'b', 'c', 'd'])
@@ -58,6 +124,9 @@ def guess_textures(res_dict, deep_search: bool = False):
                     tex_names.add(tex_name[:-5] + '128.txtr')
                     tex_names.add(tex_name[:-5] + '256.txtr')
                     tex_names.add(tex_name[:-5] + 'small.txtr')
+                    tex_names.add(tex_name[:-5] + '_small.txtr')
+                    tex_names.add(tex_name[:-5] + 'half.txtr')
+                    tex_names.add(tex_name[:-5] + '_half.txtr')
                     if  0 < tex_name.find('_') < 3:
                         tex_names.add(tex_name[tex_name.find('_') + 1:])
                     if tex_name[-6].isdigit():
@@ -72,6 +141,7 @@ def guess_textures(res_dict, deep_search: bool = False):
                     elif tex_name.lower().endswith('c.txtr'):
                         tex_names.add(tex_name[:-6] + 'I.txtr')
                         tex_names.add(tex_name[:-6] + '_I.txtr')
+                        tex_names.add(tex_name[:-6] + '_r.txtr')
                         tex_names.add(tex_name[:-6] + '_incan.txtr')
                         tex_names.add(tex_name[:-6] + '_reflectivity.txtr')
                         tex_names.add(tex_name[:-6] + '_reflected.txtr')
@@ -80,17 +150,22 @@ def guess_textures(res_dict, deep_search: bool = False):
                     else:
                         tex_names.add(tex_name[:-5] + 'I.txtr')
                         tex_names.add(tex_name[:-5] + '_I.txtr')
+                        tex_names.add(tex_name[:-5] + '_r.txtr')
                         tex_names.add(tex_name[:-5] + '_incan.txtr')
                         tex_names.add(tex_name[:-5] + '_reflectivity.txtr')
                         tex_names.add(tex_name[:-5] + '_reflected.txtr')
                         tex_names.update([tex_name[:-5] + n + 'C.txtr' for n in alpha_num])
                         tex_names.update([tex_name[:-5] + '0' + n + 'C.txtr' for n in alpha_num])
 
-    for folder in tex_folders:
-        for tex in tex_names:
-            commit = False #r'/RuinWorld/' in folder
-            match_type = update_if_matched(f'{folder}/{tex}', '.txtr!!', res_dict, commit)
-            if match_type == MatchType.NewMatch and commit:
-                matched += 1
+    sorted_tex_names = sorted(tex_names)
+    for folder in sorted(tex_folders):
+        folder_hash = utils.crc32.crc32(folder.lower() + '/')
+        for tex in sorted_tex_names:
+            full_hash = utils.crc32.crc32(tex.lower(), folder_hash)
+            if full_hash in res_dict:
+                commit = False #r'/RuinWorld/' in folder
+                match_type = update_if_matched(f'{folder}/{tex}', '.txtr!!', res_dict, commit)
+                if match_type == MatchType.NewMatch and commit:
+                    matched += 1
 
     return matched

@@ -37,6 +37,8 @@ def update_if_matched(path: str, target_suffix: str, res_dict: Dict[int, str], c
                 print(f'{start_yellow}Potential match: {res_dict[key]} -?> {path}{end_color}')
             return MatchType.NewMatch
         elif target_suffix.endswith('!!') and res_dict[key].endswith(target_suffix[:-2]):
+            # if res_dict[key].lower() != path.lower():
+            #     print(f'{start_yellow}Pre-existing match: {res_dict[key]} -x-> {path}{end_color}')
             return MatchType.HadMatch
         else:
             if commit:

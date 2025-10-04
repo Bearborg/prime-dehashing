@@ -1,4 +1,5 @@
 import os
+import re
 from extrapolating.update_if_matched import update_if_matched, start_green, end_color
 from utils.crc32 import crc32
 
@@ -19,15 +20,21 @@ def guess_character_paths(res_dict):
     for key in res_dict:
         if res_dict[key].split('.')[-1] in ['acs!!', 'cmdl!!', 'cskr!!', 'cin!!', 'dcln!!']:
             filename, ext = os.path.splitext(os.path.split(res_dict[key])[-1])
-            if filename.endswith('_0'):
+            if re.match(r'.*_\d$', filename):
                 filename = filename[:-2]
-            # filename = 'samusGunMotion'
-            actor_name = filename
+            #filename = 'Samus_Morphball_Cinematic'
+            actor_name = filename #'perch'
             for new_path in {
                 f'$/Characters/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/Characters/{actor_name}/cooked/{actor_name}{ext[:-2]}',
                 f'$/Characters/{actor_name}/cooked/{filename}_bound{ext[:-2]}',
+                f'$/Characters/{actor_name}/cooked/b_bind_{actor_name}{ext[:-2]}',
+                f'$/Characters/{actor_name}/cooked/b_bind_{filename}{ext[:-2]}',
                 f'$/Characters/{actor_name}/cooked/{actor_name}_bound{ext[:-2]}',
+                f'$/Characters/{actor_name}/cooked/dark_{filename}{ext[:-2]}',
+                f'$/Characters/{actor_name}/cooked/dark_{actor_name}{ext[:-2]}',
+                f'$/Characters/{actor_name}/cooked/dark_{filename}_bound{ext[:-2]}',
+                f'$/Characters/{actor_name}/cooked/dark_{actor_name}_bound{ext[:-2]}',
                 f'$/Characters/{actor_name}/cooked/{filename}_frozen{ext[:-2]}',
                 f'$/Characters/{actor_name}/cooked/{filename}_bound_frozen{ext[:-2]}',
                 f'$/Characters/{actor_name}/cooked/{filename}_frozen_bound{ext[:-2]}',
@@ -35,6 +42,10 @@ def guess_character_paths(res_dict):
                 f'$/Characters/{actor_name}/cooked/{filename}_bound_ice{ext[:-2]}',
                 f'$/Characters/{actor_name}/cooked/{filename}_ice_bound{ext[:-2]}',
                 f'$/Characters/{actor_name}/cooked/{actor_name}_frozen{ext[:-2]}',
+                f'$/Characters/{actor_name}/cooked/frozen_{actor_name}{ext[:-2]}',
+                f'$/Characters/{actor_name}/cooked/frozen_{actor_name}_bound{ext[:-2]}',
+                f'$/Characters/{actor_name}/cooked/frozen_{filename}{ext[:-2]}',
+                f'$/Characters/{actor_name}/cooked/frozen_{filename}_bound{ext[:-2]}',
                 f'$/Characters/{actor_name}/cooked/{actor_name}_bound_frozen{ext[:-2]}',
                 f'$/Characters/{actor_name}/cooked/{actor_name}_frozen_bound{ext[:-2]}',
                 f'$/Characters/{actor_name}/cooked/{actor_name}_ice{ext[:-2]}',
@@ -48,6 +59,8 @@ def guess_character_paths(res_dict):
                 f'$/AnimatedObjects/General/pickups/{actor_name}/cooked/{actor_name}{ext[:-2]}',
                 f'$/AnimatedObjects/Introlevel/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/AnimatedObjects/Introlevel/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
+                f'$/AnimatedObjects/IntroUnderwater/{actor_name}/cooked/{filename}{ext[:-2]}',
+                f'$/AnimatedObjects/IntroUnderwater/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/AnimatedObjects/RuinsWorld/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/AnimatedObjects/RuinsWorld/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/AnimatedObjects/IceWorld/{actor_name}/cooked/{filename}{ext[:-2]}',
@@ -60,10 +73,12 @@ def guess_character_paths(res_dict):
                 f'$/AnimatedObjects/LavaWorld/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/AnimatedObjects/CraterWorld/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/AnimatedObjects/CraterWorld/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
+                f'$/AnimatedObjects/Crater/{actor_name}/cooked/{filename}{ext[:-2]}',
+                f'$/AnimatedObjects/Crater/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/Worlds2/Animated_Objects/General/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/Worlds2/Animated_Objects/General/{actor_name}/cooked/{actor_name}{ext[:-2]}',
-                f'$/Worlds2/Animated_Objects/General/pickups/{actor_name}/cooked/{filename}{ext[:-2]}',
-                f'$/Worlds2/Animated_Objects/General/pickups/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/General/pickups/cooked/{filename}{ext[:-2]}',
+                f'$/Worlds2/Animated_Objects/General/pickups/cooked/{actor_name}{ext[:-2]}',
                 f'$/Worlds2/Animated_Objects/Sandlands/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/Worlds2/Animated_Objects/Sandlands/{actor_name}/cooked/{actor_name}{ext[:-2]}',
                 f'$/Worlds2/Animated_Objects/Swamplands/{actor_name}/cooked/{filename}{ext[:-2]}',
@@ -87,6 +102,7 @@ def guess_character_paths(res_dict):
                 f'$/Characters/samusgun/cooked/{actor_name}actions/{filename}{ext[:-2]}',
                 f'$/Characters/samusgun/cooked/models/{filename}{ext[:-2]}',
                 f'$/Characters/Samus/samus_low_res/cooked/{actor_name}/{filename}{ext[:-2]}',
+                f'$/Characters/Samus/samus_high_res/cooked/{filename}{ext[:-2]}',
                 f'$/Characters/samus_ball/{actor_name}/cooked/{filename}{ext[:-2]}',
                 f'$/Characters/space_pirate/cooked/{actor_name}/{filename}{ext[:-2]}',
                 f'$/Characters/Elite_Space_Pirate/cooked/{actor_name}/{filename}{ext[:-2]}',
@@ -106,22 +122,49 @@ def guess_character_paths(res_dict):
                 else:
                     update_if_matched(new_path, ext, res_dict, False)
         elif res_dict[key].split('.')[-1] == 'ani':
-            cooked_dir = os.path.split(res_dict[key])[0]
+            cooked_dir, filename = os.path.split(res_dict[key])
             base_name: str = res_dict[key].split('/')[-3]
             names = {
                 base_name,
                 base_name.lstrip('1234567890_'),
+                base_name[base_name.find('_') + 1:],
                 base_name.replace('_', ''),
-                base_name.lstrip('1234567890_').replace('_', '')
+                base_name.lstrip('1234567890_').replace('_', ''),
+                base_name[base_name.find('_') + 1:].replace('_', ''),
             }
+            # if filename.lower().endswith("_ready.ani"):
+            #     names.add(filename[:-10])
+            # if filename.lower().endswith("_anim.ani"):
+            #     names.add(filename[:-9])
+            # if filename.lower().endswith("_bound.ani"):
+            #     names.add(filename[:-10])
+            split_name = filename
+            while '_' in split_name:
+                split_name = '_'.join(split_name.split('_')[:-1])
+                if len(split_name) > 1:
+                    names.add(split_name)
+            split_name = filename
+            while '_' in split_name:
+                split_name = '_'.join(split_name.split('_')[1:])
+                if len(split_name) > 1:
+                    names.add(split_name)
             new_paths = []
             for name in names:
                 new_paths.extend([
                 f'{cooked_dir}/{name}.acs',
+                f'{cooked_dir}/{name}_Samus.acs',
+                f'{cooked_dir}/Samus_{name}.acs',
+                f'{cooked_dir}/Samus_{name}_Cinematic.acs',
+                f'{cooked_dir}/{name}_Cinematic.acs',
+                f'{cooked_dir}/{name}_Samus_Cinematic.acs',
+                f'{cooked_dir}/{name}_Cinematic_Samus.acs',
                 f'{cooked_dir}/{name}_logbook.acs',
                 f'{cooked_dir}/{name}_bound.acs',
                 f'{cooked_dir}/{name}.cmdl',
                 f'{cooked_dir}/{name}_bound.cmdl',
+                f'{cooked_dir}/b_bind_{name}.cmdl',
+                f'{cooked_dir}/dark_{name}.cmdl',
+                f'{cooked_dir}/dark_{name}_bound.cmdl',
                 f'{cooked_dir}/{name}.cin',
                 f'{cooked_dir}/{name}_bound.cin',
             ])
@@ -129,221 +172,303 @@ def guess_character_paths(res_dict):
                 match_result = update_if_matched(new_path, new_path.split('.')[-1] + '!!', res_dict)
                 if match_result.value == 1:
                     matched += 1
-        elif res_dict[key].split('.')[-1] == 'acs' and 'Swimmer_Swarm' not in res_dict[key]:
-            # Swimmer_Swarm is excluded here to avoid constant false positives from a match in MP2.
-            path, filename = os.path.split(res_dict[key][:-4])
-            # filename = filename.replace('_','')
-            # filename = re.sub(r"([a-z])([A-Z])", r"\1_\2", filename)
+        elif res_dict[key].split('.')[-1] == 'acs':
+            path, fname = os.path.split(res_dict[key][:-4])
+            # fname = filename.replace('_','')
+            # fname = re.sub(r"([a-z])([A-Z])", r"\1_\2", filename)
             # path = '$/Characters/spank_weed/cooked'
             # filename = 'war_wasp'
-            possible_paths = [
-                f'{path}/{filename}_logbook.acs',
-                f'{path}/{filename}.cmdl',
-                f'{path}/{filename}.cskr',
-                f'{path}/{filename}.cin',
-                f'{path}/{filename}_bound.cmdl',
-                f'{path}/{filename}_bound.cskr',
-                f'{path}/{filename}_bound.cin',
-                f'{path}/{filename}bound.cmdl',
-                f'{path}/{filename}bound.cskr',
-                f'{path}/{filename}bound.cin',
-                f'{path}/{filename}_frozen.cmdl',
-                f'{path}/{filename}_frozen.cskr',
-                f'{path}/{filename}_frozen.cin',
-                f'{path}/{filename}_frozen_bound.cmdl',
-                f'{path}/{filename}_ice_bound.cmdl',
-                f'{path}/{filename}_ice_bound.cskr',
-                f'{path}/{filename}_ice_bound.cin',
-                f'{path}/{filename}_ice.cmdl',
-                f'{path}/{filename}_ice.cskr',
-                f'{path}/{filename}_ice.cin',
-                f'{path}/{filename}_frozen_bound.cskr',
-                f'{path}/{filename}_frozen_bound.cin',
-                f'{path}/{filename}_bound_frozen.cmdl',
-                f'{path}/{filename}_bound_frozen.cskr',
-                f'{path}/{filename}_bound_frozen.cin',
-                f'{path}/frozen_{filename}.cmdl',
-                f'{path}/frozen_{filename}.cskr',
-                f'{path}/frozen_{filename}.cin',
-                f'{path}/frozen_{filename}_bound.cmdl',
-                f'{path}/frozen_{filename}_bound.cskr',
-                f'{path}/frozen_{filename}_bound.cin',
-                f'{path}/{filename}_bound_xray.cmdl',
-                f'{path}/{filename}_bound_xray.cskr',
-                f'{path}/{filename}_bound_xray.cin',
-                f'{path}/{filename}_xray_bound.cmdl',
-                f'{path}/{filename}_xray_bound.cskr',
-                f'{path}/{filename}_xray_bound.cin',
-                f'{path}/{filename}_xray.cmdl',
-                f'{path}/{filename}_xray.cskr',
-                f'{path}/{filename}_xray.cin',
-                f'{path}/xray_{filename}.cmdl',
-                f'{path}/xray_{filename}.cskr',
-                f'{path}/xray_{filename}.cin',
-                f'{path}/xray_{filename}_bound.cmdl',
-                f'{path}/xray_{filename}_bound.cskr',
-                f'{path}/xray_{filename}_bound.cin',
-            ]
-            tex_dirs = [
-                f'{path[:-7]}/sourceimages/',
-                f'{path[:-7]}/textures/',
-                f'$/Characters/common_textures/',
-                f'$/Characters/common_textures/{filename}/'
-            ]
-            tex_names = [
-                f'limbs.txtr',
-                f'body.txtr',
-                f'head.txtr',
-                f'heart.txtr',
-                f'brain.txtr',
-                f'torso.txtr',
-                f'eye.txtr',
-                f'eyeball.txtr',
-                f'eyes.txtr',
-                f'teeth.txtr',
-                f'neck.txtr',
-                f'skin.txtr',
-                f'shell.txtr',
-                f'metal.txtr',
-                f'main.txtr',
-                f'reflected.txtr',
-                f'highlight_reflected.txtr',
-                f'reflectivity.txtr',
-                f'arm.txtr',
-                f'arms.txtr',
-                f'leg.txtr',
-                f'legs.txtr',
-                f'mouth.txtr',
-                f'wing.txtr',
-                f'wings.txtr',
-                f'chin.txtr',
-                f'bottom.txtr',
-                f'top.txtr',
-                f'Xray.txtr',
-                f'chest.txtr',
-                f'leg_arm.txtr',
-                f'glow.txtr',
-                f'base.txtr',
-                f'{filename}_limbs.txtr',
-                f'{filename}_body.txtr',
-                f'{filename}_head.txtr',
-                f'{filename}_heart.txtr',
-                f'{filename}_brain.txtr',
-                f'{filename}_torso.txtr',
-                f'{filename}_eye.txtr',
-                f'{filename}_eyeball.txtr',
-                f'{filename}_eyes.txtr',
-                f'{filename}_teeth.txtr',
-                f'{filename}_neck.txtr',
-                f'{filename}_skin.txtr',
-                f'{filename}_shell.txtr',
-                f'{filename}_shell_incan.txtr',
-                f'{filename}_metal.txtr',
-                f'{filename}_metal_incan.txtr',
-                f'{filename}_main.txtr',
-                f'{filename}_organs.txtr',
-                f'{filename}_arm.txtr',
-                f'{filename}_arms.txtr',
-                f'{filename}_leg.txtr',
-                f'{filename}_legs.txtr',
-                f'{filename}_mouth.txtr',
-                f'{filename}_wing.txtr',
-                f'{filename}_wings.txtr',
-                f'{filename}_chin.txtr',
-                f'{filename}_bottom.txtr',
-                f'{filename}_top.txtr',
-                f'{filename}_chest.txtr',
-                f'{filename}_leg_arm.txtr',
-                f'{filename}_base.txtr',
-                f'{filename}.txtr',
-                f'{filename}1.txtr',
-                f'{filename}2.txtr',
-                f'{filename}01.txtr',
-                f'{filename}02.txtr',
-                f'{filename}01a.txtr',
-                f'{filename}02a.txtr',
-                f'{filename}01aC.txtr',
-                f'{filename}02aC.txtr',
-                f'{filename}01aI.txtr',
-                f'{filename}02aI.txtr',
-                f'{filename}_parts.txtr',
-                f'parts/{filename}_parts.txtr',
-                f'{filename}_partsC.txtr',
-                f'{filename}_partsI.txtr',
-                f'{filename}_parts_incan.txtr',
-                f'{filename}_parts_color.txtr',
-                f'{filename}_incan.txtr',
-                f'{filename}_incandes.txtr',
-                f'{filename}_incandescence.txtr',
-                f'{filename}C.txtr',
-                f'{filename}C_low.txtr',
-                f'{filename}_C.txtr',
-                f'{filename}_C_low.txtr',
-                f'{filename}_low.txtr',
-                f'{filename}_color.txtr',
-                f'{filename}I.txtr',
-                f'{filename}_I.txtr',
-                f'{filename}_reflected.txtr',
-                f'{filename}_reflectivity.txtr',
-                f'reflected_{filename}.txtr',
-                f'reflectivity_{filename}.txtr',
-                f'{filename}_Xray.txtr',
-                f'{filename}Xray.txtr',
-                f'{filename}_glow.txtr',
-                f'{filename}.txtr',
-            ]
-            for directory in tex_dirs:
-                possible_paths.extend([directory + name for name in tex_names])
-                possible_paths.extend([directory + name.replace('_', '') for name in tex_names])
-            for new_path in possible_paths:
-                match_result = update_if_matched(new_path, new_path.split('.')[-1] + '!!', res_dict)
-                if match_result.value == 1:
-                    matched += 1
+            char_names = {fname}
+            if path.endswith('/cooked'):
+                char_names.add(os.path.split(os.path.split(path)[0])[1])
+            for name in char_names.copy():
+                char_names.add(name.replace('_', ''))
+                char_names.add(re.sub(r"([a-z])([A-Z])", r"\1_\2", name))
+            for filename in char_names:
+                possible_paths = [
+                    f'{path}/{filename}_logbook.acs',
+                    f'{path}/{filename}.cmdl',
+                    f'{path}/{filename}.cskr',
+                    f'{path}/dark_{filename}.cmdl',
+                    f'{path}/dark_{filename}.cskr',
+                    f'{path}/{filename}.cin',
+                    f'{path}/{filename}_bound.cmdl',
+                    f'{path}/{filename}_bound.cskr',
+                    f'{path}/dark_{filename}_bound.cmdl',
+                    f'{path}/dark_{filename}_bound.cskr',
+                    f'{path}/{filename}_bound.cin',
+                    f'{path}/{filename}bound.cmdl',
+                    f'{path}/{filename}bound.cskr',
+                    f'{path}/{filename}bound.cin',
+                    f'{path}/{filename}_frozen.cmdl',
+                    f'{path}/{filename}_frozen.cskr',
+                    f'{path}/{filename}_frozen.cin',
+                    f'{path}/{filename}_frozen_bound.cmdl',
+                    f'{path}/{filename}_ice_bound.cmdl',
+                    f'{path}/{filename}_ice_bound.cskr',
+                    f'{path}/{filename}_ice_bound.cin',
+                    f'{path}/{filename}_ice.cmdl',
+                    f'{path}/{filename}_ice.cskr',
+                    f'{path}/{filename}_ice.cin',
+                    f'{path}/{filename}_frozen_bound.cskr',
+                    f'{path}/{filename}_frozen_bound.cin',
+                    f'{path}/{filename}_bound_frozen.cmdl',
+                    f'{path}/{filename}_bound_frozen.cskr',
+                    f'{path}/{filename}_bound_frozen.cin',
+                    f'{path}/frozen_{filename}.cmdl',
+                    f'{path}/frozen_{filename}.cskr',
+                    f'{path}/frozen_{filename}.cin',
+                    f'{path}/frozen_{filename}_bound.cmdl',
+                    f'{path}/frozen_{filename}_bound.cskr',
+                    f'{path}/frozen_{filename}_bound.cin',
+                    f'{path}/{filename}_bound_xray.cmdl',
+                    f'{path}/{filename}_bound_xray.cskr',
+                    f'{path}/{filename}_bound_xray.cin',
+                    f'{path}/{filename}_xray_bound.cmdl',
+                    f'{path}/{filename}_xray_bound.cskr',
+                    f'{path}/{filename}_xray_bound.cin',
+                    f'{path}/{filename}_xray.cmdl',
+                    f'{path}/{filename}_xray.cskr',
+                    f'{path}/{filename}_xray.cin',
+                    f'{path}/xray_{filename}.cmdl',
+                    f'{path}/xray_{filename}.cskr',
+                    f'{path}/xray_{filename}.cin',
+                    f'{path}/xray_{filename}_bound.cmdl',
+                    f'{path}/xray_{filename}_bound.cskr',
+                    f'{path}/xray_{filename}_bound.cin',
+                ]
+                tex_dirs = [
+                    f'{path[:-7]}/sourceimages/',
+                    f'{path[:-7]}/textures/',
+                    f'$/Characters/common_textures/',
+                    f'$/Characters/common_textures/{filename}/'
+                ]
+                tex_names = [
+                    f'limbs.txtr',
+                    f'body.txtr',
+                    f'head.txtr',
+                    f'heart.txtr',
+                    f'brain.txtr',
+                    f'torso.txtr',
+                    f'eye.txtr',
+                    f'eyeball.txtr',
+                    f'eyes.txtr',
+                    f'teeth.txtr',
+                    f'neck.txtr',
+                    f'skin.txtr',
+                    f'shell.txtr',
+                    f'metal.txtr',
+                    f'main.txtr',
+                    f'reflected.txtr',
+                    f'highlight_reflected.txtr',
+                    f'reflectivity.txtr',
+                    f'arm.txtr',
+                    f'arms.txtr',
+                    f'leg.txtr',
+                    f'legs.txtr',
+                    f'mouth.txtr',
+                    f'wing.txtr',
+                    f'wings.txtr',
+                    f'chin.txtr',
+                    f'bottom.txtr',
+                    f'top.txtr',
+                    f'Xray.txtr',
+                    f'chest.txtr',
+                    f'leg_arm.txtr',
+                    f'glow.txtr',
+                    f'base.txtr',
+                    f'limbsC.txtr',
+                    f'bodyC.txtr',
+                    f'headC.txtr',
+                    f'heartC.txtr',
+                    f'brainC.txtr',
+                    f'torsoC.txtr',
+                    f'eyeC.txtr',
+                    f'eyeballC.txtr',
+                    f'eyesC.txtr',
+                    f'teethC.txtr',
+                    f'neckC.txtr',
+                    f'skinC.txtr',
+                    f'shellC.txtr',
+                    f'metalC.txtr',
+                    f'mainC.txtr',
+                    f'reflectedC.txtr',
+                    f'highlight_reflectedC.txtr',
+                    f'reflectivityC.txtr',
+                    f'armC.txtr',
+                    f'armsC.txtr',
+                    f'legC.txtr',
+                    f'legsC.txtr',
+                    f'mouthC.txtr',
+                    f'wingC.txtr',
+                    f'wingsC.txtr',
+                    f'chinC.txtr',
+                    f'bottomC.txtr',
+                    f'topC.txtr',
+                    f'XrayC.txtr',
+                    f'chestC.txtr',
+                    f'leg_armC.txtr',
+                    f'glowC.txtr',
+                    f'baseC.txtr',
+                    f'{filename}_limbs.txtr',
+                    f'{filename}_body.txtr',
+                    f'{filename}_head.txtr',
+                    f'{filename}_heart.txtr',
+                    f'{filename}_brain.txtr',
+                    f'{filename}_torso.txtr',
+                    f'{filename}_eye.txtr',
+                    f'{filename}_eyeball.txtr',
+                    f'{filename}_eyes.txtr',
+                    f'{filename}_teeth.txtr',
+                    f'{filename}_neck.txtr',
+                    f'{filename}_skin.txtr',
+                    f'{filename}_shell.txtr',
+                    f'{filename}_shell_incan.txtr',
+                    f'{filename}_metal.txtr',
+                    f'{filename}_metal_incan.txtr',
+                    f'{filename}_main.txtr',
+                    f'{filename}_organs.txtr',
+                    f'{filename}_arm.txtr',
+                    f'{filename}_arms.txtr',
+                    f'{filename}_leg.txtr',
+                    f'{filename}_legs.txtr',
+                    f'{filename}_mouth.txtr',
+                    f'{filename}_wing.txtr',
+                    f'{filename}_wings.txtr',
+                    f'{filename}_chin.txtr',
+                    f'{filename}_bottom.txtr',
+                    f'{filename}_top.txtr',
+                    f'{filename}_chest.txtr',
+                    f'{filename}_leg_arm.txtr',
+                    f'{filename}_base.txtr',
+                    f'{filename}_limbsC.txtr',
+                    f'{filename}_bodyC.txtr',
+                    f'{filename}_headC.txtr',
+                    f'{filename}_heartC.txtr',
+                    f'{filename}_brainC.txtr',
+                    f'{filename}_torsoC.txtr',
+                    f'{filename}_eyeC.txtr',
+                    f'{filename}_eyeballC.txtr',
+                    f'{filename}_eyesC.txtr',
+                    f'{filename}_teethC.txtr',
+                    f'{filename}_neckC.txtr',
+                    f'{filename}_skinC.txtr',
+                    f'{filename}_shellC.txtr',
+                    f'{filename}_metalC.txtr',
+                    f'{filename}_mainC.txtr',
+                    f'{filename}_organsC.txtr',
+                    f'{filename}_armC.txtr',
+                    f'{filename}_armsC.txtr',
+                    f'{filename}_legC.txtr',
+                    f'{filename}_legsC.txtr',
+                    f'{filename}_mouthC.txtr',
+                    f'{filename}_wingC.txtr',
+                    f'{filename}_wingsC.txtr',
+                    f'{filename}_chinC.txtr',
+                    f'{filename}_bottomC.txtr',
+                    f'{filename}_topC.txtr',
+                    f'{filename}_chestC.txtr',
+                    f'{filename}_leg_armC.txtr',
+                    f'{filename}_baseC.txtr',
+                    f'{filename}.txtr',
+                    f'{filename}1.txtr',
+                    f'{filename}2.txtr',
+                    f'{filename}01.txtr',
+                    f'{filename}02.txtr',
+                    f'{filename}01a.txtr',
+                    f'{filename}02a.txtr',
+                    f'{filename}01aC.txtr',
+                    f'{filename}02aC.txtr',
+                    f'{filename}01aI.txtr',
+                    f'{filename}02aI.txtr',
+                    f'{filename}_parts.txtr',
+                    f'parts/{filename}_parts.txtr',
+                    f'{filename}_partsC.txtr',
+                    f'{filename}_partsI.txtr',
+                    f'{filename}_parts_incan.txtr',
+                    f'{filename}_parts_color.txtr',
+                    f'{filename}_incan.txtr',
+                    f'{filename}_incandes.txtr',
+                    f'{filename}_incandescence.txtr',
+                    f'{filename}C.txtr',
+                    f'{filename}C_low.txtr',
+                    f'{filename}_C.txtr',
+                    f'{filename}_C_low.txtr',
+                    f'{filename}_low.txtr',
+                    f'{filename}_color.txtr',
+                    f'{filename}I.txtr',
+                    f'{filename}_I.txtr',
+                    f'{filename}_reflected.txtr',
+                    f'{filename}_reflectivity.txtr',
+                    f'reflected_{filename}.txtr',
+                    f'reflectivity_{filename}.txtr',
+                    f'{filename}_Xray.txtr',
+                    f'{filename}Xray.txtr',
+                    f'{filename}_glow.txtr',
+                    f'{filename}.txtr',
+                ]
+                for directory in tex_dirs:
+                    possible_paths.extend([directory + name for name in tex_names])
+                    possible_paths.extend([directory + name.replace('_', '') for name in tex_names])
+                for new_path in possible_paths:
+                    commit = False
+                    match_result = update_if_matched(new_path, new_path.split('.')[-1] + '!!', res_dict, commit)
+                    if match_result.value == 1 and commit:
+                        matched += 1
         elif res_dict[key].split('.')[-1] == 'cmdl' and res_dict[key].startswith('$/Characters/'):
-            path, filename = os.path.split(res_dict[key][:-5])
-            possible_paths = [
-                f'{path}/{filename}.cskr',
-                f'{path}/{filename}.cin',
-                f'{path}/{filename}_frozen.cmdl',
-                f'{path}/{filename}_frozen.cskr',
-                f'{path}/{filename}_frozen.cin',
-                f'{path}/{filename}_frozen_bound.cmdl',
-                f'{path}/{filename}_ice_bound.cmdl',
-                f'{path}/{filename}_ice_bound.cskr',
-                f'{path}/{filename}_ice_bound.cin',
-                f'{path}/{filename}_ice.cmdl',
-                f'{path}/{filename}_ice.cskr',
-                f'{path}/{filename}_ice.cin',
-                f'{path}/{filename}_frozen_bound.cskr',
-                f'{path}/{filename}_frozen_bound.cin',
-                f'{path}/{filename}_bound_frozen.cmdl',
-                f'{path}/{filename}_bound_frozen.cskr',
-                f'{path}/{filename}_bound_frozen.cin',
-                f'{path}/frozen_{filename}.cmdl',
-                f'{path}/frozen_{filename}.cskr',
-                f'{path}/frozen_{filename}.cin',
-                f'{path}/frozen_{filename}_bound.cmdl',
-                f'{path}/frozen_{filename}_bound.cskr',
-                f'{path}/frozen_{filename}_bound.cin',
-                f'{path}/{filename}_bound_xray.cmdl',
-                f'{path}/{filename}_bound_xray.cskr',
-                f'{path}/{filename}_bound_xray.cin',
-                f'{path}/{filename}_xray_bound.cmdl',
-                f'{path}/{filename}_xray_bound.cskr',
-                f'{path}/{filename}_xray_bound.cin',
-                f'{path}/{filename}_xray.cmdl',
-                f'{path}/{filename}_xray.cskr',
-                f'{path}/{filename}_xray.cin',
-                f'{path}/xray_{filename}.cmdl',
-                f'{path}/xray_{filename}.cskr',
-                f'{path}/xray_{filename}.cin',
-                f'{path}/xray_{filename}_bound.cmdl',
-                f'{path}/xray_{filename}_bound.cskr',
-                f'{path}/xray_{filename}_bound.cin',
-            ]
-            for new_path in possible_paths:
-                match_result = update_if_matched(new_path, new_path.split('.')[-1] + '!!', res_dict)
-                if match_result.value == 1:
-                    matched += 1
+            path, fname = os.path.split(res_dict[key][:-5])
+            if fname.lower().endswith('_bound'):
+                fname = fname[:-6]
+            char_names = {fname}
+            if path.endswith('/cooked'):
+                char_names.add(os.path.split(os.path.split(path)[0])[1])
+            for name in char_names.copy():
+                char_names.add(name.replace('_', ''))
+                char_names.add(re.sub(r"([a-z])([A-Z])", r"\1_\2", name))
+            for filename in char_names:
+                possible_paths = [
+                    f'{path}/{filename}.cskr',
+                    f'{path}/{filename}.cin',
+                    f'{path}/{filename}_frozen.cmdl',
+                    f'{path}/{filename}_frozen.cskr',
+                    f'{path}/{filename}_frozen.cin',
+                    f'{path}/{filename}_frozen_bound.cmdl',
+                    f'{path}/{filename}_ice_bound.cmdl',
+                    f'{path}/{filename}_ice_bound.cskr',
+                    f'{path}/{filename}_ice_bound.cin',
+                    f'{path}/{filename}_ice.cmdl',
+                    f'{path}/{filename}_ice.cskr',
+                    f'{path}/{filename}_ice.cin',
+                    f'{path}/{filename}_frozen_bound.cskr',
+                    f'{path}/{filename}_frozen_bound.cin',
+                    f'{path}/{filename}_bound_frozen.cmdl',
+                    f'{path}/{filename}_bound_frozen.cskr',
+                    f'{path}/{filename}_bound_frozen.cin',
+                    f'{path}/frozen_{filename}.cmdl',
+                    f'{path}/frozen_{filename}.cskr',
+                    f'{path}/frozen_{filename}.cin',
+                    f'{path}/frozen_{filename}_bound.cmdl',
+                    f'{path}/frozen_{filename}_bound.cskr',
+                    f'{path}/frozen_{filename}_bound.cin',
+                    f'{path}/{filename}_bound_xray.cmdl',
+                    f'{path}/{filename}_bound_xray.cskr',
+                    f'{path}/{filename}_bound_xray.cin',
+                    f'{path}/{filename}_xray_bound.cmdl',
+                    f'{path}/{filename}_xray_bound.cskr',
+                    f'{path}/{filename}_xray_bound.cin',
+                    f'{path}/{filename}_xray.cmdl',
+                    f'{path}/{filename}_xray.cskr',
+                    f'{path}/{filename}_xray.cin',
+                    f'{path}/xray_{filename}.cmdl',
+                    f'{path}/xray_{filename}.cskr',
+                    f'{path}/xray_{filename}.cin',
+                    f'{path}/xray_{filename}_bound.cmdl',
+                    f'{path}/xray_{filename}_bound.cskr',
+                    f'{path}/xray_{filename}_bound.cin',
+                ]
+                for new_path in possible_paths:
+                    match_result = update_if_matched(new_path, new_path.split('.')[-1] + '!!', res_dict)
+                    if match_result.value == 1:
+                        matched += 1
     return matched
 

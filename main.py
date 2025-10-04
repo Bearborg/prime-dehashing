@@ -13,7 +13,6 @@ from utils.crc32 import crc32
 from typing import Dict, List
 import sqlite3
 from utils import generate_readme_stats
-from fractions import Fraction
 try:
     import mock_tree
 except ModuleNotFoundError as e:
@@ -28,12 +27,14 @@ from extrapolating.guess_frmes import guess_frmes
 from extrapolating.guess_lightmaps import guess_lightmaps
 from extrapolating.guess_particles import guess_particles
 from extrapolating.guess_scans_old import guess_scans_old
+from extrapolating.guess_scans import guess_scans
 from extrapolating.guess_textures import guess_textures
 from extrapolating.unscramble_lightmaps import unscramble_lightmaps
 from extrapolating.guess_character_paths import guess_character_paths
 from extrapolating.guess_scan_images import guess_scan_images
 from extrapolating.guess_room_names import guess_room_names
 from extrapolating.guess_adjacent_files import guess_adjacent_files
+from extrapolating.test_all_dirs import test_all_dirs
 
 def check_manual_guesses(res_dict, guesses: List[str]):
     """
@@ -102,12 +103,14 @@ def main(guesses: List[str], read_from_json = False):
     #matched += unscramble_lightmaps(resource_dict)
     #matched += guess_lightmaps(resource_dict)
     #matched += guess_scans_old(resource_dict, False, True)
+    matched += guess_scans(resource_dict)
     #matched += guess_scan_images(resource_dict, connection)
     matched += guess_frmes(resource_dict)
     # matched += guess_room_names(resource_dict)
-    matched += guess_adjacent_files(resource_dict)
     matched += guess_textures(resource_dict, False)
     matched += guess_particles(resource_dict, False)
+    matched += guess_adjacent_files(resource_dict)
+    matched += test_all_dirs(resource_dict, False)
     # todo: scrape mpr cmdl names
     # todo: scrape mp2 poi names (Use RDS?)
     # todo: scrape effect/actor/platform names (Use RDS?)
@@ -124,7 +127,7 @@ def main(guesses: List[str], read_from_json = False):
 
     real_matched = len(list(filter(lambda x: not x.endswith('!!'), resource_dict.values())))
     if real_matched != matched:
-        print("Incorrect match total")
+        print(f"Incorrect match total: {real_matched} != {matched}")
 
     json.dump(sorted_dict, open(resource_file, 'w'), indent=2)
     json.dump({x: sorted_dict[x] for x in sorted_paths if not x.endswith('!!')}, open(
@@ -144,13 +147,14 @@ def main(guesses: List[str], read_from_json = False):
     connection.close()
 
     if mock_tree_enabled:
+        print('Updating mock tree...')
         mock_tree.update_mock_tree(printed_id_dict)
         mock_tree.update_unmatched_txtrs(printed_id_dict)
 
     print()
     print(f'Prime 1 progress: {mp1_stats[0]}/{mp1_stats[1]} - {mp1_stats[0]/mp1_stats[1]:.2%}')
     print(f'Prime 2 progress: {mp2_stats[0]}/{mp2_stats[1]} - {mp2_stats[0]/mp2_stats[1]:.2%}')
-    print(f'Overall progress: {matched}/{total} - {matched/total:.2%}')
+    print(f'Overall progress: {real_matched}/{total} - {real_matched/total:.2%}')
 
 if __name__ == '__main__':
     manual_guesses = [

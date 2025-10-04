@@ -48,7 +48,7 @@ from asset_paths ap
 inner join asset_references ar on ar.source = ap.hash
 inner join asset_usages us on us.hash = ar.target
 inner join asset_paths ap2 on ap2.hash = ar.target
-where ap.hash = '5CAE05DD' COLLATE NOCASE
+where ap.hash = '04D6C285' COLLATE NOCASE
 --and us.game = 'MP1/1.00'
 group by ap2.hash
 order by us.type, ap2.path
@@ -59,7 +59,7 @@ from asset_paths ap
 inner join asset_references ar on ar.target = ap.hash
 inner join asset_usages us on us.hash = ar.source
 inner join asset_paths ap2 on ap2.hash = ar.source
-where ap.hash = 'f3859d5e' COLLATE NOCASE
+where ap.hash = '50B83FE2' COLLATE NOCASE
 --and us.game = 'MP2/NTSC'
 group by ap2.hash
 order by us.type, ap2.path
@@ -70,7 +70,7 @@ inner join asset_usages us on ap.hash = us.hash
 where ap.path_matches = 0
 --and us.game like 'MP1/1.00'
 --and us.pak = 'MiscData.pak' COLLATE NOCASE
-and us.type = 'ANIM'
+and us.type = 'STRG'
 group by ap.hash
 order by us.game, us.pak, ap.path
 
@@ -94,7 +94,7 @@ inner join asset_references ar on ar.target = ap.hash
 inner join asset_paths ap2 on ap2.hash = ar.source
 inner join asset_usages us2 on ap2.hash = us2.hash
 where ap.path_matches = 0
-and us.game like 'MP1/1.00'
+--and us.game like 'MP1/1.00'
 and us.type = 'TXTR'
 and us2.type in ('PART', 'SWHC', 'CRSC', 'DPSC', 'WPSC')
 group by ap.hash
@@ -203,8 +203,8 @@ where ap_ancs.path like '%.acs'
 and ap2.path not like '%.part'
 and ap_ancs.path_matches <> ap2.path_matches
 and (ap_ancs.path_matches = 1 or (ap2.path not like '$/Characters/Samus/cooked/%' or ap2.path like '%.ani'))
-and ar.game = 'MP1/1.00'
-order by ap_ancs.path
+--and ar.game = 'MP1/1.00'
+order by ar.game, ap_ancs.path
 
 --Unmatched model textures
 select ap_cmdl.*, ap2.* from asset_references ar
@@ -259,3 +259,10 @@ where apt.path like '%.scan'
 and aps.path like '%.dat'
 and apt.path_matches = 0
 order by apt.path
+
+--Unmatched Trilogy strings
+select * from asset_paths ap
+inner join asset_usages us on ap.hash = us.hash
+where ap.path_matches = 0 and us.pak like '%Strings.pak'
+group by ap.hash
+order by ap.path

@@ -20,16 +20,27 @@ def guess_anim_paths(res_dict):
     for key in res_dict:
         if res_dict[key].split('.')[-1] in ['evnt!!', 'ani!!']:
             filename, ext = os.path.splitext(os.path.split(res_dict[key])[-1])
-            if True:
-                if filename.endswith('_0'):
-                    filename = filename[:-2]
-                if filename.lower().endswith('_ready') or filename.lower().endswith('_anim'):
-                    actor_name = filename[:filename.rfind('_')]
-                elif filename.lower().startswith('ready_'):
-                    actor_name = filename[filename.find('_'):]
-                else:
-                    actor_name = filename[filename.rfind('_') + 1:]
-                #actor_name = 'world_elevator'
+            actor_names = {filename}
+            if filename.endswith('_0'):
+                filename = filename[:-2]
+            if filename.lower().endswith('_ready') or filename.lower().endswith('_anim'):
+                actor_names.add(filename[:filename.rfind('_')])
+            elif filename.lower().startswith('ready_'):
+                actor_names.add(filename[filename.find('_'):])
+            else:
+                actor_names.add(filename[filename.rfind('_') + 1:])
+            actor_names.add('07_blocks')
+            split_name = filename
+            while '_' in split_name:
+                split_name = '_'.join(split_name.split('_')[:-1])
+                if len(split_name) > 1:
+                    actor_names.add(split_name)
+            split_name = filename
+            while '_' in split_name:
+                split_name = '_'.join(split_name.split('_')[1:])
+                if len(split_name) > 1:
+                    actor_names.add(split_name)
+            for actor_name in actor_names:
                 for new_path in {
                     f'$/Characters/{actor_name}/cooked/{filename}{ext[:-2]}',
                     f'$/Characters/Samus/cooked/{filename}{ext[:-2]}',
@@ -53,6 +64,8 @@ def guess_anim_paths(res_dict):
                     f'$/AnimatedObjects/General/pickups/{actor_name}/cooked/{actor_name}{ext[:-2]}',
                     f'$/AnimatedObjects/Introlevel/{actor_name}/cooked/{filename}{ext[:-2]}',
                     f'$/AnimatedObjects/Introlevel/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
+                    f'$/AnimatedObjects/IntroUnderwater/{actor_name}/cooked/{filename}{ext[:-2]}',
+                    f'$/AnimatedObjects/IntroUnderwater/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
                     f'$/AnimatedObjects/RuinsWorld/{actor_name}/cooked/{filename}{ext[:-2]}',
                     f'$/AnimatedObjects/RuinsWorld/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
                     f'$/AnimatedObjects/IceWorld/{actor_name}/cooked/{filename}{ext[:-2]}',
@@ -65,6 +78,8 @@ def guess_anim_paths(res_dict):
                     f'$/AnimatedObjects/LavaWorld/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
                     f'$/AnimatedObjects/CraterWorld/{actor_name}/cooked/{filename}{ext[:-2]}',
                     f'$/AnimatedObjects/CraterWorld/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
+                    f'$/AnimatedObjects/Crater/{actor_name}/cooked/{filename}{ext[:-2]}',
+                    f'$/AnimatedObjects/Crater/scenes/{actor_name}/cooked/{filename}{ext[:-2]}',
                     f'$/Characters/Samus/samus_low_res/cooked/multiplayer_balltransitions/{filename}{ext[:-2]}',
                     f'$/Characters/samusGun/cooked/{actor_name}/{filename}{ext[:-2]}',
                 }:
@@ -82,6 +97,9 @@ def guess_anim_paths(res_dict):
                 matched += 1
         elif res_dict[key].endswith('.acs'): # or res_dict[key].endswith('.cmdl'):
             anim_folders.add(os.path.split(res_dict[key])[0])
+        elif res_dict[key].endswith('_lightmap0.txtr') and 'Worlds2' in res_dict[key]:
+            room_path = os.path.split(res_dict[key])[0].replace('Worlds2/', 'Worlds2/Animated_Objects/')
+            anim_folders.add(room_path)
         elif res_dict[key].endswith('.evnt'):
             new_path = res_dict[key][:-4] + 'ani'
             match_result = update_if_matched(new_path, 'ani!!', res_dict)

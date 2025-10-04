@@ -55,4 +55,4 @@ def show_all_deps(asset_id: str):
     recurse_deps(asset_id)
 
 if __name__ == '__main__':
-    show_all_deps('144778B8')
+    show_all_deps('49E2363D')
