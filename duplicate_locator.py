@@ -10,7 +10,7 @@ from dataclasses import dataclass
 class Duplicate:
     goal: int
     paths: List[str]
-    suffix: str
+    suffixes: List[str]
 
 
 def locate_duplicates(dupes: List[Duplicate], max_depth: int = 50, min_depth: int = 1, timeout=7):
@@ -30,19 +30,19 @@ def locate_duplicates(dupes: List[Duplicate], max_depth: int = 50, min_depth: in
     for index, (dupe1, dupe2) in enumerate(combos):
         print(f'Comparing {dupe1.goal:08x} and {dupe2.goal:08x} ({index/len(combos):.2%})')
 
-        for path1 in dupe1.paths:
-            for path2 in dupe2.paths:
-                if path1 == path2 and dupe1.suffix == dupe2.suffix:
+        for path1, path2 in itertools.product(dupe1.paths, dupe2.paths):
+            for suf1, suf2 in itertools.product(dupe1.suffixes, dupe2.suffixes):
+                if path1 == path2 and suf1 == suf2:
                     continue
 
                 for i in range(min_depth, max_depth + 1):
                     crc32_solver.solve_pair(
                         goalchecksum1=dupe1.goal,
                         prefixstr1=path1,
-                        suffixstr1=dupe1.suffix,
+                        suffixstr1=suf1,
                         goalchecksum2=dupe2.goal,
                         prefixstr2=path2,
-                        suffixstr2=dupe2.suffix,
+                        suffixstr2=suf2,
                         maxunklen=i,
                         minunklen=i,
                         timeout=timeout if i > 6 else None,
@@ -52,19 +52,36 @@ def locate_duplicates(dupes: List[Duplicate], max_depth: int = 50, min_depth: in
 if __name__ == '__main__':
     input_dupes = [
         Duplicate(
-            goal=0x903FB0D3,
+            goal=0x7B2B1BD4,
             paths=[
-                '$/Worlds/RuinWorld/common_textures/metal/'.lower(),
+                '$/Worlds/RuinWorld/8_courtyard/sourceimages/'.lower(),
             ],
-            suffix='.txtr'.lower()
+            suffixes=[
+                '.txtr'.lower()
+            ]
         ),
         Duplicate(
-            goal=0xF05CED73,
+            goal=0x5E8B1C88,
             paths=[
-                '$/Worlds/IceWorld/11_ice_observatory/sourceimages/'.lower(),
-                '$/Worlds/IceWorld/common_textures/'.lower(),
+                '$/Worlds/RuinWorld/10_coreentrance/sourceimages/'.lower(),
+                '$/Worlds/RuinWorld/common_textures/'.lower(),
+                '$/Worlds/RuinWorld/common_textures/stone/'.lower(),
             ],
-            suffix='.txtr'.lower()
+            suffixes=[
+                '.txtr'.lower()
+            ]
+        ),
+        Duplicate(
+            goal=0x5E8B1C88,
+            paths=[
+                '$/Worlds/RuinWorld/11_wateryhall/sourceimages/'.lower(),
+                '$/Worlds/RuinWorld/5_bathhall/sourceimages/'.lower(),
+                '$/Worlds/RuinWorld/common_textures/'.lower(),
+                '$/Worlds/RuinWorld/common_textures/stone/'.lower(),
+            ],
+            suffixes=[
+                '.txtr'.lower()
+            ]
         ),
     ]
     locate_duplicates(input_dupes, 20)

@@ -36,6 +36,11 @@ def test_all_dirs(resource_dict: Dict[int, str], show_groups=False):
                 rewound = remove_suffix(file, name.lower())
                 hash_cache[rewound] = [name] + (hash_cache.get(rewound) or [])
                 rev_match[rewound] = resource_dict[file][:resource_dict[file].find('@') + 1]
+                if name.endswith('txtr'):
+                    path, filename = os.path.split(resource_dict[file][:-2])
+                    rewound = remove_suffix(file, filename.lower())
+                    rev_match[rewound] = path + '/'
+                    txtrs.add(filename)
                 continue
             name = os.path.split(resource_dict[file][:-2])[1]
             rewound = remove_suffix(file, name.lower())
@@ -127,11 +132,12 @@ def test_all_dirs(resource_dict: Dict[int, str], show_groups=False):
         for txtr in txtrs:
             if (new_hash := crc32(txtr.lower(), key)) in resource_dict:
                 old_name = resource_dict[new_hash]
-                if old_name.endswith('!!'):
+                if old_name.endswith('txtr!!'):
                     if not (rev_match[key] == unk_start and txtr.lower() == os.path.split(old_name[:-2].lower())[1]):
                         new_name = rev_match[key] + txtr
                         if '@' not in old_name and old_name[:-2].lower() != new_name.lower():
                             print(f'{start_yellow}Partial match found, {new_hash:08x}: {new_name}{end_color}')
+                            # resource_dict[new_hash] = new_name + '!!'
     return matched
 
 if __name__ == '__main__':

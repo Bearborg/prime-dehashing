@@ -1,4 +1,5 @@
 import os
+import re
 from typing import Set
 from extrapolating.update_if_matched import update_if_matched, MatchType
 
@@ -19,10 +20,19 @@ def guess_particles(res_dict, deep_search: bool = False):
     print("Checking particles...")
     matched = 0
 
+    world_lookup = {
+        '!Crater_Master': ['$/Effects/particles/crater/',],
+        '!IceWorld': ['$/Effects/particles/ice/',],
+        '!Intro_Master': ['$/Effects/particles/intro/',],
+        '!Mines_Master': ['$/Effects/particles/mines/',],
+        '!Lava_Master': ['$/Effects/particles/overworld/','$/Effects/particles/lava/',],
+        '!Over_Master': ['$/Effects/particles/overworld/','$/Effects/particles/intro/','$/Effects/particles/introunderwater/',],
+        '!RuinsWorld': ['$/Effects/particles/ruins/',],
+    }
     part_folders: Set[str] = set()
     part_folders.update([
         '$/Effects/particles/cinematics/SpaceBootsPickUp',
-        '$/Effects/particles/enemy_weapons/',
+        '$/Effects/particles/enemy_weapons',
         '$/Effects/particles/enemy_weapons/pirates',
         '$/Effects/particles/FluidSplashes',
         '$/Effects/particles/FluidSplashes/Splashes',
@@ -217,9 +227,38 @@ def guess_particles(res_dict, deep_search: bool = False):
                     part_names.add(part_name[:end] + part_name[-10:])
                 else:
                     part_names.update([part_name[:-10] + n + part_name[-10:] for n in alpha_num])
+        elif res_dict[key][-4:] in ['mrea'] and deep_search:
+            name_parts = res_dict[key].split('/')
+            world = name_parts[-3]
+            room_name = name_parts[-1][:-5]
+            if world in world_lookup:
+                room_names = {room_name}
+                room_parts = room_name.split('_')
+                if len(room_parts) > 1:
+                    room_names.add(f'{room_parts[0]}_{room_parts[1]}')
+                    room_names.add(f'{room_parts[0]}{room_parts[1]}')
+                    room_names.add(f'{room_parts[0][1:]}_{room_parts[1]}')
+                    room_names.add(f'{room_parts[0][-1]}_{room_parts[1]}')
+                    room_names.add(f'{room_parts[0][1:]}{room_parts[1]}')
+                    room_names.add(f'{room_parts[0][-1]}{room_parts[1]}')
+                    room_names.add(f'{room_parts[-1]}')
+                if len(room_parts) > 2:
+                    room_names.add(f'{room_parts[0]}_{room_parts[2]}')
+                    room_names.add(f'{room_parts[0]}{room_parts[2]}')
+                    room_names.add(f'{room_parts[0][1:]}_{room_parts[2]}')
+                    room_names.add(f'{room_parts[0][1:]}{room_parts[2]}')
+                    room_names.add(f'{room_parts[0][-1]}_{room_parts[2]}')
+                    room_names.add(f'{room_parts[0][-1]}{room_parts[2]}')
+                for path in world_lookup[world]:
+                    for room in room_names:
+                        part_folders.add(path + room)
+                        # part_folders.add('$/Effects/particles/cinematics/' + room)
+        # elif re.search(r'\$(?:/Worlds2)?/Animated_?Objects/.*/cooked/', res_dict[key]):
+        #     part_folder = res_dict[key][:res_dict[key].find('cooked/')] + 'particle'
+        #     part_folders.add(part_folder)
 
-    for folder in part_folders:
-        for part in part_names:
+    for folder in sorted(part_folders):
+        for part in sorted(part_names):
             commit = False #r'/RuinWorld/' in folder
             match_type = update_if_matched(f'{folder}/{part}', part[-5:] + "!!", res_dict, commit)
             if match_type == MatchType.NewMatch and commit:

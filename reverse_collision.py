@@ -2,7 +2,7 @@
 Detects partial matches between two hashes that share a common starting path (i.e. files that are known to be in the
 same folder, but the path of folder itself is not known).
 """
-
+import itertools
 import string
 import os
 import json
@@ -117,27 +117,33 @@ def get_all_dirs():
                 cache[hashed_path] = path + '/'
     return cache
 
-spacers = [' ', '_'] # '-'
-gallery_words = ['resized', 'letterbox', 'letterboxed', 'ingame', 'scaled', 'downscale', 'downscaled', 'thumb', 'thumbnail', 'rescaled', 'scale', 'square', 'crop', 'cropped', '1024', 'test', '/common_textures', 'artgallery', 'art_gallery',  'artgalleries', 'art_galleries', '50', '25', '75', '100', '%', 'percent', 'one', 'two', 'three', 'txtrs', 'files', 'work', 'piece', 'pieces', 'working', 'collection', 'group', 'set', 'gal','album', 'pics', 'slide', 'slides', 'slideshow', 'slide_show', 'bonus', 'gallery','galery', 'galleries', 'concept','concepts', 'art', 'artwork', 'concept_art', 'conceptart', 'image', 'images', '/cooked', '/sourceimages','/source_images', 'textures', 'assets', *'01234abcd', '01', '02', '03', '00', '04']
-env_dictionary = ['tallon', 'talloniv', 'tallon_iv', 'env', 'environment', 'enviroment', 'enviorment', 'environments', 'room', 'world', 'worlds', *gallery_words, '/', 's', *spacers]
-samus_dictionary = ['gallery1', 'gallery_1','gallery0', 'gallery_0',  'player', 'suit', 'power_suit', 'varia_suit', 'powersuit', 'variasuit', 'samus', 'sam', 'samusaran', 'samus_aran', *gallery_words, '/', 's', *spacers]
-creatures_dictionary = ['gallery2', 'gallery_2','gallery1', 'gallery_1',  'creatures', 'creature', 'tallon', 'talloniv', 'tallon_iv', 'biology', 'characters', 'character', 'enemies', 'enemy', 'species', 'aliens', 'alien', 'monsters', 'monster', 'critter', 'critters', *gallery_words, '/', 's', *spacers]
-f1_dictionary = ['fusion', 'fusionsuit', 'fusion_suit', 'morphball', 'morph_ball', 'ball', 'maru_mari', 'marumari', *'12', '01', '02', '03', '00', *spacers]
-f2_dictionary = ['fusion', 'fusionsuit', 'fusion_suit', 'gun', 'cannon', 'armcannon', 'arm_cannon', 'beam', *'12', '01', '02', '03', '00', *spacers]
-mp_dictionary = ['met', 'metroid', 'prime','prime_', 'metroidprime','metroid_prime_','met_prime_', 'body', 'head', 'concept', *spacers]
-flaa_words = ['flaaghra', 'flaahgra', 'flaagrah', 'flaahgraa', 'flagra', 'flaa', 'plantboss', 'plant_boss', 'plant_boss_creature', 'plant', 'boss', 'creature']
-flaa_dir_words = [*flaa_words,  'work', 'working', 'anim', 'model', 'piece', 'part', 'top', 'cooked/', '/', 's', *spacers]
-tex_words = [*'abc012345', 'color', 'col']
-flaa_tex_words = [*flaa_words, *tex_words]
+def add_delimiters(words: List[str], delimiters: List[str]):
+    return list(itertools.chain(*[[word, *[delimiter + word for delimiter in delimiters]] for word in words]))
 
 def main():
     """
     This is a big mess of all the partial hash matches I've attempted. Too lazy to clean it up currently.
     """
+    pwe_list = [word.strip().lower() for word in open(r'word_lists/PWE_WordList.txt', 'r').read().split('\n')]
+    pwe_huge_list = [word.strip().lower() for word in open(r'word_lists/PWE_WordList_large.txt', 'r').read().split('\n')]
+    pwe_bad_list = [word.strip().lower() for word in open(r'word_lists/PWE_WordList_old.txt', 'r').read().split('\n')]
+    world_words = [word.strip().lower() for word in open(r'word_lists/world_tex_words.txt', 'r').read().split('\n')]
+    spacers = [' ', '_'] # '-'
+    gallery_words = ['/common_textures', 'artgallery', 'art_gallery',  'artgalleries', 'art_galleries', '50', '25', '75', '100', '%', 'percent', 'one', 'two', 'three', 'txtrs', 'files', 'work', 'piece', 'pieces', 'working', 'collection', 'group', 'set', 'gal','album', 'pics', 'slide', 'slides', 'slideshow', 'slide_show', 'bonus', 'gallery','galery', 'galleries', 'concept','concepts', 'art', 'artwork', 'concept_art', 'conceptart', 'image', 'images', '/cooked', '/sourceimages','/source_images', 'textures', 'assets', *'01234abcd', '01', '02', '03', '00', '04']
+    env_dictionary = ['tallon', 'talloniv', 'tallon_iv', 'env', 'environment', 'enviroment', 'enviorment', 'environments', 'room', 'world', 'worlds', *gallery_words, '/', 's', *spacers]
+    samus_dictionary = ['gallery1', 'gallery_1','gallery0', 'gallery_0',  'player', 'suit', 'power_suit', 'varia_suit', 'powersuit', 'variasuit', 'samus', 'sam', 'samusaran', 'samus_aran', *gallery_words, '/', 's', *spacers]
+    creatures_dictionary = ['gallery2', 'gallery_2','gallery1', 'gallery_1',  'creatures', 'creature', 'tallon', 'talloniv', 'tallon_iv', 'biology', 'characters', 'character', 'enemies', 'enemy', 'species', 'aliens', 'alien', 'monsters', 'monster', 'critter', 'critters', *gallery_words, '/', 's', *spacers]
+    f1_dictionary = ['fusion', 'fusionsuit', 'fusion_suit', 'morphball', 'morph_ball', 'ball', 'maru_mari', 'marumari', *'12', '01', '02', '03', '00', *spacers]
+    f2_dictionary = ['fusion', 'fusionsuit', 'fusion_suit', 'gun', 'cannon', 'armcannon', 'arm_cannon', 'beam', *'12', '01', '02', '03', '00', *spacers]
+    mp_dictionary = ['met', 'metroid', 'prime','prime_', 'metroidprime','metroid_prime_','met_prime_', 'body', 'head', 'concept', *spacers]
+    flaa_words = ['flaaghra', 'flaahgra', 'flaagrah', 'flaahgraa', 'flagra', 'flaa', 'plantboss', 'plant_boss', 'plant_boss_creature', 'plant', 'boss', 'creature']
+    flaa_dir_words = [*flaa_words,  'work', 'working', 'anim', 'model', 'piece', 'part', 'top', 'cooked/', '/', 's', *spacers]
+    tex_words = [*'abc012345', 'color', 'col']
+    flaa_tex_words = [*flaa_words, *tex_words]
     depth = 4
 
-    #set1 = generate_all_reverse_hashes(0x87185BA5, env_dictionary, '/stonehendge.txtr', depth)
-    #set1 = generate_all_reverse_hashes(0x58152E28, samus_dictionary, '/x_ray_hand.txtr', depth)
+    # set1 = generate_all_reverse_hashes(0x87185BA5, add_delimiters(env_dictionary, *'_/'), '/stonehendge.txtr', 3)
+    # set2 = generate_all_reverse_hashes(0x58152E28, add_delimiters(samus_dictionary, *'_/'), '/x_ray_hand.txtr', 3)
     #set1 = generate_all_reverse_hashes(0x58152E28, samus_dictionary, '/x_ray_hand.txtr', depth)
     #set2 = generate_all_reverse_hashes(0x4eda49bc, ['/sourceimages', '/textures', '/', '/images',], '', depth)
     #set2 = generate_all_reverse_hashes(0x525C36BB, creatures_dictionary, '/triclops.txtr', depth)
@@ -212,20 +218,37 @@ def main():
     # set2 = generate_all_reverse_hashes(0xC9B6E9C2, [*'0123abc', *spacers], '.txtr', depth)
     # set3 = generate_all_reverse_hashes(0x051CE95C, [*'0123abc', *spacers], '.txtr', depth)
 
-    #set1 = generate_all_reverse_hashes(0x7C934EC5, ['metroid', 'base', 'alpha', 'new', 'beta', 'gamma', 'red', 'plasma', '/sourceimages/', 'brain', 's', *spacers], 'brain.txtr', depth)
-    #set1 = generate_all_reverse_hashes(0x667F6BE6, ['metroid', 'base', 'membrane', 'reflected', 'alpha', 'new', 'beta', 'gamma', '/sourceimages/', 's', *spacers], 'membrane_reflected.txtr', depth)
-    #set2 = generate_all_reverse_hashes(0xD5C17775, ['metroid', 'base', 'membrane', 'reflected', 'alpha', 'new', 'beta', 'gamma', '/sourceimages/', 's', *spacers], 'membrane.txtr', depth)
-    #set1 = generate_all_reverse_hashes(0xAA198954, ['metroid', 'base', 'beta', 'gamma', 'red', 'plasma', '/sourceimages/', 's', *spacers], 'plasma_base.txtr', depth)
-    #set2 = generate_all_reverse_hashes(0xCE586110, ['metroid', 'base', 'refl', 'reflect', 'reflective', 'reflectivity', 'beta', 'gamma', 'generic', 'gray', '/sourceimages/', 's', *spacers], 'metroid_base_reflectivity.txtr', depth)
-    #set2 = generate_all_reverse_hashes(0x7C934EC5, ['metroid', 'head', 'ball', 'reflected', 'refl', 'i', 'incan', 'beta', 'gamma', 'red', 'plasma', '/sourceimages/', 's', *spacers], '.txtr', depth)
-    #set2 = generate_all_reverse_hashes(0x6037449E, ['metroid', 'base', 'gamma', 'yellow', 'power', '/sourceimages/', 's', *spacers], 'power_base.txtr', depth)
+    # base_dictionary = ['metroid', 'prime', 'stage', 'mouth', 'teeth', 'base', 'head', 'hat', 'color', 'eye', 'eyeball', 'body', 'main', 'leg', 'thigh', 'limb', 'claw', 'arm', *'0123sc']
+    # set1 = generate_all_reverse_hashes(0x1C5C4094, add_delimiters(base_dictionary, *'_'), 'hatcolor.txtr', 3)
+    # set2 = generate_all_reverse_hashes(0x5E59E8F2, add_delimiters(base_dictionary, *'_'), '_arm01.txtr', 3)
+
+    # base_dictionary = ['glow', 'stripe', 'bar', 'blue', 'ice', 'purple', 'wave', 'base', 'color', *'0123sc']
+    # set1 = generate_all_reverse_hashes(0x342F5F5B, add_delimiters(base_dictionary, *'_'), '.txtr', 3)
+    # set2 = generate_all_reverse_hashes(0xC4A75BC8, add_delimiters(base_dictionary, *'_'), '.txtr', 3)
+
+    # base_dictionary = ['alpha', 'beetle', 'gargan', 'gargantua', 'gargantuan', 'reflectivity', 'refl', 'ice', 'snow', 'base', 'color', *'0123sc']
+    # set1 = generate_all_reverse_hashes(0xEEA26B3D, add_delimiters(base_dictionary, *'_'), '.txtr', 3)
+    # set2 = generate_all_reverse_hashes(0xE768C6DA, add_delimiters(base_dictionary, *'_'), '.txtr', 3)
+
+    # base_dictionary = ['arm', 'leg', 'limb', 'elite', 'omega', 'phason', 'phazon', 'boss', 'texture', 'part', 'piece', 'spine', 's_pirate_spine', 'version', 'texturepages', 'sourceimages', 'pirate', 'elite_space_pirate', 'space_pirate', 'torso', 'main', 'metal', 'skin', 'body', 'base', 'head', 'color', *'0123sc _']
+    # set1 = generate_all_reverse_hashes(0xF9563AF9, add_delimiters(base_dictionary, [*'_/']), '/torso.txtr', 3)
+    # set2 = generate_all_reverse_hashes(0x68919D46, add_delimiters(base_dictionary, [*'_/']), '/arm01.txtr', 3)
 
     #set1 = generate_all_reverse_hashes(0xA773BBFF, ['health', 'icon', 'i', 'healthicon', 'healthiconi', 'purple', 'wave', 'combo', 'beam', 'pickup', '/sourceimages/', '/', 's', *'w01234', *spacers], '.txtr', depth)
     #set2 = generate_all_reverse_hashes(0xB4AFD8E6, ['rocket', 'metal', 'icon', 'i', 'rocketicon', 'rocketiconi', 'purple', 'wave', 'combo', 'beam', 'pickup', '/sourceimages/', '/', 's', *'w01234', *spacers], '.txtr', depth)
     #set2 = generate_all_reverse_hashes(0xC35CF119, ['health', 'icon', 'i', 'healthicon', 'healthiconi', 'yellow', 'power', 'combo', 'beam', 'pickup', '/sourceimages/', '/', 's', *spacers], '.txtr', depth)
 
-    #set1 = generate_all_reverse_hashes(0x5AA26425, ['eye', 'head', '2r', '2l', 'bi', 'r', 'l', 'persp', 'right', 'left', 'close', 'top', 'front', 's', *spacers], '.txtr', depth)
-    #set2 = generate_all_reverse_hashes(0xAB39F694, ['body', 'full', '4r', '4l', 'quad', 'r', 'l', 'persp', 'right', 'left', 'top', 'front', 's', *spacers], '.txtr', depth)
+    # set1 = generate_all_reverse_hashes(0x5AA26425, add_delimiters(['eye', 'head', 'target', 'weakpoint', 'weak_point', '2r', '2l', 'bi', 'r', 'l', '1', '2', 'persp', 'right', 'left', 'close', 'closeup', 'top', 'front', 's', '_',], ['_']), '.txtr', 3)
+    # set2 = generate_all_reverse_hashes(0xAB39F694, add_delimiters(['body', 'full', '4r', '4l', 'quad', 'r', 'l', '1', '2', 'persp', 'right', 'left', 'top', 'front', 's', '_'], ['_']), '.txtr', 3)
+
+    # set1 = generate_all_reverse_hashes(0x7800AC35, add_delimiters(['tree', 'shrub', 'root', 'leaf', 'leaves', '2r', '2l', 'bi', 'r', 'l', '1', '2', 'persp', 'right', 'left', 'front', 's', '_',], [*'_ ']), '.txtr', 3)
+    # set2 = generate_all_reverse_hashes(0x94AD11C1, add_delimiters(['big', 'large', 'tree', 'part', '1', 'shrub', 'root', 'trunk', 'whole', 'full', '4r', '4l', 'quad', 'r', 'l', '1', '2', 'persp', 'right', 'left', 'front', 's', '_'], [*'_ ']), '.txtr', 3)
+
+    # set1 = generate_all_reverse_hashes(0x16473397, [ *world_words], '.txtr', 2)
+    # set2 = generate_all_reverse_hashes(0x4966CFBA, [*world_words], '.txtr', 2)
+
+    # set1 = generate_all_reverse_hashes(0x982E8362, ['node', *string.digits, *string.ascii_lowercase], '.txtr', 4)
+    # set2 = generate_all_reverse_hashes(0xA4FBE5D1, ['hex', 'hexagon', *string.digits, *string.ascii_lowercase], '.txtr', 4)
 
     #set1 = generate_all_reverse_hashes(0x57D88247, ['pil', 'pillar', 'puzzle', 'central', 's', 'level','0', *spacers], '3.dcln', depth)
     #set2 = generate_all_reverse_hashes(0xA023FA97, ['debris', 'rubble', 's', 'blocker', 'wreckage', 'breakable', 'bombable', 'destructible', 'destructable', 'destroyable', 'p', 'power', 'bomb', 'powerbomb', 'power_bomb', 'bomb', *spacers], '.dcln', depth)
