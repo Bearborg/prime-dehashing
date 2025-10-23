@@ -27,6 +27,12 @@ def guess_textures(res_dict, deep_search: bool = False):
         '$/AnimatedObjects/Overworld/sourceimages',
         '$/AnimatedObjects/RuinsWorld/sourceimages',
         '$/AnimatedObjects/General/pickups/powerbomb/sourceimages',
+        '$/Worlds/Mines/connect_x/sourceimages',
+        '$/Worlds/Crater/connect_x/sourceimages',
+        '$/Worlds/IntroUnderwater/connect_x/sourceimages',
+        '$/Worlds/IceWorld/connect_x/sourceimages',
+        '$/Worlds/Overworld/connect_x/sourceimages',
+        '$/Worlds/LavaWorld/common_textures'
     ])
     tex_names: Set[str] = set()
     tex_names.update([
@@ -49,15 +55,23 @@ def guess_textures(res_dict, deep_search: bool = False):
         'gbliwebbaftxvqhn.txtr', # rock mud blend
         'gbliwebbaftxvqhncc.txtr', # rock mud blend
         'f_balljrnb60hp38c.txtr', # mirror
+        'nceotfbsbjzrntgmc.txtr', # tube
+        'tuwugkdtofyzgpzdyfc.txtr', # ice wall section
+        'pso92s2980rc.txtr', # samusgun gray square
+        'gun_pso92s2980rc.txtr', # samusgun gray square
+        'zeckcpgxvxpzllvc.txtr', # samusgun gray square 2
+        'nbbovbxpdktettc.txtr', # chozo text wall
+        'yc2eut_h1sb4hc.txtr', # orange metal square
         'ms_morphballtubeC.txtr',
         'ms_morphballtube2C.txtr',
         'ms_morphballtubeI.txtr',
+        'wall0alt2.txtr',
+        'wall0alt2c.txtr',
         'brace2c.txtr',
         'brace2.txtr',
         'cylinder1.txtr',
         'cylinder1c.txtr'
         'cylinder.txtr',
-        'turbines_misc3.txtr',
         'verticalbraceC.txtr',
         'enspikec.txtr',
         'enspikesmallc.txtr',
@@ -95,6 +109,10 @@ def guess_textures(res_dict, deep_search: bool = False):
         'rockbaseD_r.txtr',
         'rbrace_r.txtr',
         'toppanel2C.txtr',
+        'normsh1.txtr',
+        'normsh2.txtr',
+        'normsh3.txtr',
+        'bug7.txtr',
     ])
 
     for key in res_dict:
@@ -145,6 +163,7 @@ def guess_textures(res_dict, deep_search: bool = False):
                         tex_names.add(tex_name[:-6] + '_incan.txtr')
                         tex_names.add(tex_name[:-6] + '_reflectivity.txtr')
                         tex_names.add(tex_name[:-6] + '_reflected.txtr')
+                        tex_names.add(tex_name[:-6] + 'smallC.txtr')
                         tex_names.update([tex_name[:-6] + n + 'C.txtr' for n in alpha_num])
                         tex_names.update([tex_name[:-6] + '0' + n + 'C.txtr' for n in alpha_num])
                     else:
@@ -155,6 +174,7 @@ def guess_textures(res_dict, deep_search: bool = False):
                         tex_names.add(tex_name[:-5] + '_reflectivity.txtr')
                         tex_names.add(tex_name[:-5] + '_reflected.txtr')
                         tex_names.update([tex_name[:-5] + n + 'C.txtr' for n in alpha_num])
+                        tex_names.update([tex_name[:-5] + n + '.txtr' for n in alpha_num])
                         tex_names.update([tex_name[:-5] + '0' + n + 'C.txtr' for n in alpha_num])
 
     sorted_tex_names = sorted(tex_names)

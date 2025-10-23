@@ -52,36 +52,35 @@ def locate_duplicates(dupes: List[Duplicate], max_depth: int = 50, min_depth: in
 if __name__ == '__main__':
     input_dupes = [
         Duplicate(
-            goal=0x7B2B1BD4,
+            goal=0x2255c7bc,
             paths=[
-                '$/Worlds/RuinWorld/8_courtyard/sourceimages/'.lower(),
+                '$/strings/metroid2/cooked/'.lower(),
             ],
             suffixes=[
-                '.txtr'.lower()
+                '_rhs2.hint'.lower(),
             ]
         ),
         Duplicate(
-            goal=0x5E8B1C88,
+            goal=0x2fd33fbb,
             paths=[
-                '$/Worlds/RuinWorld/10_coreentrance/sourceimages/'.lower(),
-                '$/Worlds/RuinWorld/common_textures/'.lower(),
-                '$/Worlds/RuinWorld/common_textures/stone/'.lower(),
+                '$/strings/english/'.lower(),
             ],
             suffixes=[
-                '.txtr'.lower()
+                '_rhs.hint'.lower(),
             ]
         ),
-        Duplicate(
-            goal=0x5E8B1C88,
-            paths=[
-                '$/Worlds/RuinWorld/11_wateryhall/sourceimages/'.lower(),
-                '$/Worlds/RuinWorld/5_bathhall/sourceimages/'.lower(),
-                '$/Worlds/RuinWorld/common_textures/'.lower(),
-                '$/Worlds/RuinWorld/common_textures/stone/'.lower(),
-            ],
-            suffixes=[
-                '.txtr'.lower()
-            ]
-        ),
+        # Duplicate(
+        #     goal=0x5E8B1C88,
+        #     paths=[
+        #         '$/Worlds/RuinWorld/11_wateryhall/sourceimages/'.lower(),
+        #         '$/Worlds/RuinWorld/5_bathhall/sourceimages/'.lower(),
+        #         '$/Worlds/RuinWorld/common_textures/'.lower(),
+        #         '$/Worlds/RuinWorld/common_textures/stone/'.lower(),
+        #     ],
+        #     suffixes=[
+        #         '.txtr'.lower(),
+        #         'c.txtr'.lower(),
+        #     ]
+        # ),
     ]
     locate_duplicates(input_dupes, 20)
