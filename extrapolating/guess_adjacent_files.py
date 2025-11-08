@@ -33,6 +33,11 @@ def guess_adjacent_files(res_dict):
                 filename = filename[:-1]
                 if hash_without_ext not in matched_files:
                     matched_files[hash_without_ext] = filename
+            if filename.lower().endswith('_bound'):
+                hash_without_ext = remove_suffix(hash_without_ext, '_bound')
+                filename = filename[:-6]
+                if hash_without_ext not in matched_files:
+                    matched_files[hash_without_ext] = filename
         else:
             unmatched_files[key] = res_dict[key]
             # for num in string.digits:
@@ -47,11 +52,11 @@ def guess_adjacent_files(res_dict):
         if len(os.path.splitext(filename)[1]) == 5:
             filename, ext2 = os.path.splitext(filename)
             ext = ext2 + ext
-        for num in [''] + [*'0123456789']:
-            hash_without_ext = remove_suffix(key, num + ext.lower())
+        for suf in [''] + ['_collision'] + ['_bound'] + [*'0123456789']:
+            hash_without_ext = remove_suffix(key, suf + ext.lower())
             if hash_without_ext in matched_files:
 
-                match_type = update_if_matched(f"{matched_files[hash_without_ext]}{num}{ext}", ext + "!!", res_dict)
+                match_type = update_if_matched(f"{matched_files[hash_without_ext]}{suf}{ext}", ext + "!!", res_dict)
                 if match_type == MatchType.NewMatch:
                     matched += 1
 

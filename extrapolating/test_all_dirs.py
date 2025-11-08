@@ -38,8 +38,13 @@ def test_all_dirs(resource_dict: Dict[int, str], show_groups=False):
                 rev_match[rewound] = resource_dict[file][:resource_dict[file].find('@') + 1]
                 if name.endswith('txtr'):
                     path, filename = os.path.split(resource_dict[file][:-2])
+                    if filename.startswith('@'):
+                        path += '/@'
+                        filename = filename[1:]
+                    else:
+                        path += '/'
                     rewound = remove_suffix(file, filename.lower())
-                    rev_match[rewound] = path + '/'
+                    rev_match[rewound] = path
                     txtrs.add(filename)
                 continue
             name = os.path.split(resource_dict[file][:-2])[1]

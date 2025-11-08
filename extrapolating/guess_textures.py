@@ -57,9 +57,6 @@ def guess_textures(res_dict, deep_search: bool = False):
         'f_balljrnb60hp38c.txtr', # mirror
         'nceotfbsbjzrntgmc.txtr', # tube
         'tuwugkdtofyzgpzdyfc.txtr', # ice wall section
-        'pso92s2980rc.txtr', # samusgun gray square
-        'gun_pso92s2980rc.txtr', # samusgun gray square
-        'zeckcpgxvxpzllvc.txtr', # samusgun gray square 2
         'nbbovbxpdktettc.txtr', # chozo text wall
         'yc2eut_h1sb4hc.txtr', # orange metal square
         'ms_morphballtubeC.txtr',
