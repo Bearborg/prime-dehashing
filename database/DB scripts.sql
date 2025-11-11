@@ -59,7 +59,7 @@ from asset_paths ap
 inner join asset_references ar on ar.target = ap.hash
 inner join asset_usages us on us.hash = ar.source
 inner join asset_paths ap2 on ap2.hash = ar.source
-where ap.hash = '50B83FE2' COLLATE NOCASE
+where ap.hash = '0057a59f' COLLATE NOCASE
 --and us.game = 'MP2/NTSC'
 group by ap2.hash
 order by us.type, ap2.path
@@ -68,7 +68,7 @@ order by us.type, ap2.path
 select *, group_concat(us.game, ',') from asset_paths ap
 inner join asset_usages us on ap.hash = us.hash
 where ap.path_matches = 0
---and us.game like 'MP1/1.00'
+and us.game like 'MP1/1.00'
 --and us.pak = 'MiscData.pak' COLLATE NOCASE
 and us.type = 'STRG'
 group by ap.hash
@@ -180,7 +180,7 @@ with scans as
 select ap.hash as hash, ap.path as path, ap.path_matches as path_matches from asset_paths ap
 inner join asset_usages au on au.hash = ap.hash
 where au.type = 'STRG'
-group by ap.hash having SUM(au.game <> 'MPR') = 0
+group by ap.hash having SUM(au.game = 'MPR') > 0
 )
 select 'Total' as hash, '' as path, round(100.00 * SUM(scans.path_matches) / COUNT(hash), 2) as path_matches from scans
 UNION ALL
@@ -201,9 +201,10 @@ inner join asset_paths ap_ancs on ar.source = ap_ancs.hash
 inner join asset_paths ap2 on ar.target = ap2.hash
 where ap_ancs.path like '%.acs'
 and ap2.path not like '%.part'
+and ap2.path not like '%.swsh.swhc'
 and ap_ancs.path_matches <> ap2.path_matches
 and (ap_ancs.path_matches = 1 or (ap2.path not like '$/Characters/Samus/cooked/%' or ap2.path like '%.ani'))
---and ar.game = 'MP1/1.00'
+and ar.game = 'MP1/1.00'
 order by ar.game, ap_ancs.path
 
 --Unmatched model textures
@@ -260,9 +261,42 @@ and aps.path like '%.dat'
 and apt.path_matches = 0
 order by apt.path
 
+--Unmatched FRME model textures
+select apt.*, group_concat(aps.path) from asset_references ar
+inner join asset_paths aps on ar.source = aps.hash
+inner join asset_paths apt on ar.target = apt.hash
+where apt.path like '%.txtr'
+and (aps.path like '%GUI_ART%.cmdl')
+and apt.path_matches = 0
+group by apt.hash
+order by apt.path
+
 --Unmatched Trilogy strings
 select * from asset_paths ap
 inner join asset_usages us on ap.hash = us.hash
 where ap.path_matches = 0 and us.pak like '%Strings.pak'
 group by ap.hash
 order by ap.path
+
+--textures referenced by both matched and unmatched particles
+with matched_particles as (select * from asset_paths ap where ap.path_matches = 1 and ap.path like '%.gpsm.part'),
+unmatched_particles as (select * from asset_paths ap where ap.path_matches = 0 and ap.path like '%.gpsm.part')
+
+select apt.*, apmp.path, group_concat(apup.hash, ', ') from asset_paths apt
+inner join asset_references arm on arm.target = apt.hash
+inner join asset_references aru on aru.target = apt.hash
+inner join matched_particles apmp on apmp.hash = arm.source
+inner join unmatched_particles apup on apup.hash = aru.source
+where apt.path_matches and apt.path like '%.txtr'
+and aru.game = 'MP1/1.00'
+group by apt.hash, apmp.hash
+
+--Unmatched character particles
+select aps.path, apt.* from asset_references ar
+inner join asset_paths aps on ar.source = aps.hash
+inner join asset_paths apt on ar.target = apt.hash
+where apt.path like '%.gpsm.part'
+and aps.path like '%.evnt'
+and apt.path_matches = 0
+and ar.game = 'MP1/1.00'
+order by aps.path

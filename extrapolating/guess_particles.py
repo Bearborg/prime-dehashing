@@ -4,7 +4,7 @@ from typing import Set
 from extrapolating.update_if_matched import update_if_matched, MatchType
 
 
-def guess_particles(res_dict, deep_search: bool = False):
+def guess_particles(res_dict, deep_search: bool = False, room_search: bool = False):
     """
     Attempts to match several types of particle effect files by testing if known particle filenames were reused in other
     particle effect folders. Optionally, the deep_search parameter will attempt fuzzy matching by adding/removing digits
@@ -15,6 +15,7 @@ def guess_particles(res_dict, deep_search: bool = False):
 
     :param res_dict: A dict of integer hashes to string filenames. Non-matching filenames should be suffixed with "!!".
     :param deep_search: A boolean determining whether to use computationally costlier matching techniques.
+    :param room_search: A boolean determining whether to try guessing room directories.
     :return: Number of newly-added filename matches, as an int.
     """
     print("Checking particles...")
@@ -49,28 +50,18 @@ def guess_particles(res_dict, deep_search: bool = False):
         '$/Effects/particles/intro_underwater',
         '$/Effects/particles/introunder',
         '$/Effects/particles/intro_under',
-        '$/Effects/particles/characters/Bloodflower',
-        '$/Effects/particles/characters/Blood_Flower',
         '$/Effects/particles/characters/Burrower',
         '$/Effects/particles/characters/Burrowers',
         '$/Effects/particles/enemy_weapons/Burrower',
         '$/Effects/particles/enemy_weapons/Burrowers',
-        '$/Effects/particles/enemy_weapons/Sheegoth',
-        '$/Effects/particles/enemy_weapons/Sheegoths',
         '$/Effects/particles/characters/garganBeetleBeta',
         '$/Effects/particles/characters/garganBeetle_Beta',
         '$/Effects/particles/characters/FireFlea',
         '$/Effects/particles/characters/FireFlee',
         '$/Effects/particles/characters/Fire_Flea',
         '$/Effects/particles/characters/Fire_Flee',
-        '$/Effects/particles/characters/Flickerbat',
-        '$/Effects/particles/characters/Flicker_bat',
-        '$/Effects/particles/characters/Flickerbat_Alpha',
-        '$/Effects/particles/characters/Flicker_bat_alpha',
         '$/Effects/particles/characters/Geemer',
         '$/Effects/particles/characters/Lumigek',
-        '$/Effects/particles/bosses/MetroidPrime',
-        '$/Effects/particles/bosses/Metroid_Prime',
         '$/Effects/particles/characters/PuddleToad',
         '$/Effects/particles/characters/Puddle_Toad',
         '$/Effects/particles/characters/PuddleToadGamma',
@@ -87,20 +78,6 @@ def guess_particles(res_dict, deep_search: bool = False):
         '$/Effects/particles/enemy_weapons/Sovas',
         '$/Effects/particles/characters/Sova',
         '$/Effects/particles/characters/Sovas',
-        '$/Effects/particles/bosses/Thardus',
-        '$/Effects/particles/bosses/ThardusBoss',
-        '$/Effects/particles/bosses/Thardus_Boss',
-        '$/Effects/particles/bosses/Thardus/elem',
-        '$/Effects/particles/bosses/Thardas',
-        '$/Effects/particles/bosses/ThardasBoss',
-        '$/Effects/particles/bosses/Thardas_Boss',
-        '$/Effects/particles/bosses/IceBoss',
-        '$/Effects/particles/bosses/IceBoss/elem',
-        '$/Effects/particles/bosses/Ice_Boss',
-        '$/Effects/particles/bosses/RockBoss',
-        '$/Effects/particles/bosses/Rock_Boss',
-        '$/Effects/particles/characters/Tryclops',
-        '$/Effects/particles/characters/Triclops',
         '$/Effects/particles/characters/WarWasp',
         '$/Effects/particles/characters/WarWasps',
         '$/Effects/particles/characters/War_Wasp',
@@ -227,7 +204,7 @@ def guess_particles(res_dict, deep_search: bool = False):
                     part_names.add(part_name[:end] + part_name[-10:])
                 else:
                     part_names.update([part_name[:-10] + n + part_name[-10:] for n in alpha_num])
-        elif res_dict[key][-4:] in ['mrea'] and deep_search:
+        elif res_dict[key][-4:] in ['mrea'] and room_search:
             name_parts = res_dict[key].split('/')
             world = name_parts[-3]
             room_name = name_parts[-1][:-5]
