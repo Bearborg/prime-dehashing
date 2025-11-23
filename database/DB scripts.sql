@@ -59,7 +59,7 @@ from asset_paths ap
 inner join asset_references ar on ar.target = ap.hash
 inner join asset_usages us on us.hash = ar.source
 inner join asset_paths ap2 on ap2.hash = ar.source
-where ap.hash = '0057a59f' COLLATE NOCASE
+where ap.hash = '8ba2e6ac' COLLATE NOCASE
 --and us.game = 'MP2/NTSC'
 group by ap2.hash
 order by us.type, ap2.path
@@ -74,19 +74,6 @@ and us.type = 'STRG'
 group by ap.hash
 order by us.game, us.pak, ap.path
 
---Nearby unmatched PARTs
-select ap.hash, ap2.path from asset_paths ap
-inner join asset_usages us on ap.hash = us.hash
-inner join asset_references ar on ar.source = ap.hash
-inner join asset_paths ap2 on ap2.hash = ar.target
-inner join asset_usages us2 on ap2.hash = us2.hash
-where ap.path_matches = 0 and ap2.path_matches = 1
-and us.game like 'MP1/1.00'
-and us.type = 'PART'
-and us2.type = 'PART'
-group by us2.hash
-order by ap.hash
-
 --particle textures
 select ap.hash, ap2.path from asset_paths ap
 inner join asset_usages us on ap.hash = us.hash
@@ -99,19 +86,6 @@ and us.type = 'TXTR'
 and us2.type in ('PART', 'SWHC', 'CRSC', 'DPSC', 'WPSC')
 group by ap.hash
 order by ap.path
-
---Nearby unmatched ANIMs
-select ap.hash, ap.path, ap2.path from asset_paths ap
-inner join asset_usages us on ap.hash = us.hash
-inner join asset_references ar on ar.target = ap.hash
-inner join asset_paths ap2 on ap2.hash = ar.source
-inner join asset_usages us2 on ap2.hash = us2.hash
-where ap.path_matches = 0 and ap2.path_matches = 1
-and us.game like 'MP1/1.00'
-and us.type = 'ANIM'
-and us2.type = 'ANCS'
-group by ap.hash
-order by ap2.path
 
 --Nearby unmatched models
 select ap.hash, ap.path, ap2.path from asset_paths ap
@@ -278,6 +252,32 @@ where ap.path_matches = 0 and us.pak like '%Strings.pak'
 group by ap.hash
 order by ap.path
 
+--Nearby unmatched ANIMs
+select ap.hash, ap.path, ap2.path from asset_paths ap
+inner join asset_usages us on ap.hash = us.hash
+inner join asset_references ar on ar.target = ap.hash
+inner join asset_paths ap2 on ap2.hash = ar.source
+inner join asset_usages us2 on ap2.hash = us2.hash
+where ap.path_matches = 0 and ap2.path_matches = 1
+and us.game like 'MP1/1.00'
+and us.type = 'ANIM'
+and us2.type = 'ANCS'
+group by ap.hash
+order by ap2.path
+
+--Nearby unmatched PARTs
+select IIF(ap2.path_matches, ap.hash, ap2.hash) as hash, IIF(ap2.path_matches, us.type, us2.type) as type, IIF(ap2.path_matches, ap2.path, ap.path) as path from asset_paths ap
+inner join asset_usages us on ap.hash = us.hash
+inner join asset_references ar on ar.source = ap.hash
+inner join asset_paths ap2 on ap2.hash = ar.target
+inner join asset_usages us2 on ap2.hash = us2.hash
+where ap.path_matches <> ap2.path_matches
+and us.game like 'MP1/1.00'
+and us.type in ('PART', 'ELSC', 'SWHC', 'CRSC', 'WPSC', 'CMDL')
+and us2.type in ('PART', 'ELSC', 'SWHC', 'CRSC', 'WPSC', 'CMDL')
+group by IIF(ap2.path_matches, ap.hash, ap2.hash)
+order by IIF(ap2.path_matches, ap2.path, ap.path)
+
 --textures referenced by both matched and unmatched particles
 with matched_particles as (select * from asset_paths ap where ap.path_matches = 1 and ap.path like '%.gpsm.part'),
 unmatched_particles as (select * from asset_paths ap where ap.path_matches = 0 and ap.path like '%.gpsm.part')
@@ -290,13 +290,14 @@ inner join unmatched_particles apup on apup.hash = aru.source
 where apt.path_matches and apt.path like '%.txtr'
 and aru.game = 'MP1/1.00'
 group by apt.hash, apmp.hash
+order by apt.path, apmp.path
 
 --Unmatched character particles
 select aps.path, apt.* from asset_references ar
 inner join asset_paths aps on ar.source = aps.hash
 inner join asset_paths apt on ar.target = apt.hash
 where apt.path like '%.gpsm.part'
-and aps.path like '%.evnt'
+and (aps.path like '%.evnt' or aps.path like '%.acs')
 and apt.path_matches = 0
 and ar.game = 'MP1/1.00'
-order by aps.path
+order by rtrim(aps.path, replace(aps.path, '/', '')), apt.path -- fancy string manipulation to remove filename from path

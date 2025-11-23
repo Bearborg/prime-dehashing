@@ -1,6 +1,7 @@
 import os
 import re
-from typing import Set
+import itertools
+from typing import Set, Dict, List
 from extrapolating.update_if_matched import update_if_matched, MatchType
 
 
@@ -21,7 +22,7 @@ def guess_particles(res_dict, deep_search: bool = False, room_search: bool = Fal
     print("Checking particles...")
     matched = 0
 
-    world_lookup = {
+    world_lookup: Dict[str, List[str]] = {
         '!Crater_Master': ['$/Effects/particles/crater/',],
         '!IceWorld': ['$/Effects/particles/ice/',],
         '!Intro_Master': ['$/Effects/particles/intro/',],
@@ -173,10 +174,14 @@ def guess_particles(res_dict, deep_search: bool = False, room_search: bool = Fal
         '$/Effects/particles/sam_weapon/icecombo',
         '$/Effects/particles/sam_weapon/grapple',
     ])
+    part_folders.update([f'{pref}Group{num:02}/{a}' for pref, num, a in itertools.product(itertools.chain(*world_lookup.values()), range(1,11), 'ABCD')])
     part_names: Set[str] = set()
     part_names.update([
-        'pollen'
-        'pollen1'
+        'pollen.gpsm.part',
+        'pollen1.gpsm.part',
+        'int1.gpsm.part',
+        'fa___2____xf.gpsm.part',
+        'hblastsnow.gpsm.part',
     ])
     alpha_num = set()
     alpha_num.update([*'abcdefxy'])

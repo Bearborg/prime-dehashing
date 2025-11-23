@@ -28,6 +28,11 @@ def guess_adjacent_files(res_dict):
                 matched_files[hash_without_ext] = filename
             elif matched_files[hash_without_ext].lower() != filename.lower():
                 print(f'Collision: "{matched_files[hash_without_ext]}" != "{filename}"')
+            if filename[-2] in string.digits and filename[-1] not in string.digits:
+                hash_without_ext = remove_suffix(hash_without_ext, filename[-1])
+                filename = filename[:-1]
+                if hash_without_ext not in matched_files:
+                    matched_files[hash_without_ext] = filename
             while filename[-1] in string.digits:
                 hash_without_ext = remove_suffix(hash_without_ext, filename[-1])
                 filename = filename[:-1]
@@ -52,7 +57,7 @@ def guess_adjacent_files(res_dict):
         if len(os.path.splitext(filename)[1]) == 5:
             filename, ext2 = os.path.splitext(filename)
             ext = ext2 + ext
-        for suf in [''] + ['_collision'] + ['_bound'] + [*'0123456789']:
+        for suf in [''] + ['_collision', 'collision'] + ['_bound'] + [*'0123456789abcdefxyz']:
             hash_without_ext = remove_suffix(key, suf + ext.lower())
             if hash_without_ext in matched_files:
 

@@ -12,6 +12,7 @@ end_color = '\033[0m'
 cache = set()
 hash_cache = dict()
 txtrs = set()
+particles = set()
 rev_match = dict()
 
 def test_all_dirs(resource_dict: Dict[int, str], show_groups=False):
@@ -46,6 +47,16 @@ def test_all_dirs(resource_dict: Dict[int, str], show_groups=False):
                     rewound = remove_suffix(file, filename.lower())
                     rev_match[rewound] = path
                     txtrs.add(filename)
+                elif name.endswith('.gpsm.part'):
+                    path, filename = os.path.split(resource_dict[file][:-2])
+                    if filename.startswith('@'):
+                        path += '/@'
+                        filename = filename[1:]
+                    else:
+                        path += '/'
+                    rewound = remove_suffix(file, filename.lower())
+                    rev_match[rewound] = path
+                    particles.add(filename)
                 continue
             name = os.path.split(resource_dict[file][:-2])[1]
             rewound = remove_suffix(file, name.lower())
@@ -95,6 +106,10 @@ def test_all_dirs(resource_dict: Dict[int, str], show_groups=False):
                 txtrs.add(filename[:-len(match[0])] + '.txtr')
                 txtrs.add(filename[:-len(match[0])].rstrip('0123456789') + '.txtr')
                 txtrs.add(filename[:-len(match[0])].rstrip('0123456789') + match[0])
+        elif resource_dict[file].endswith('.gpsm.part'):
+            # store all matched texture names to see if they're duplicated in a partially-matched folder
+            filename = os.path.split(resource_dict[file])[1]
+            particles.add(filename)
     for file in resource_dict:
         if not resource_dict[file].endswith('!!') and not 'trilogy_rep' in resource_dict[file]:
             tril_name = resource_dict[file].replace('$/', '$/trilogy_rep/')
@@ -140,6 +155,16 @@ def test_all_dirs(resource_dict: Dict[int, str], show_groups=False):
                 if old_name.endswith('txtr!!'):
                     if not (rev_match[key] == unk_start and txtr.lower() == os.path.split(old_name[:-2].lower())[1]):
                         new_name = rev_match[key] + txtr
+                        if '@' not in old_name and old_name[:-2].lower() != new_name.lower():
+                            print(f'{start_yellow}Partial match found, {new_hash:08x}: {new_name}{end_color}')
+                            # resource_dict[new_hash] = new_name + '!!'
+        # Test if known particle names can be matched to the same directory as any partially-matched particles
+        for particle in particles:
+            if (new_hash := crc32(particle.lower(), key)) in resource_dict:
+                old_name = resource_dict[new_hash]
+                if old_name.endswith('.gpsm.part!!'):
+                    if not (rev_match[key] == unk_start and particle.lower() == os.path.split(old_name[:-2].lower())[1]):
+                        new_name = rev_match[key] + particle
                         if '@' not in old_name and old_name[:-2].lower() != new_name.lower():
                             print(f'{start_yellow}Partial match found, {new_hash:08x}: {new_name}{end_color}')
                             # resource_dict[new_hash] = new_name + '!!'
