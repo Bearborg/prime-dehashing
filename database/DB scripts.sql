@@ -273,8 +273,8 @@ inner join asset_paths ap2 on ap2.hash = ar.target
 inner join asset_usages us2 on ap2.hash = us2.hash
 where ap.path_matches <> ap2.path_matches
 and us.game like 'MP1/1.00'
-and us.type in ('PART', 'ELSC', 'SWHC', 'CRSC', 'WPSC', 'CMDL')
-and us2.type in ('PART', 'ELSC', 'SWHC', 'CRSC', 'WPSC', 'CMDL')
+and us.type in ('PART', 'ELSC', 'SWHC', 'CRSC', 'WPSC', 'DPSC', 'CMDL')
+and us2.type in ('PART', 'ELSC', 'SWHC', 'CRSC', 'WPSC', 'DPSC', 'CMDL')
 group by IIF(ap2.path_matches, ap.hash, ap2.hash)
 order by IIF(ap2.path_matches, ap2.path, ap.path)
 

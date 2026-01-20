@@ -16,3 +16,5 @@ mp2_hecl_root = 'E:\HECL\Metroid Prime 2 (NTSC)'
 # Root directory of unmatched TXTRs folder
 mp1_unmatched_txtrs_root = 'E:\Unmatched TXTRs\MP1'
 mp2_unmatched_txtrs_root = 'E:\Unmatched TXTRs\MP2'
+# Input AssetNameMap32 file from Prime World Editor
+pwe_asset_name_map_32 = 'E:\PrimeWorldEditor\resources\gameinfo\AssetNameMap32.xml'
