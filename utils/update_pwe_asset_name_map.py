@@ -16,12 +16,15 @@ renames = {
     'RPFF': 'FONT',
     'MWLD': 'MLVL',
 }
+inverse_renames = {renames[key] : key for key in renames}
 
 tree = ET.parse(orig_name_map)
 
 confirmed_dict = json.load(open(confirmed_names, 'r'))
 confirmed = {confirmed_dict[key] : key for key in confirmed_dict}
+confirmed_lower = {key.lower() : confirmed_dict[key] for key in confirmed_dict}
 handled_assets = set()
+pwe_names = dict()
 
 name_map = tree.getroot().find('AssetNameMap')
 
@@ -29,13 +32,23 @@ for asset in name_map:
     asset_id = asset.find('Key').text.lower()
     if asset_id in confirmed:
         path, name = os.path.split(confirmed[asset_id][2:])
-        path += '/'
+        if path:
+            path += '/'
         name = os.path.splitext(name)[0]
         asset.find('Value/Name').text = name
         asset.find('Value/Directory').text = path
         asset.find('Value/AutoGenName').text = 'false'
         asset.find('Value/AutoGenDir').text = 'false'
         handled_assets.add(asset_id)
+    else:
+        name = asset.find('Value/Name').text
+        path = asset.find('Value/Directory').text
+        ext = asset.find('Value/Type').text
+        if ext in inverse_renames:
+            ext = inverse_renames[ext]
+        fullpath = f'$/{path}{name}.{ext}'.lower()
+        assert fullpath not in pwe_names
+        pwe_names[fullpath] = asset_id
 
 for asset in confirmed:
     if asset not in handled_assets:
@@ -43,7 +56,8 @@ for asset in confirmed:
         ET.SubElement(new_asset, 'Key', ).text = asset.upper()
         vals = ET.SubElement(new_asset, 'Value')
         path, name = os.path.split(confirmed[asset][2:])
-        path += '/'
+        if path:
+            path += '/'
         name, ext = os.path.splitext(name)
         ext = ext[1:].upper()
 
@@ -54,6 +68,10 @@ for asset in confirmed:
         ET.SubElement(vals, 'Type').text = ext
         ET.SubElement(vals, 'AutoGenName').text = 'false'
         ET.SubElement(vals, 'AutoGenDir').text = 'false'
+
+for path in pwe_names:
+    if path in confirmed_lower and pwe_names[path] != confirmed_lower[path]:
+            raise Exception(f'Duplicated path: "{path}"')
 
 ET.indent(tree, space=" " * 4, level=0)
 tree.write(out_name_map)
