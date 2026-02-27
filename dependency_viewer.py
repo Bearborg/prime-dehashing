@@ -45,7 +45,8 @@ def recurse_deps(asset_id: str, level = 1):
         if row[1] not in res_cache:
             print(f'{"  " * level}{color(row[0], row[1])}')
             res_cache.add(row[1])
-            recurse_deps(row[1], level + 1)
+            if row[2] not in ['TXTR', '']:
+                recurse_deps(row[1], level + 1)
         else:
             print(f'{"  " * level}Duplicate asset: {row[0].rstrip('!')}')
 
@@ -55,4 +56,4 @@ def show_all_deps(asset_id: str):
     recurse_deps(asset_id)
 
 if __name__ == '__main__':
-    show_all_deps('49E2363D')
+    show_all_deps('8169653A')
