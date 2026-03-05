@@ -3,12 +3,14 @@ import string
 from utils.crc32 import remove_suffix
 from extrapolating.update_if_matched import update_if_matched, MatchType
 import os
+import itertools
 
-def guess_adjacent_files(res_dict):
+def guess_adjacent_files(res_dict, deep_search=False):
     """
     Attempts to match any files that are named identically to a nearby file, but with a different file extension.
 
     :param res_dict: A dict of integer hashes to string filenames. Non-matching filenames should be suffixed with "!!".
+    :param deep_search: Whether to perform a deep search.
     :return: Number of newly-added filename matches, as an int.
     """
     print("Checking adjacent files...")
@@ -64,5 +66,10 @@ def guess_adjacent_files(res_dict):
                 match_type = update_if_matched(f"{matched_files[hash_without_ext]}{suf}{ext}", ext + "!!", res_dict)
                 if match_type == MatchType.NewMatch:
                     matched += 1
+        if deep_search:
+            for suf in [''] + list(itertools.chain(*[[pref, f'_{pref}', f' {pref}'] for pref in ['collision', 'bound'] + [*'0123456789abcdefxyz']])):
+                hash_without_ext = remove_suffix(key, suf + ext.lower())
+                if hash_without_ext in matched_files:
+                    update_if_matched(f"{matched_files[hash_without_ext]}{suf}{ext}", ext + "!!", res_dict, False)
 
     return matched
