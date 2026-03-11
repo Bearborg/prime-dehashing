@@ -1,4 +1,5 @@
 import os
+import string
 from typing import Set
 import utils.crc32
 from extrapolating.update_if_matched import update_if_matched, MatchType
@@ -48,16 +49,12 @@ def guess_textures(res_dict, deep_search: bool = False):
         #'vvstsvlkdvqesjocc.txtr', # vine
         'sjxpzopaglatowroc.txtr', # vine
         'mnngoudvrzmtbtabc.txtr', # ridged brown metal
-        'jxqyuxmaryziwtc.txtr', # mossy striated rock
-        'jxqyuxmaryziwtcc.txtr', # mossy striated rock
-        'jxqyuxmaryziwt.txtr', # mossy striated rock
         'gbliwebbaftxvqhnc.txtr', # rock mud blend
         'gbliwebbaftxvqhn.txtr', # rock mud blend
         'gbliwebbaftxvqhncc.txtr', # rock mud blend
         'f_balljrnb60hp38c.txtr', # mirror
         'nceotfbsbjzrntgmc.txtr', # tube
         'tuwugkdtofyzgpzdyfc.txtr', # ice wall section
-        'nbbovbxpdktettc.txtr', # chozo text wall
         'yc2eut_h1sb4hc.txtr', # orange metal square
         'ms_morphballtubeC.txtr',
         'ms_morphballtube2C.txtr',
@@ -126,6 +123,26 @@ def guess_textures(res_dict, deep_search: bool = False):
                 tex_folders.add(tex_folder)
                 tex_names.add(tex_name)
                 tex_names.add(tex_name.lstrip('_0123456789'))
+
+                if tex_name[-6].lower() in ('c', 'i', *string.digits):
+                    variants = set()
+                    if tex_name[-6].lower() in ('c', 'i',):
+                        variants.add(res_dict[key][:-6] + 'I' + res_dict[key][-5:])
+                        variants.add(res_dict[key][:-6] + 'C' + res_dict[key][-5:])
+                        if tex_name[-7].isdigit():
+                            variants.update([res_dict[key][:-7] + n + res_dict[key][-6:] for n in string.digits])
+                            variants.add(res_dict[key][:-7] + res_dict[key][-6:])
+                    elif tex_name[-6].isdigit():
+                        variants.update([res_dict[key][:-6] + n + res_dict[key][-5:] for n in string.digits])
+                        variants.add(res_dict[key][:-6] + res_dict[key][-5:])
+                    for tex in sorted(variants):
+                        full_hash = utils.crc32.crc32(tex.lower())
+                        if full_hash in res_dict:
+                            commit = True  # r'/RuinWorld/' in folder
+                            match_type = update_if_matched(tex, '.txtr!!', res_dict, commit)
+                            if match_type == MatchType.NewMatch and commit:
+                                matched += 1
+
                 if deep_search:
                     alpha_num = set()
                     alpha_num.update(['a', 'b', 'c', 'd'])
@@ -168,6 +185,8 @@ def guess_textures(res_dict, deep_search: bool = False):
                         tex_names.add(tex_name[:-5] + '_I.txtr')
                         tex_names.add(tex_name[:-5] + '_r.txtr')
                         tex_names.add(tex_name[:-5] + '_incan.txtr')
+                        tex_names.add(tex_name[:-5] + 'incan.txtr')
+                        tex_names.add(tex_name[:-5] + 'inc.txtr')
                         tex_names.add(tex_name[:-5] + '_reflectivity.txtr')
                         tex_names.add(tex_name[:-5] + '_reflected.txtr')
                         tex_names.update([tex_name[:-5] + n + 'C.txtr' for n in alpha_num])

@@ -1502,6 +1502,7 @@ dies
 diff
 difference
 difficulty
+diffuse
 digital
 dim
 dimmer
@@ -3061,6 +3062,7 @@ knees
 knife
 knobby
 knobs
+knob
 knocback
 knock
 knockback
@@ -5854,6 +5856,7 @@ transmission
 transmissions
 transmit
 transparencies
+transparency
 transparent
 transport
 trap

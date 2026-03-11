@@ -138,12 +138,12 @@ def guess_character_paths(res_dict):
             #     names.add(filename[:-9])
             # if filename.lower().endswith("_bound.ani"):
             #     names.add(filename[:-10])
-            split_name = filename
+            split_name = base_name
             while '_' in split_name:
                 split_name = '_'.join(split_name.split('_')[:-1])
                 if len(split_name) > 1:
                     names.add(split_name)
-            split_name = filename
+            split_name = base_name
             while '_' in split_name:
                 split_name = '_'.join(split_name.split('_')[1:])
                 if len(split_name) > 1:
@@ -167,6 +167,10 @@ def guess_character_paths(res_dict):
                 f'{cooked_dir}/dark_{name}_bound.cmdl',
                 f'{cooked_dir}/{name}.cin',
                 f'{cooked_dir}/{name}_bound.cin',
+                f'{cooked_dir}/{name}_anim.acs',
+                f'{cooked_dir}/{name}_animation.acs',
+                f'{cooked_dir}/{name}Anim.acs',
+                f'{cooked_dir}/{name}Animation.acs',
             ])
             for new_path in new_paths:
                 match_result = update_if_matched(new_path, new_path.split('.')[-1] + '!!', res_dict)
@@ -396,6 +400,8 @@ def guess_character_paths(res_dict):
                     f'{filename}_C_low.txtr',
                     f'{filename}_low.txtr',
                     f'{filename}_color.txtr',
+                    f'{filename}_dark_color.txtr',
+                    f'{filename}_color_dark.txtr',
                     f'{filename}I.txtr',
                     f'{filename}_I.txtr',
                     f'{filename}_reflected.txtr',
@@ -465,6 +471,10 @@ def guess_character_paths(res_dict):
                     f'{path}/xray_{filename}_bound.cmdl',
                     f'{path}/xray_{filename}_bound.cskr',
                     f'{path}/xray_{filename}_bound.cin',
+                    f'{path}/{filename}_anim.acs',
+                    f'{path}/{filename}_animation.acs',
+                    f'{path}/{filename}anim.acs',
+                    f'{path}/{filename}animation.acs',
                 ]
                 for new_path in possible_paths:
                     match_result = update_if_matched(new_path, new_path.split('.')[-1] + '!!', res_dict)

@@ -103,6 +103,9 @@ chicane
 chip
 chomper
 chozo
+chozoglyph
+chozoglyphic
+chozoglyphics
 ci
 circle
 clamp
@@ -365,6 +368,7 @@ map
 mapstation
 mb
 mech
+met
 metal
 metel
 metroid

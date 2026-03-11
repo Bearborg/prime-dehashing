@@ -1624,6 +1624,7 @@ tex
 text
 TextColor
 texture
+textures
 TextureSet
 thaw
 their
@@ -1669,6 +1670,7 @@ tracking
 tracks
 trail
 train
+trans
 transfer
 transferring
 transfers
@@ -1678,6 +1680,8 @@ transition
 translation
 translator
 transmission
+transparent
+transparency
 travel
 trigger
 triggered
