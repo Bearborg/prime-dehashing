@@ -12,7 +12,7 @@ import json
 from utils.crc32 import crc32
 from typing import Dict, List
 import sqlite3
-from utils import generate_readme_stats
+from utils import generate_readme_stats, generate_binary_file
 try:
     import mock_tree
 except ModuleNotFoundError as e:
@@ -109,13 +109,12 @@ def main(guesses: List[str], read_from_json = False):
     # matched += guess_room_names(resource_dict)
     matched += guess_textures(resource_dict, False)
     matched += guess_particles(resource_dict, False)
-    matched += guess_adjacent_files(resource_dict)
     matched += test_all_dirs(resource_dict, False)
+    matched += guess_adjacent_files(resource_dict, False)
     # todo: scrape mpr cmdl names
     # todo: scrape mp2 poi names (Use RDS?)
     # todo: scrape effect/actor/platform names (Use RDS?)
     # todo: scrape evnt contents for particle names
-    # todo: mp2 missing references?
     # todo: get names for mp1/2 demo anims and chars
     # todo: match TEXT_RHSsystem|TEXT_Pickups strings from MPR
 
@@ -123,20 +122,24 @@ def main(guesses: List[str], read_from_json = False):
     printed_id_dict = {'{0:08x}'.format(x): resource_dict[x] for x in resource_dict}
     flipped_dict = {printed_id_dict[x]: x for x in printed_id_dict}
     sorted_dict = {x: flipped_dict[x] for x in sorted_paths}
-
+    confirmed_dict = {x: sorted_dict[x] for x in sorted_paths if not x.endswith('!!')}
+    binary_export = {int(sorted_dict[x], 16): x for x in confirmed_dict}
 
     real_matched = len(list(filter(lambda x: not x.endswith('!!'), resource_dict.values())))
     if real_matched != matched:
         print(f"Incorrect match total: {real_matched} != {matched}")
 
+    print("Updating output files...")
     json.dump(sorted_dict, open(resource_file, 'w'), indent=2)
-    json.dump({x: sorted_dict[x] for x in sorted_paths if not x.endswith('!!')}, open(
+    json.dump(confirmed_dict, open(
         r'./output_json/mp_resource_names_confirmed.json', 'w'), indent=2)
+    generate_binary_file.generate_binary_file(binary_export, r'./output_json/mp_resource_names_confirmed.bin')
 
     matched_paths_for_db = [
         (sorted_dict[asset_path], asset_path.rstrip('!'), not asset_path.endswith('!!')) for asset_path in sorted_dict
     ]
 
+    print("Updating resource DB...")
     connection.executemany('INSERT INTO asset_paths VALUES(?, ?, ?) '
                            'ON CONFLICT DO UPDATE '
                            'SET path = excluded.path, path_matches = excluded.path_matches', matched_paths_for_db)
