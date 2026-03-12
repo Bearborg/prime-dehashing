@@ -10,9 +10,9 @@ def generate_binary_file(res_dict: Dict[int, str], output_path: str):
     :return:
     """
     with open(output_path, 'wb') as output_file:
-        output_file.write(struct.pack('I', len(res_dict)))
+        output_file.write(struct.pack('>I', len(res_dict)))
         for key, val in res_dict.items():
-            output_file.write(struct.pack('I', key))
+            output_file.write(struct.pack('>I', key))
             output_file.write(val.encode() + b'\00')
 
 
