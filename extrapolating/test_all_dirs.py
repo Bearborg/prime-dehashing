@@ -47,6 +47,10 @@ def test_all_dirs(resource_dict: Dict[int, str], show_groups=False):
                     rewound = remove_suffix(file, filename.lower())
                     rev_match[rewound] = path
                     txtrs.add(filename)
+                    for folder in ['sourceimages', 'common_textures']:
+                        rewound = remove_suffix(file, f'{folder}/{filename.lower()}')
+                        rev_match[rewound] = path + f'{folder}/'
+                        txtrs.add(f'{folder}/{filename}')
                 elif name.endswith('.gpsm.part'):
                     path, filename = os.path.split(resource_dict[file][:-2])
                     if filename.startswith('@'):

@@ -224,6 +224,7 @@ bounty
 box
 brain
 break
+breakable
 bridge
 brightness
 broken
@@ -459,6 +460,8 @@ dest
 destroy
 destroyed
 destroys
+destructible
+destructable
 detach
 detached
 detaches

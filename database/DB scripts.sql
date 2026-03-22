@@ -59,7 +59,7 @@ from asset_paths ap
 inner join asset_references ar on ar.target = ap.hash
 inner join asset_usages us on us.hash = ar.source
 inner join asset_paths ap2 on ap2.hash = ar.source
-where ap.hash = '8ba2e6ac' COLLATE NOCASE
+where ap.hash = 'b722bc61' COLLATE NOCASE
 --and us.game = 'MP2/NTSC'
 group by ap2.hash
 order by us.type, ap2.path
@@ -70,7 +70,7 @@ inner join asset_usages us on ap.hash = us.hash
 where ap.path_matches = 0
 and us.game like 'MP1/1.00'
 --and us.pak = 'MiscData.pak' COLLATE NOCASE
-and us.type = 'STRG'
+and us.type = 'ANCS'
 group by ap.hash
 order by us.game, us.pak, ap.path
 
@@ -176,9 +176,12 @@ inner join asset_paths ap2 on ar.target = ap2.hash
 where ap_ancs.path like '%.acs'
 and ap2.path not like '%.part'
 and ap2.path not like '%.swsh.swhc'
+and ap2.path not like '%.elsm.elsc'
+and ap2.path not like '%.spsc'
+and ap2.path not like '%.agsc'
 and ap_ancs.path_matches <> ap2.path_matches
 and (ap_ancs.path_matches = 1 or (ap2.path not like '$/Characters/Samus/cooked/%' or ap2.path like '%.ani'))
-and ar.game = 'MP1/1.00'
+--and ar.game = 'MP1/1.00'
 order by ar.game, ap_ancs.path
 
 --Unmatched model textures
