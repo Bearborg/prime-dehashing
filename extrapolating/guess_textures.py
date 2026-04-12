@@ -33,7 +33,11 @@ def guess_textures(res_dict, deep_search: bool = False):
         '$/Worlds/IntroUnderwater/connect_x/sourceimages',
         '$/Worlds/IceWorld/connect_x/sourceimages',
         '$/Worlds/Overworld/connect_x/sourceimages',
-        '$/Worlds/LavaWorld/common_textures'
+        '$/Worlds/LavaWorld/common_textures',
+        '$/Worlds/RuinWorld/pickuproom/sourceimages',
+        '$/Worlds/RuinWorld/pickuproom_2/sourceimages',
+        '$/Worlds/RuinWorld/pickuproom_3/sourceimages',
+        '$/Worlds/RuinWorld/pickuproom_4/sourceimages',
     ])
     tex_names: Set[str] = set()
     tex_names.update([
@@ -56,11 +60,13 @@ def guess_textures(res_dict, deep_search: bool = False):
         'nceotfbsbjzrntgmc.txtr', # tube
         'tuwugkdtofyzgpzdyfc.txtr', # ice wall section
         'yc2eut_h1sb4hc.txtr', # orange metal square
+        'gdcusamllaaknnblc.txtr', #  small tiled grating
         'ms_morphballtubeC.txtr',
         'ms_morphballtube2C.txtr',
         'ms_morphballtubeI.txtr',
         'wall0alt2.txtr',
         'wall0alt2c.txtr',
+        'mud06C.txtr',
         'brace2c.txtr',
         'brace2.txtr',
         'cylinder1.txtr',
@@ -107,6 +113,21 @@ def guess_textures(res_dict, deep_search: bool = False):
         'normsh2.txtr',
         'normsh3.txtr',
         'bug7.txtr',
+        'newgrateyc.txtr',
+        'stthing_r.txtr',
+        'build_3Cr.txtr',
+        'enlpbstlo03c.txtr',
+        'hummyd_nc.txtr',
+        'budend1c.txtr',
+        'budendc.txtr',
+        'budend3c.txtr',
+        'budend4c.txtr',
+        'wraprocks.txtr',
+        'wraprocks_md1.txtr',
+        'wraprocks_sm1.txtr',
+        'wraprocks_lg1.txtr',
+        'wraprocks_lg2.txtr',
+        'wraprocks_lg.txtr',
     ])
 
     for key in res_dict:

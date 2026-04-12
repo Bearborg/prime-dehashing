@@ -63,6 +63,7 @@ brick
 bridge
 broken
 brown
+brownstone
 bs
 buffer
 bulb
@@ -150,6 +151,8 @@ cylinder
 d
 damage
 dark
+darkgreystone
+darkbrownstone
 deco
 decor
 delux
@@ -180,6 +183,8 @@ electric
 elev
 elevator
 elite
+emboss
+embossed
 en
 end
 ends
@@ -258,6 +263,7 @@ gravity
 green
 grey
 greyrock
+greystone
 grid
 grill
 grn
@@ -380,6 +386,7 @@ mini
 mining
 missile
 missle
+mix
 ml
 monitor
 monkey
@@ -530,8 +537,15 @@ ring
 ripe
 rippedoff
 rock
+rockbrown
+rockd
+rockdgrey
+rockdbrown
 rocket
 rocks
+rockside
+rock_side
+rockz
 roid
 roof
 roofing
@@ -544,6 +558,8 @@ rubble
 ruin
 ruined
 ruins
+ruinspillar
+ruinspillarbase
 run
 rust
 rut
@@ -592,6 +608,7 @@ sky
 slime
 slot
 small
+smallspout
 snake
 snakeweed
 snow

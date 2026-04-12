@@ -5,7 +5,7 @@ from typing import Set, Dict, List
 from extrapolating.update_if_matched import update_if_matched, MatchType
 
 
-def guess_particles(res_dict, deep_search: bool = False, room_search: bool = False):
+def guess_particles(res_dict: Dict[int, str], deep_search: bool = False, room_search: bool = False):
     """
     Attempts to match several types of particle effect files by testing if known particle filenames were reused in other
     particle effect folders. Optionally, the deep_search parameter will attempt fuzzy matching by adding/removing digits
@@ -203,7 +203,7 @@ def guess_particles(res_dict, deep_search: bool = False, room_search: bool = Fal
                 if part_name[-11].isdigit() or part_name[-12].isdigit():
                     end = -11
                     for i in [-11, -12, -13]:
-                        if part_name[i].isdigit():
+                        if len(part_name) > abs(i) and part_name[i].isdigit():
                             end = i
                     part_names.update([part_name[:end] + n + part_name[-10:] for n in alpha_num])
                     part_names.add(part_name[:end] + part_name[-10:])

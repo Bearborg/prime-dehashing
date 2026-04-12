@@ -48,7 +48,7 @@ from asset_paths ap
 inner join asset_references ar on ar.source = ap.hash
 inner join asset_usages us on us.hash = ar.target
 inner join asset_paths ap2 on ap2.hash = ar.target
-where ap.hash = '04D6C285' COLLATE NOCASE
+where ap.hash = '02690DE1' COLLATE NOCASE
 --and us.game = 'MP1/1.00'
 group by ap2.hash
 order by us.type, ap2.path
@@ -59,18 +59,27 @@ from asset_paths ap
 inner join asset_references ar on ar.target = ap.hash
 inner join asset_usages us on us.hash = ar.source
 inner join asset_paths ap2 on ap2.hash = ar.source
-where ap.hash = 'b722bc61' COLLATE NOCASE
+where ap.hash = '44396E76' COLLATE NOCASE
 --and us.game = 'MP2/NTSC'
 group by ap2.hash
 order by us.type, ap2.path
+
+--MPR only models
+select us.* from asset_usages us
+left join asset_usages us2 on us2.hash = us.hash and us2.game <> 'MPR'
+where us.game = 'MPR'
+and us.type = 'CMDL'
+and us2.hash is null
+order by us.pak
+
 
 --Matches by pak and type
 select *, group_concat(us.game, ',') from asset_paths ap
 inner join asset_usages us on ap.hash = us.hash
 where ap.path_matches = 0
-and us.game like 'MP1/1.00'
---and us.pak = 'MiscData.pak' COLLATE NOCASE
-and us.type = 'ANCS'
+and us.game like 'MP2/NTSC'
+and us.pak = 'TestAnim.pak' COLLATE NOCASE
+and us.type = 'CMDL'
 group by ap.hash
 order by us.game, us.pak, ap.path
 
@@ -268,6 +277,20 @@ and us2.type = 'ANCS'
 group by ap.hash
 order by ap2.path
 
+--Single room models
+with single_asset_references as (
+	select max(ar.source) as source, ar.target FROM asset_references ar group by ar.target having count(ar.source) = 1
+)
+select ap.hash, ap.path, ap2.path from asset_paths ap
+inner join single_asset_references ar on ar.target = ap.hash
+inner join asset_paths ap2 on ap2.hash = ar.source
+where ap.path_matches = 0 and ap2.path_matches = 1
+and ap.path like '%.cmdl'
+and ap2.path like '%.mrea'
+and ap2.path like '$/Worlds/%'
+group by ap.hash,ap2.hash
+order by ap2.path
+
 --Nearby unmatched PARTs
 select IIF(ap2.path_matches, ap.hash, ap2.hash) as hash, IIF(ap2.path_matches, us.type, us2.type) as type, IIF(ap2.path_matches, ap2.path, ap.path) as path from asset_paths ap
 inner join asset_usages us on ap.hash = us.hash
@@ -304,3 +327,46 @@ and (aps.path like '%.evnt' or aps.path like '%.acs')
 and apt.path_matches = 0
 and ar.game = 'MP1/1.00'
 order by rtrim(aps.path, replace(aps.path, '/', '')), apt.path -- fancy string manipulation to remove filename from path
+
+--particle models
+select ap.hash, ap.path, ap2.path from asset_paths ap
+inner join asset_references ar on ar.target = ap.hash
+inner join asset_paths ap2 on ap2.hash = ar.source
+where
+ap.path_matches = 0 and
+--ap2.path_matches = 1 and
+ap.path like '%.cmdl' and
+ap2.path like '%.gpsm.part'
+group by ap.hash,ap2.hash
+order by ap2.path
+
+--gib models
+select ap.hash, ap.path, ap2.path, ap3.path from asset_paths ap
+inner join asset_references ar on ar.target = ap.hash
+inner join asset_paths ap2 on ap2.hash = ar.source
+inner join asset_references ar2 on ar2.source = ar.target
+inner join asset_paths ap3 on ap3.hash = ar2.target
+where
+ap.path_matches = 0 and
+--ap2.path_matches = 1 and
+ap.path like '%.cmdl' and
+ap2.path like '%.gpsm.part' and
+ap3.path like '%.txtr' and
+ap3.path like '$/Characters/%'
+group by ap.hash,ap2.hash
+order by ap3.path, ap2.path
+
+--fetch all unmatched txtr deps
+with single_asset_references as (
+	select max(ar.source) as source, ar.target FROM asset_references ar group by ar.target having count(ar.source) = 1
+)
+select ap2.path || IIF(ap2.path_matches, '', '!!') as path, ap2.hash, us.type
+from asset_paths ap
+inner join single_asset_references ar on ar.source = ap.hash
+inner join asset_usages us on us.hash = ar.target
+inner join asset_paths ap2 on ap2.hash = ar.target
+where ap.hash = 'DD0B0739' COLLATE NOCASE
+--and us.game = 'MP1/1.00'
+and ap2.path_matches = 0 and ap2.path like '%.txtr'
+group by ap2.hash
+order by us.type, ap2.path
