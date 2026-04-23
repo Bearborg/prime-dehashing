@@ -180,6 +180,7 @@ def guess_textures(res_dict, deep_search: bool = False):
                     tex_names.add(tex_name[:-5] + '_small.txtr')
                     tex_names.add(tex_name[:-5] + 'half.txtr')
                     tex_names.add(tex_name[:-5] + '_half.txtr')
+                    tex_names.add(tex_name[:-5] + 'r.txtr')
                     if  0 < tex_name.find('_') < 3:
                         tex_names.add(tex_name[tex_name.find('_') + 1:])
                     if tex_name[-6].isdigit():
