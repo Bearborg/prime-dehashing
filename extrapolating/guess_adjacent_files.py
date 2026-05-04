@@ -1,4 +1,6 @@
+import json
 import string
+from typing import Dict
 
 from utils.crc32 import remove_suffix
 from extrapolating.update_if_matched import update_if_matched, MatchType
@@ -73,3 +75,9 @@ def guess_adjacent_files(res_dict, deep_search=False):
                     update_if_matched(f"{matched_files[hash_without_ext]}{suf}{ext}", ext + "!!", res_dict, False)
 
     return matched
+
+if __name__ == '__main__':
+    resource_file = r'../output_json/mp_resource_names.json'
+    resource_obj = json.load(open(resource_file, 'r'))
+    res_dict: Dict[int, str] = {int(resource_obj[path], 16): path for path in resource_obj}
+    guess_adjacent_files(res_dict, True)

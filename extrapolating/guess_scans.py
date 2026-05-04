@@ -14,6 +14,7 @@ def guess_scans(res_dict, commit = True):
 
     scan_folders = { # todo: Lookup by MREA name
         '$/ScannableObjects/Inventory',
+        '$/ScannableObjects/Cliffs',
         '$/ScannableObjects/Cliffs/00_cliff_generator',
         '$/ScannableObjects/Cliffs/00_cliff_generator_08_temple',
         '$/ScannableObjects/Cliffs/00_cliff_generator_connect',
@@ -52,6 +53,7 @@ def guess_scans(res_dict, commit = True):
         '$/ScannableObjects/Cliffs/0p_cliff_hall',
         '$/ScannableObjects/Cliffs/0q_cliff_hall',
         '$/ScannableObjects/Cliffs/10_cliff_rooftop',
+        '$/ScannableObjects/Dark Cliffs',
         '$/ScannableObjects/Dark Cliffs/00_cliff_generator_connect_dark',
         '$/ScannableObjects/Dark Cliffs/00_cliff_generator_dark',
         '$/ScannableObjects/Dark Cliffs/00_pickup_cliff_a_dark',
@@ -81,6 +83,7 @@ def guess_scans(res_dict, commit = True):
         '$/ScannableObjects/Dark Cliffs/0o_cliff_hall_dark',
         '$/ScannableObjects/Dark Cliffs/0q_cliff_hall_dark',
         '$/ScannableObjects/Dark Cliffs/10_cliff_rooftop_dark',
+        '$/ScannableObjects/Dark Sandlands',
         '$/ScannableObjects/Dark Sandlands/00_pickup_sand_b_dark',
         '$/ScannableObjects/Dark Sandlands/00_pickup_sand_c_dark',
         '$/ScannableObjects/Dark Sandlands/00_pickup_sand_d_dark',
@@ -113,6 +116,7 @@ def guess_scans(res_dict, commit = True):
         '$/ScannableObjects/Dark Sandlands/0o_sand_hall_dark',
         '$/ScannableObjects/Dark Sandlands/0q_sand_hall_dark',
         '$/ScannableObjects/Dark Sandlands/10_sand_alamostorage_dark',
+        '$/ScannableObjects/Dark Swamplands',
         '$/ScannableObjects/Dark Swamplands/00_elev_swamp_sand_e_dark',
         '$/ScannableObjects/Dark Swamplands/00_map_swamp_dark',
         '$/ScannableObjects/Dark Swamplands/00_pickup_swamp_a_dark',
@@ -143,6 +147,7 @@ def guess_scans(res_dict, commit = True):
         '$/ScannableObjects/Dark Swamplands/10_swamp_hiddenhalfpipe_dark',
         '$/ScannableObjects/Dark Swamplands/11_swamp_bloggtank_dark',
         '$/ScannableObjects/Dark Swamplands/ok_swamp_hall_dark',
+        '$/ScannableObjects/Light Temple',
         '$/ScannableObjects/Light Temple/00_elev_temple_cliff_c',
         '$/ScannableObjects/Light Temple/00_elev_temple_sand_a',
         '$/ScannableObjects/Light Temple/00_elev_temple_swamp_b',
@@ -197,6 +202,7 @@ def guess_scans(res_dict, commit = True):
         '$/ScannableObjects/Light Temple/game_end_part4',
         '$/ScannableObjects/Light Temple/game_end_part5',
         '$/ScannableObjects/Light Temple/om_temple_hall_top',
+        '$/ScannableObjects/Sandlands',
         '$/ScannableObjects/Sandlands/00_Elev_Sand_Temple_A',
         '$/ScannableObjects/Sandlands/00_elev_sand_cliff_d',
         '$/ScannableObjects/Sandlands/00_elev_sand_swamp_e',
@@ -237,6 +243,7 @@ def guess_scans(res_dict, commit = True):
         '$/ScannableObjects/Sandlands/0p_sand_hall',
         '$/ScannableObjects/Sandlands/0q_sand_hall',
         '$/ScannableObjects/Sandlands/10_sand_alamostorage',
+        '$/ScannableObjects/Sky Temple',
         '$/ScannableObjects/Sky Temple/00_pickup_temple_a_dark',
         '$/ScannableObjects/Sky Temple/01_temple_hive03_dark',
         '$/ScannableObjects/Sky Temple/01_temple_landingsite_dark',
@@ -258,6 +265,7 @@ def guess_scans(res_dict, commit = True):
         '$/ScannableObjects/Sky Temple/10_temple_pathofeyes_dark',
         '$/ScannableObjects/Sky Temple/11_temple_grandpuzzle_dark',
         '$/ScannableObjects/Sky Temple/12_temple_finalgate_dark',
+        '$/ScannableObjects/Swamplands',
         '$/ScannableObjects/Swamplands/00_Elev_Swamp_Temple_B',
         '$/ScannableObjects/Swamplands/00_elev_swamp_cliff_f',
         '$/ScannableObjects/Swamplands/00_elev_swamp_sand_e',
@@ -301,7 +309,7 @@ def guess_scans(res_dict, commit = True):
     }
     scan_names = {'01 hive3 dead grenchler 1.scan', '01_hive2 dead grenchler 1.scan',  '01_hive1 dead grenchler 1.scan', 'Bacteria.scan'}
     strg_folders = set()
-    strg_names = {'Luminoth Crate.strg', '07_Temple Dead Cocoon.strg', 'Large Crate.strg', 'Dark GF Trooper.strg' }
+    strg_names = {'Luminoth Crate.strg', '07_Temple Dead Cocoon.strg', 'Large Crate.strg', 'Dark GF Trooper.strg', 'Medical Report.strg', 'Security Alert.strg', 'Security Alert 2.strg'}
 
     for key in res_dict:
         if res_dict[key].endswith('strg') and 'scan_data' in res_dict[key].lower():
