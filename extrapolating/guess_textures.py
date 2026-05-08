@@ -128,6 +128,7 @@ def guess_textures(res_dict, deep_search: bool = False):
         'wraprocks_lg1.txtr',
         'wraprocks_lg2.txtr',
         'wraprocks_lg.txtr',
+        'lichen6C.txtr',
     ])
 
     for key in res_dict:

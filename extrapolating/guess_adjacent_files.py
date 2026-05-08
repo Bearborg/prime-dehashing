@@ -61,7 +61,7 @@ def guess_adjacent_files(res_dict, deep_search=False):
         if len(os.path.splitext(filename)[1]) == 5:
             filename, ext2 = os.path.splitext(filename)
             ext = ext2 + ext
-        for suf in [''] + ['_collision', 'collision'] + ['_bound'] + [*'0123456789abcdefxyz']:
+        for suf in [''] + ['_collision', 'collision'] + ['_bound'] + ['_dark'] + [*'0123456789abcdefxyz']:
             hash_without_ext = remove_suffix(key, suf + ext.lower())
             if hash_without_ext in matched_files:
 

@@ -2,7 +2,7 @@
 
 
 -- Display match stats
-with const as (select 'MP1/1.00' as game, null as pak),
+with const as (select 'MP2/NTSC' as game, null as pak),
 meta as (
 	select count(distinct(hash)) as total_assets from const, asset_usages us
 	where us.game = const.game
@@ -59,7 +59,7 @@ from asset_paths ap
 inner join asset_references ar on ar.target = ap.hash
 inner join asset_usages us on us.hash = ar.source
 inner join asset_paths ap2 on ap2.hash = ar.source
-where ap.hash = '44396E76' COLLATE NOCASE
+where ap.hash = 'C35540DE' COLLATE NOCASE
 --and us.game = 'MP2/NTSC'
 group by ap2.hash
 order by us.type, ap2.path
@@ -234,8 +234,7 @@ inner join asset_paths aps on ar.source = aps.hash
 inner join asset_paths apt on ar.target = apt.hash
 where apt.path like '%.strg'
 and aps.path like '%.scan'
-and apt.path_matches = 1
-and aps.path_matches = 0
+and apt.path_matches <> aps.path_matches
 order by apt.path
 
 --Unmatched MP2 logbook SCANs
@@ -365,7 +364,7 @@ from asset_paths ap
 inner join single_asset_references ar on ar.source = ap.hash
 inner join asset_usages us on us.hash = ar.target
 inner join asset_paths ap2 on ap2.hash = ar.target
-where ap.hash = 'DD0B0739' COLLATE NOCASE
+where ap.hash = '404804D9' COLLATE NOCASE
 --and us.game = 'MP1/1.00'
 and ap2.path_matches = 0 and ap2.path like '%.txtr'
 group by ap2.hash
