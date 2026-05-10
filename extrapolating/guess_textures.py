@@ -129,6 +129,20 @@ def guess_textures(res_dict, deep_search: bool = False):
         'wraprocks_lg2.txtr',
         'wraprocks_lg.txtr',
         'lichen6C.txtr',
+        'birdbath.txtr',
+        'flatrock.txtr',
+        'tableC.txtr',
+        'cliffer.txtr',
+        'cliffer2.txtr',
+        'chainsC.txtr',
+        'component_large.txtr',
+        'grnd1C.txtr',
+        'grnd2C.txtr',
+        'rippageC.txtr',
+        'mothtopC.txtr',
+        'mothhighC.txtr',
+        'e_mothmetal4c.txtr',
+        'e_slab01C.txtr',
     ])
 
     for key in res_dict:
