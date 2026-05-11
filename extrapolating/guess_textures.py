@@ -129,7 +129,12 @@ def guess_textures(res_dict, deep_search: bool = False):
         'wraprocks_lg2.txtr',
         'wraprocks_lg.txtr',
         'lichen6C.txtr',
+        'lichen7C.txtr',
+        'lichen5I.txtr',
+        'lichen5C.txtr',
         'birdbath.txtr',
+        'tunnel_metal.txtr',
+        'lockpillar01C.txtr',
         'flatrock.txtr',
         'tableC.txtr',
         'cliffer.txtr',
@@ -143,6 +148,14 @@ def guess_textures(res_dict, deep_search: bool = False):
         'mothhighC.txtr',
         'e_mothmetal4c.txtr',
         'e_slab01C.txtr',
+        'cliff_cube_1C.txtr',
+        'cliff_cube_1I.txtr',
+        'cliff_cube_2C.txtr',
+        'iconssm2.txtr',
+        'back_guard.txtr',
+        'metal128_C.txtr',
+        'mothroundrt1.txtr',
+        'blackphazonR.txtr',
     ])
 
     for key in res_dict:
@@ -165,6 +178,7 @@ def guess_textures(res_dict, deep_search: bool = False):
                     if tex_name[-6].lower() in ('c', 'i',):
                         variants.add(res_dict[key][:-6] + 'I' + res_dict[key][-5:])
                         variants.add(res_dict[key][:-6] + 'C' + res_dict[key][-5:])
+                        variants.add(res_dict[key][:-6] + 'R' + res_dict[key][-5:])
                         if tex_name[-7].isdigit():
                             variants.update([res_dict[key][:-7] + n + res_dict[key][-6:] for n in string.digits])
                             variants.add(res_dict[key][:-7] + res_dict[key][-6:])

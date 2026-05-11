@@ -4152,6 +4152,7 @@ plaquescan
 plasm
 plasma
 plasmabeam
+plaster
 plat
 plate
 plates
@@ -4639,6 +4640,7 @@ ricochet
 rid
 ride
 rider
+ridge
 riding
 ridley
 ridleycam
@@ -4649,7 +4651,9 @@ rightbridge
 rightmove
 rightsidescan
 rightwater
+rim
 rimpou
+rims
 ring
 rings
 ringtowers
@@ -5398,6 +5402,7 @@ standard
 standing
 stands
 standup
+staple
 star
 starboard
 starburst
@@ -6303,6 +6308,7 @@ wings
 wipe
 wire
 wires
+wiring
 wisp
 with
 withdraw
