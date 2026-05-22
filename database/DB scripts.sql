@@ -59,7 +59,7 @@ from asset_paths ap
 inner join asset_references ar on ar.target = ap.hash
 inner join asset_usages us on us.hash = ar.source
 inner join asset_paths ap2 on ap2.hash = ar.source
-where ap.hash = 'C35540DE' COLLATE NOCASE
+where ap.hash = '41A52E96' COLLATE NOCASE
 --and us.game = 'MP2/NTSC'
 group by ap2.hash
 order by us.type, ap2.path
@@ -78,8 +78,8 @@ select *, group_concat(us.game, ',') from asset_paths ap
 inner join asset_usages us on ap.hash = us.hash
 where ap.path_matches = 0
 and us.game like 'MP2/NTSC'
-and us.pak = 'TestAnim.pak' COLLATE NOCASE
-and us.type = 'CMDL'
+--and us.pak = 'TestAnim.pak' COLLATE NOCASE
+and us.type = 'ANIM'
 group by ap.hash
 order by us.game, us.pak, ap.path
 
@@ -369,3 +369,12 @@ where ap.hash = '404804D9' COLLATE NOCASE
 and ap2.path_matches = 0 and ap2.path like '%.txtr'
 group by ap2.hash
 order by us.type, ap2.path
+
+--Textures referenced by room
+select * from asset_references ar 
+inner join asset_paths ap on ar.target = ap.hash
+where ar.source = '18ab6106' COLLATE NOCASE
+and ap.path_matches = 0
+and ar.game = 'MP1/1.00'
+and ap.path like '%.txtr'
+order by ap.path

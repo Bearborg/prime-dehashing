@@ -48,16 +48,8 @@ def guess_textures(res_dict, deep_search: bool = False):
         'redfloor.txtr',
         'g2j9tdvod8jj3i.txtr', #pickup room floor
         'g2j9tdvod8jj3c.txtr',
-        'kmnqvwa0vv2d4c.txtr', # mines greeble
-        'kmnqvwa0vv2d4i.txtr',
         #'vvstsvlkdvqesjocc.txtr', # vine
-        'sjxpzopaglatowroc.txtr', # vine
-        'mnngoudvrzmtbtabc.txtr', # ridged brown metal
-        'gbliwebbaftxvqhnc.txtr', # rock mud blend
-        'gbliwebbaftxvqhn.txtr', # rock mud blend
-        'gbliwebbaftxvqhncc.txtr', # rock mud blend
-        'f_balljrnb60hp38c.txtr', # mirror
-        'nceotfbsbjzrntgmc.txtr', # tube
+        '12_plants_vin128C.txtr', # vine
         'tuwugkdtofyzgpzdyfc.txtr', # ice wall section
         'yc2eut_h1sb4hc.txtr', # orange metal square
         'gdcusamllaaknnblc.txtr', #  small tiled grating
@@ -86,14 +78,22 @@ def guess_textures(res_dict, deep_search: bool = False):
         'spout3c.txtr',
         'spout3.txtr',
         'roc_r.txtr',
-        'archc.txtr',
+        'stonepipes4.txtr',
+        'stonepipes3.txtr',
+        'stonepipes2.txtr',
+        'stonepipes1.txtr',
+        'stonepipes.txtr',
+        'x_ragbcdirty.txtr',
+        'x_ragbcdirtyc.txtr',
+        'sismopor_ev.txtr',
+        '_blobsr02c.txtr',
+        '_blobsr01c.txtr',
         'mossrockdirt.txtr',
         'brockblendC.txtr',
         'brockblend.txtr',
         'platebracesC.txtr',
         'fountainnecc.txtr',
         'conc128C.txtr',
-        'flo_R.txtr',
         '_walR.txtr',
         '_floB.txtr',
         'rubleC.txtr',
@@ -172,6 +172,28 @@ def guess_textures(res_dict, deep_search: bool = False):
         'free2C.txtr',
         'free4C.txtr',
         'upwall01C.txtr',
+        'e_vinepoddC.txtr',
+        'ric_trim.txtr',
+        '_ricplate4.txtr',
+        'tobath_2.txtr',
+        'tobath_1.txtr',
+        'tobath.txtr',
+        'wall0design.txtr',
+        'wall0design1.txtr',
+        'wall0design2.txtr',
+        'wall0design3.txtr',
+        '_ricplate2.txtr',
+        'rock_layerlakes_1C.txtr',
+        'cap_texC.txtr',
+        '12es01C.txtr',
+        '12es01I.txtr',
+        '11f11bnew1C.txtr',
+        'f_furnace2C.txtr',
+        'f_furnace3C.txtr',
+        'f_furnace4C.txtr',
+        'f_furnace6C.txtr',
+        'f_furnace9C.txtr',
+        'f_hell2C.txtr',
     ])
 
     for key in res_dict:

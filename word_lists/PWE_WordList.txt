@@ -535,6 +535,7 @@ electric
 electrical
 elevation
 elevator
+elev
 eligible
 elite
 elsc
