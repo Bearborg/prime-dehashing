@@ -864,6 +864,7 @@ cecrement
 ced
 ceg
 ceh
+ceil
 ceiling
 celebrate
 cell

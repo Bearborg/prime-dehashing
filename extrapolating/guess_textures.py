@@ -116,7 +116,10 @@ def guess_textures(res_dict, deep_search: bool = False):
         'newgrateyc.txtr',
         'stthing_r.txtr',
         'build_3Cr.txtr',
-        'enlpbstlo03c.txtr',
+        'zwwpmeb01_rc.txtr',
+        'zwwpmeb02C.txtr',
+        'globe.txtr',
+        'res_drips_2_snowC.txtr',
         'hummyd_nc.txtr',
         'budend1c.txtr',
         'budendc.txtr',
@@ -194,6 +197,10 @@ def guess_textures(res_dict, deep_search: bool = False):
         'f_furnace6C.txtr',
         'f_furnace9C.txtr',
         'f_hell2C.txtr',
+        'ry_plant_c.txtr',
+        'ry_plant.txtr',
+        'merge_ry_plant_c!ry_plant_A.txtr',
+        'merge_ry_plant_c!ry_plant_T.txtr',
     ])
 
     for key in res_dict:
@@ -205,9 +212,30 @@ def guess_textures(res_dict, deep_search: bool = False):
         if res_dict[key].endswith('txtr'):
             tex_folder, tex_name = os.path.split(res_dict[key])
             if 'lightmap' in tex_name:
-                tex_folders.add(os.path.split(tex_folder)[0] + '/sourceimages')
+                if '$/Worlds/' in tex_folder:
+                    tex_folders.add(os.path.split(tex_folder)[0] + '/sourceimages')
             else:
                 tex_folders.add(tex_folder)
+                if tex_folder.lower().startswith('$/worlds') and tex_folder.lower().endswith('common_textures'):
+                    for suf in ['/Work/', '/Working/']:
+                        tex_folders.add(tex_folder + suf + 'Ryan')
+                        tex_folders.add(tex_folder + suf + 'Teague')
+                        tex_folders.add(tex_folder + suf + 'Alejandro')
+                        tex_folders.add(tex_folder + suf + 'Luis')
+                        tex_folders.add(tex_folder + suf + 'Danny')
+                        tex_folders.add(tex_folder + suf + 'Daniel')
+                        tex_folders.add(tex_folder + suf + 'Dan')
+                        tex_folders.add(tex_folder + suf + 'Benjamin')
+                        tex_folders.add(tex_folder + suf + 'Ben')
+                        tex_folders.add(tex_folder + suf + 'Chuck')
+                        tex_folders.add(tex_folder + suf + 'Don')
+                        tex_folders.add(tex_folder + suf + 'Beth')
+                        tex_folders.add(tex_folder + suf + 'Lee')
+                        tex_folders.add(tex_folder + suf + 'Elben')
+                        tex_folders.add(tex_folder + suf + 'Chris')
+                        tex_folders.add(tex_folder + suf + 'Nicholas')
+                        tex_folders.add(tex_folder + suf + 'Nick')
+                        tex_folders.add(tex_folder + suf + 'Todd')
                 tex_names.add(tex_name)
                 tex_names.add(tex_name.lstrip('_0123456789'))
 

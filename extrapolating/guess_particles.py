@@ -182,6 +182,7 @@ def guess_particles(res_dict: Dict[int, str], deep_search: bool = False, room_se
         'int1.gpsm.part',
         'fa___2____xf.gpsm.part',
         'hblastsnow.gpsm.part',
+        'IntOoze.gpsm.part'
     ])
     alpha_num = set()
     alpha_num.update([*'abcdefxy'])
@@ -200,6 +201,8 @@ def guess_particles(res_dict: Dict[int, str], deep_search: bool = False, room_se
             if deep_search:
                 part_folders.add(part_folder + '/elem')
                 part_folders.add(part_folder + '/elements')
+                if 'characters' in part_folder.lower():
+                    part_folders.add(part_folder + '/GibElements')
                 if part_name[-11].isdigit() or part_name[-12].isdigit():
                     end = -11
                     for i in [-11, -12, -13]:

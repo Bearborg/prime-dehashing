@@ -533,6 +533,10 @@ effects
 eighth
 electric
 electrical
+element
+elements
+elem
+elems
 elevation
 elevator
 elev
