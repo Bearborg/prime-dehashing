@@ -201,6 +201,7 @@ def guess_textures(res_dict, deep_search: bool = False):
         'ry_plant.txtr',
         'merge_ry_plant_c!ry_plant_A.txtr',
         'merge_ry_plant_c!ry_plant_T.txtr',
+        'grassburst.txtr',
     ])
 
     for key in res_dict:
@@ -238,6 +239,7 @@ def guess_textures(res_dict, deep_search: bool = False):
                         tex_folders.add(tex_folder + suf + 'Todd')
                 tex_names.add(tex_name)
                 tex_names.add(tex_name.lstrip('_0123456789'))
+                tex_names.add(tex_name[:-5] + '_low.txtr')
 
                 if tex_name[-6].lower() in ('c', 'i', *string.digits):
                     variants = set()

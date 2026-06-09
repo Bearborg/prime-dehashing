@@ -48,7 +48,7 @@ from asset_paths ap
 inner join asset_references ar on ar.source = ap.hash
 inner join asset_usages us on us.hash = ar.target
 inner join asset_paths ap2 on ap2.hash = ar.target
-where ap.hash = '02690DE1' COLLATE NOCASE
+where ap.hash = 'f47dbe5b' COLLATE NOCASE
 --and us.game = 'MP1/1.00'
 group by ap2.hash
 order by us.type, ap2.path
@@ -59,7 +59,7 @@ from asset_paths ap
 inner join asset_references ar on ar.target = ap.hash
 inner join asset_usages us on us.hash = ar.source
 inner join asset_paths ap2 on ap2.hash = ar.source
-where ap.hash = '41A52E96' COLLATE NOCASE
+where ap.hash = 'F170209B' COLLATE NOCASE
 --and us.game = 'MP2/NTSC'
 group by ap2.hash
 order by us.type, ap2.path
@@ -77,9 +77,9 @@ order by us.pak
 select *, group_concat(us.game, ',') from asset_paths ap
 inner join asset_usages us on ap.hash = us.hash
 where ap.path_matches = 0
-and us.game like 'MP2/NTSC'
+and us.game like 'MP1/1.00'
 --and us.pak = 'TestAnim.pak' COLLATE NOCASE
-and us.type = 'ANIM'
+and us.type = 'DPSC'
 group by ap.hash
 order by us.game, us.pak, ap.path
 
@@ -290,6 +290,20 @@ and ap2.path like '$/Worlds/%'
 group by ap.hash,ap2.hash
 order by ap2.path
 
+--Single room particles
+with single_asset_references as (
+	select max(ar.source) as source, ar.target FROM asset_references ar group by ar.target having count(ar.source) = 1
+)
+select ap.hash, ap.path, ap2.path from asset_paths ap
+inner join single_asset_references ar on ar.target = ap.hash
+inner join asset_paths ap2 on ap2.hash = ar.source
+where ap.path_matches = 0 and ap2.path_matches = 1
+and (ap.path like '%.gpsm.part' OR ap.path like '%.elsm.elsc' OR ap.path like '%.swsh.swhc')
+and ap2.path like '%.mrea'
+and ap2.path like '$/Worlds/%'
+group by ap.hash,ap2.hash
+order by ap2.path
+
 --Nearby unmatched PARTs
 select IIF(ap2.path_matches, ap.hash, ap2.hash) as hash, IIF(ap2.path_matches, us.type, us2.type) as type, IIF(ap2.path_matches, ap2.path, ap.path) as path from asset_paths ap
 inner join asset_usages us on ap.hash = us.hash
@@ -373,7 +387,7 @@ order by us.type, ap2.path
 --Textures referenced by room
 select * from asset_references ar 
 inner join asset_paths ap on ar.target = ap.hash
-where ar.source = '18ab6106' COLLATE NOCASE
+where ar.source = 'b9abcd56' COLLATE NOCASE
 and ap.path_matches = 0
 and ar.game = 'MP1/1.00'
 and ap.path like '%.txtr'

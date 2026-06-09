@@ -307,9 +307,9 @@ def guess_scans(res_dict, commit = True):
         '$/ScannableObjects/Swamplands/11_swamp_bloggtank',
         '$/ScannableObjects/Swamplands/ok_swamp_hall',
     }
-    scan_names = {'01 hive3 dead grenchler 1.scan', '01_hive2 dead grenchler 1.scan',  '01_hive1 dead grenchler 1.scan', 'Bacteria.scan'}
+    scan_names = {'01 hive3 dead grenchler 1.scan', '01_hive2 dead grenchler 1.scan',  '01_hive1 dead grenchler 1.scan', 'Bacteria.scan', 'Bladepod.scan'}
     strg_folders = set()
-    strg_names = {'Luminoth Crate.strg', '07_Temple Dead Cocoon.strg', 'Large Crate.strg', 'Dark GF Trooper.strg', 'Medical Report.strg', 'Security Alert.strg', 'Security Alert 2.strg'}
+    strg_names = {'Luminoth Crate.strg', 'Bladepod.strg', 'Large Crate.strg', 'Dark GF Trooper.strg', 'Medical Report.strg', 'Security Alert.strg', 'Security Alert 2.strg'}
 
     for key in res_dict:
         if res_dict[key].endswith('strg') and 'scan_data' in res_dict[key].lower():

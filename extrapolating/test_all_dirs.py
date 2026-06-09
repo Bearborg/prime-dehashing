@@ -4,7 +4,7 @@ import json
 
 from extrapolating.update_if_matched import update_if_matched
 from utils.crc32 import crc32, remove_suffix
-from typing import Dict
+from typing import Dict, List
 
 start_yellow = '\033[93m'
 end_color = '\033[0m'
@@ -12,10 +12,16 @@ end_color = '\033[0m'
 cache = set()
 hash_cache = dict()
 txtrs = set()
+txtrs.update(['mothtopC.txtr', 'mothhighC.txtr'])
 particles = set()
 rev_match = dict()
+ext_lookup = {
+    '.part': '.gpsm.part',
+    '.elsc': '.elsm.elsc',
+    '.swhc': '.swsh.swhc',
+}
 
-def test_all_dirs(resource_dict: Dict[int, str], show_groups=False):
+def test_all_dirs(resource_dict: Dict[int, str], show_groups=False, potential_names: (None, Dict[str, List[str]])=None):
     """
     Exploits the properties of CRC hashes to efficiently test if any known partially-matched files can be fully matched
     by placing them in a known directory. Partially-matched names are derived by taking the current name of the file
@@ -28,6 +34,23 @@ def test_all_dirs(resource_dict: Dict[int, str], show_groups=False):
     """
     print("Checking known directories...")
     matched = 0
+    if potential_names:
+        for key in potential_names:
+            hash_id = int(key, 16)
+            ext = resource_dict[hash_id][resource_dict[hash_id].find('.'):-2]
+            for name in potential_names[key]:
+                rewound = remove_suffix(hash_id, name.lower() + ext.lower())
+                hash_cache[rewound] = [name + ext] + (hash_cache.get(rewound) or [])
+                if ' ' in name:
+                    name = name.replace(' ', '')
+                    rewound = remove_suffix(hash_id, name.lower() + ext.lower())
+                    hash_cache[rewound] = [name + ext] + (hash_cache.get(rewound) or [])
+                while name and name[-1].isdigit():
+                    name = name[:-1].rstrip(' _')
+                    rewound = remove_suffix(hash_id, name.lower() + ext.lower())
+                    hash_cache[rewound] = [name + ext] + (hash_cache.get(rewound) or [])
+
+
     for file in resource_dict:
         if resource_dict[file].endswith('!!'):
             if '@' in resource_dict[file]:

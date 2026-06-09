@@ -30,10 +30,15 @@ def find_particle_groups(res_dict):
     groups: Dict[int, List[str]] = dict()
     lowered_part_names = {n.lower() for n in filter(lambda p: p.endswith(".part"), part_names)}
     for key in res_dict:
-        if res_dict[key].endswith('!!') and res_dict[key][-6:-2].lower() in ['part']:
+        if res_dict[key].endswith('!!') and res_dict[key][-6:-2].lower() in ['part'] and ('MP2' not in res_dict[key]):
             for name in lowered_part_names:
                 rewound = utils.crc32.remove_suffix(key, name)
                 groups[rewound] = (groups.get(rewound) or []) + [name]
+        # elif res_dict[key][-4:].lower() in ['part']:
+        #     for name in lowered_part_names:
+        #         if res_dict[key].lower().endswith(name):
+        #             rewound = utils.crc32.remove_suffix(key, name)
+        #             groups[rewound] = (groups.get(rewound) or []) + ['!!' + name]
 
     for key, group in groups.items():
         if len(group) > 1:
