@@ -670,6 +670,9 @@ amos
 amount
 amounts
 amp
+amphibian
+amphibious
+amphitheater
 ampland
 ample
 amplification
@@ -2852,6 +2855,8 @@ cavalier
 cavaliers
 cavalry
 cave
+cavern
+cavernous
 caves
 cavity
 cayman
@@ -3277,6 +3282,7 @@ clamp
 clamps
 clan
 clancy
+clap
 clapton
 clara
 clare
@@ -3859,6 +3865,8 @@ congregation
 congress
 congressional
 congressman
+conic
+conical
 conjunction
 conn
 connect
@@ -4446,7 +4454,6 @@ cultures
 cum
 cumberland
 cumbria
-cumfiesta
 cumming
 cummings
 cumshot
@@ -6646,6 +6653,7 @@ farms
 faroe
 farrell
 farther
+farthest
 fas
 fascinating
 fashion
@@ -6951,6 +6959,9 @@ flame
 flames
 flaming
 flamingo
+flammable
+flange
+flanger
 flap
 flare
 flash
@@ -17019,6 +17030,7 @@ stokes
 stole
 stolen
 stomach
+stomp
 stone
 stones
 stony
@@ -19705,6 +19717,8 @@ wmv
 wn
 wnba
 wo
+wobble
+wobbly
 woes
 woke
 wolf

@@ -2078,6 +2078,7 @@ flamejet
 flames
 flaming
 flamio
+flammable
 flanges
 flap
 flapattack
@@ -5462,6 +5463,7 @@ stirred
 stmp
 sto
 stomach
+stomp
 stone
 stoneheng
 stonehenge
@@ -6322,6 +6324,7 @@ wjt
 wlal
 wlfs
 wo
+wobble
 wolf
 wolves
 womb
