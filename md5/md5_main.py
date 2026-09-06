@@ -15,8 +15,9 @@ def check_manual_guesses(res_dict, guesses: list[str]):
     start_red = '\033[91m'
     end_color = '\033[0m'
     for path in guesses:
-        key = retro_md5(path.lower())
-        if key in res_dict:
+        path = path.lower()
+        key = retro_md5(path)
+        if key in res_dict and res_dict[key].endswith("!!"):
             if res_dict[key].endswith(path[path.rfind('.'):] + "!!"):
                 print(f'{start_green}Match: {res_dict[key]} -> {path}{end_color}')
                 res_dict[key] = path
@@ -27,13 +28,16 @@ def check_manual_guesses(res_dict, guesses: list[str]):
     return matched
 
 
-def main(guesses: list[str]):
+def main(guesses: list[str], read_from_json=False):
     connection = sqlite3.connect(asset_db_path)
 
-    resource_results = connection.execute(
-        r"select path || IIF(path_matches, '', '!!') as path, hash from asset_paths order by path"
-    ).fetchall()
-    resource_obj = {res[0]: res[1] for res in resource_results}
+    if read_from_json:
+        resource_obj = json.load(open(resource_file, 'r'))
+    else:
+        resource_results = connection.execute(
+            r"select path || IIF(path_matches, '', '!!') as path, hash from asset_paths order by path"
+        ).fetchall()
+        resource_obj = {res[0]: res[1] for res in resource_results}
     resource_dict: dict[int, str] = {}
     total = 0
     matched = 0
@@ -75,7 +79,10 @@ def main(guesses: list[str]):
 
 
 if __name__ == '__main__':
-    manual_guesses = [
+    resources32 = r'F:\Documents\Code\prime-dehashing\output_json\mp_resource_names_confirmed.json'
+    resource_obj_32 = json.load(open(resources32, 'r'))
 
+    manual_guesses = [
+        *resource_obj_32.keys()
     ]
-    main(manual_guesses)
+    main(manual_guesses, False)
