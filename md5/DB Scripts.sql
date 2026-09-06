@@ -1,0 +1,1 @@
+select count(distinct hash) from asset_usages where game = 'MP3/NTSC'
