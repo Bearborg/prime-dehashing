@@ -22,7 +22,7 @@ renames = {
     'PART': 'GPSM.PART',
     'SWHC': 'SWSH.SWHC',
     'WPSC': 'WPSM.WPSC',
-    'SPSC': 'SPSM.WPSC'
+    'SPSC': 'SPSM.SPSC'
 }
 
 resource_results = connection.execute(

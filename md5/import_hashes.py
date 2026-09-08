@@ -17,6 +17,8 @@ images = {
     'MP3/Japan': r'E:\Emulated Games\Wii\Metroid Prime 3; Corruption\Metroid Prime 3 (Japan).wbfs',
     'MP3/TrilogyNTSC': r'E:\Emulated Games\Wii\Metroid Prime Trilogy\Metroid Prime Trilogy (NTSC).wbfs',
     'MP3/TrilogyPAL': r'E:\Emulated Games\Wii\Metroid Prime Trilogy\Metroid Prime Trilogy (PAL).iso',
+    'TrilogyFE/NTSC': r'E:\Emulated Games\Wii\Metroid Prime Trilogy\Metroid Prime Trilogy (NTSC).wbfs',
+    'TrilogyFE/PAL': r'E:\Emulated Games\Wii\Metroid Prime Trilogy\Metroid Prime Trilogy (PAL).iso',
     'DKCR/NTSC': r'E:\Emulated Games\Wii\Donkey Kong Country Returns\Donkey Kong Country Returns.iso',
 }
 
@@ -78,7 +80,7 @@ def ingest_game(game_id: str) -> None:
     for file in list_files(images[game_id]):
         if file.lower().endswith('.pak'):
             if '/' in file:   # Only Trilogy and DKCR put paks deeper than root
-                if game_id.lower()[:3] == file.lower()[:3] or 'DKCR' in game_id:
+                if game_id.lower()[:3] == file.lower()[:3] or 'DKCR' in game_id or (file.lower()[:3] == 'fe/' and game_id.startswith('Trilogy')):
                     ingest_pak(game_id, images[game_id], file)
             else:
                 ingest_pak(game_id, images[game_id], file)
