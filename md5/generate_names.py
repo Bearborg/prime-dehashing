@@ -49,7 +49,7 @@ for res in resource_results:
         if len(games) == 1:
             games_str = games.pop().replace('/NTSC', '') + '/'
         elif 'DKCR/NTSC' not in games:
-            for game in ['MP3P', 'MP3/NTSC', 'MP3/PAL', 'MP3/Japan', 'TrilogyNTSC/MP3', 'TrilogyPAL/MP3']:
+            for game in ['MP3P', 'MP3/NTSC', 'MP3/PAL', 'MP3/Japan', 'TrilogyNTSC/MP3', 'TrilogyPAL/MP3','TrilogyFE/NTSC', 'TrilogyFE/PAL']:
                 if game in games:
                     games_str = game.replace('/NTSC', '') + '/'
                     break

@@ -94,8 +94,8 @@ def setup_db():
     connection.commit()
 
 def main():
-    setup_db()
-    for k in images.keys():
+    # setup_db()
+    for k in ['TrilogyFE/NTSC', 'TrilogyFE/PAL']:
         ingest_game(k)
 
 if __name__ == '__main__':
