@@ -24,6 +24,13 @@ def match_audio(res_dict, deep = False):
         '$/audio/worlds/generic',
         '$/audio/worlds/phaaze/global',
         '$/audio/worlds/pirate/global',
+        '$/audio/worlds/bryyo/global',
+        '$/audio/worlds/skytown/global',
+        '$/audio/worlds/phaaze',
+        '$/audio/worlds/pirate',
+        '$/audio/worlds/bryyo',
+        '$/audio/worlds/skytown',
+        '$/audio/worlds/abandoned',
         '$/audio/voice',
         "$/audio/worlds/gf_flagship",
         "$/audio/characters/eyepod",
@@ -35,6 +42,18 @@ def match_audio(res_dict, deep = False):
             if res_dict[key][-5:].lower() == '.caud':
                 cauds.add(f'{directory}/{file[:-5]}')
             audio_dirs.add(directory)
+        elif res_dict[key][-5:].lower() in ['.mrea']:
+            directory, file = os.path.split(res_dict[key])
+            room_name, _ = os.path.splitext(file)
+            world_name = directory.split('/')[2]
+            if world_name == 'sp_planet':
+                world_name = 'pirate'
+            if world_name == 'gf_flagship':
+                world_name = 'gf_ship'
+            if world_name == 'abandoned_ship':
+                world_name = 'abandoned'
+            audio_dirs.add(f'$/audio/worlds/{world_name}/{room_name}')
+
     for caud in cauds:
         for i in range(5):
             new_path = f'{caud}_{i:02}.csmp'

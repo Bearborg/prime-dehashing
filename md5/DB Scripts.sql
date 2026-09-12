@@ -6,6 +6,12 @@ and ap.path_matches = 0
 group by ap.hash
 order by au.type, au.pak, ap.path
 
+--Unmatched area names
+select * from asset_paths
+where path like '$/strings/metroid3/area_names%'
+and path_matches = 0
+order by path
+
 --Per-game stats
 with grouped_usages as (select hash, game from asset_usages group by hash, game)
 select

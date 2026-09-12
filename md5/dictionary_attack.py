@@ -152,9 +152,9 @@ def dictionary_attack(in_words: list[str], goals: list[int], prefixes: list[str]
     prefs = list(dict.fromkeys(prefixes))
     sufs = list(dict.fromkeys(suffixes))
 
-    for d in range(1, depth + 1):
-        print(f"Testing sequences of length {d}")
-        for seq in itertools.product(*[*itertools.repeat(words, d)]):
+    for curr_depth in range(1, depth + 1):
+        print(f"Testing sequences of length {curr_depth}")
+        for seq in itertools.product(*itertools.repeat(words, curr_depth)):
             guess_words = ''.join(seq)
             for pref in prefs:
                 for suf in sufs:
@@ -212,12 +212,12 @@ def add_delimiters(words: list[str], delimiters: list[str]):
 
 
 if __name__ == '__main__':
-    dictionary = ['main', 'skytown','skytown_main','fire','bryyo_fire','ice', '!','gfplanet','gf','world', '_06','pod','skytown_pod','main', 'skytown_main','elysia', 'ambient','weather',]#*pwe_huge_list]
+    dictionary = ['blinkwolf','blink_wolf','blink', 'wolf','blinkwolves','anim','anims','animations', 'additive','add', '/cooked/','cooked', 'boss','loading','leviathan','bryyo','seed', 'seed_bryyo', 'bryyo_seed','landing','site','landingsite','landing_site','metroid','zip','hall', 'generic','turret','turet','turrent','landing', 'generic','hall', 'boarding', 'pirate', *string.ascii_lowercase,*string.digits, 'world', 'gunship','space', 'worlds','areas','world','area','names','name','room','rooms', 'outer', 'orbit', 'planetary','bryyo','skytown','gf_planet','sp_planet','samusship','planet', 'world','planet','!','world','main',*pwe_huge_list,*pwe_bad_list]
     dictionary = add_delimiters(dictionary, [*'_/'])
-    # dictionary = [*string.ascii_lowercase, *string.digits, *'_/']
-    # dictionary_attack_cpp(dictionary, [0xede179121627ed3f],
-    #                   ['$/worlds/','$/worlds/skytown','$/worlds/elysia',],
-    #                   ['/00_skytown_save_a/cooked/00_skytown_save_a_lit_lightmap0.txtr','/00_skytown_save_a/cooked/00_skytown_save_a_lit_lightmap1.txtr'], 2, False)
-    dictionary_attack_cpp(dictionary, [0x2213f2ba3ec9096b],
-                      ['$/worlds/','$/worlds/skytown/!', ],
-                      ['/cooked/09_skytown_observation.mrea','world/cooked/09_skytown_observation.mrea','main/cooked/09_skytown_observation.mrea'], 4, False)
+    # dictionary = [*string.ascii_lowercase, *string.digits, *'_/', 'blink', 'wolf', 'blinkwolf']
+    dictionary_attack_cpp(dictionary, [0xa174618f456c61cd],
+                      ['$/characters/','$/characters/blink','$/characters/blinkwolf/','$/characters/blinkwolf/cooked/',],
+                      ['blinkwolf/cooked/b_45left_blinkwolf.ani','wolf/cooked/b_45left_blinkwolf.ani','/b_45left_blinkwolf.ani'], 2, False)
+    # dictionary_attack_cpp(dictionary, [0xbd0bc908940a1a0c],
+    #                   ['$/worlds/space/','$/worlds/space/!', '$/worlds/space/!space_', ],
+    #                   ['/cooked/00_space_samusship.mrea','_world/cooked/00_space_samusship.mrea','_space/cooked/00_space_samusship.mrea','_ship/cooked/00_space_samusship.mrea',], 2, False)
