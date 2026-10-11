@@ -6032,6 +6032,8 @@ enemies
 enemy
 energetic
 energies
+energize
+energized
 energy
 enfield
 enforce
@@ -6965,6 +6967,7 @@ flanger
 flap
 flare
 flash
+flashed
 flashers
 flashes
 flashing
@@ -7071,6 +7074,7 @@ folklore
 folks
 follow
 followed
+follower
 followers
 following
 follows
@@ -8244,6 +8248,7 @@ heavyweight
 hebrew
 hebrews
 heck
+heckle
 hectares
 hector
 hedge
@@ -8508,6 +8513,8 @@ hopes
 hoping
 hopkins
 hopper
+hopping
+hops
 horde
 horizon
 horizons
@@ -8648,6 +8655,7 @@ hurricane
 hurricanes
 hurry
 hurt
+hurtful
 hurting
 hurts
 husband
@@ -10520,6 +10528,7 @@ logout
 logs
 lohan
 lois
+loiter
 lol
 lola
 lolita
@@ -14654,6 +14663,10 @@ reflex
 reform
 reformed
 reforms
+refract
+refracted
+refracting
+refraction
 refrain
 refresh
 refreshing
@@ -14874,6 +14887,7 @@ replacements
 replaces
 replacing
 replay
+replenish
 replica
 replication
 replied
@@ -15959,7 +15973,6 @@ servers
 serves
 service
 serviced
-servicemagic
 services
 servicing
 serving
@@ -18014,6 +18027,8 @@ tibet
 tibetan
 tic
 tick
+ticks
+ticks
 tickboxes
 ticker
 ticket

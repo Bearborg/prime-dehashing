@@ -26,34 +26,49 @@ except ModuleNotFoundError:
 resource_file = r'./output_json/mp_resource_names.json'
 mp1_tree_cache_file = r'./output_json/mp1_mock_tree_cache.json'
 mp2_tree_cache_file = r'./output_json/mp2_mock_tree_cache.json'
+mp3_tree_cache_file = r'./output_json/mp3_mock_tree_cache.json'
 mp2_tag_cache_file = r'./output_json/mp2_tag_cache.json'
+mp3_tag_cache_file = r'./output_json/mp3_tag_cache.json'
 config_path = r'./config.toml'
 asset_db_path = r'./database/mp_resources.db'
+md5_asset_db_path = r'./md5/md5_resources.db'
 
 config = tomllib.load(open(config_path, 'rb'))
 mp1_mock_tree_enabled = config['features']['mp1_enable_mock_tree']
 mp2_mock_tree_enabled = config['features']['mp2_enable_mock_tree']
+mp3_mock_tree_enabled = config['features']['mp3_enable_mock_tree']
 mp1_unmatched_txtrs_enabled = config['features']['mp1_enable_unmatched_txtrs_folder']
 mp2_unmatched_txtrs_enabled = config['features']['mp2_enable_unmatched_txtrs_folder']
+mp3_unmatched_txtrs_enabled = config['features']['mp3_enable_unmatched_txtrs_folder']
 mp1_mock_root = config['paths']['mp1_mock_tree_root']
 mp2_mock_root = config['paths']['mp2_mock_tree_root']
+mp3_mock_root = config['paths']['mp3_mock_tree_root']
 mp1_hecl_root = config['paths']['mp1_hecl_root']
 mp2_hecl_root = config['paths']['mp2_hecl_root']
+mp3_hecl_root = config['paths']['mp3_hecl_root']
 mp1_unmatched_root = config['paths']['mp1_unmatched_txtrs_root']
 mp2_unmatched_root = config['paths']['mp2_unmatched_txtrs_root']
+mp3_unmatched_root = config['paths']['mp3_unmatched_txtrs_root']
 
-def generate_mp2_tag_cache():
-    print("Generating MP2 tag cache...")
+def generate_tag_cache(
+        game_id: str,
+        game_hecl_root: str,
+        game_tag_cache_file: str,
+        game_hecl_base_dir: str,
+        game_hecl_orig_spec_dir: str
+    ):
+    print(f"Generating tag cache for {game_id}...")
+    db_path = asset_db_path if 'MP3' not in game_id else md5_asset_db_path
     resources: Dict[str, List[str]] = {}
-    with sqlite3.connect(asset_db_path) as connection:
+    with sqlite3.connect(db_path) as connection:
         resource_results = connection.execute(
             "select hash, type from asset_usages au "
-            "where au.game = 'MP2/NTSC' "
+            f"where au.game = '{game_id}' "
             "group by hash"
         ).fetchall()
         resources = {res[0].upper(): [res[1]] for res in resource_results}
-    asset_pattern = re.compile(r'.*_([A-Z0-9]{8})$')
-    for (dirpath, dirnames, filenames) in os.walk(os.path.join(mp2_hecl_root, 'MP2')):
+    asset_pattern = re.compile(r'.*_([A-Z0-9]{8})$') if 'MP3' not in game_id else re.compile(r'.*_([A-Z0-9]{16})$')
+    for (dirpath, dirnames, filenames) in os.walk(game_hecl_base_dir):
         for filename in filenames:
             name, ext = os.path.splitext(filename)
             if match := asset_pattern.match(name):
@@ -125,14 +140,14 @@ def generate_mp2_tag_cache():
                 else:
                     resources[res_hash].append('')
                 resources[res_hash][1] = os.path.join(dirpath, directory)
-    for (dirpath, dirnames, filenames) in os.walk(os.path.join(mp2_hecl_root, r'.hecl\cooked\MP2-ORIG.spec\MP2')):
+    for (dirpath, dirnames, filenames) in os.walk(game_hecl_orig_spec_dir):
         for filename in filenames:
             name, ext = os.path.splitext(filename)
             if match := asset_pattern.match(name):
                 res_hash = match[1]
                 assert res_hash in resources, f"Unrecognized resource id: {match[1]}"
                 if len(resources[res_hash]) > 1:
-                    if 'MP2-ORIG' not in resources[res_hash][1]:
+                    if not re.search(r'MP\d-ORIG', resources[res_hash][1]):
                         continue
                     currpath = os.path.split(resources[res_hash][1])[0]
                     if dirpath.endswith('Low'):
@@ -158,8 +173,12 @@ def generate_mp2_tag_cache():
                     resources[res_hash].append('')
                 resources[res_hash][1] = os.path.join(dirpath, filename)
     for res in resources:
-        resources[res][1] = os.path.relpath(resources[res][1], mp2_hecl_root).replace('\\', '/')
-    json.dump(resources, open(mp2_tag_cache_file, 'w'), indent='  ')
+        if len(resources[res]) > 1:
+            resources[res][1] = os.path.relpath(resources[res][1], game_hecl_root).replace('\\', '/')
+        else:
+            assert res == 'FFEA999CB52E4185' # weird RAUD file that's not actually present
+            resources.pop(res)
+    json.dump(resources, open(game_tag_cache_file, 'w'), indent='  ')
 
 if mp1_mock_tree_enabled or mp1_unmatched_txtrs_enabled:
     if os.path.exists(mp1_hecl_root):
@@ -173,15 +192,39 @@ if mp1_mock_tree_enabled or mp1_unmatched_txtrs_enabled:
         mp1_mock_tree_enabled = False
         mp1_unmatched_txtrs_enabled = False
 
+if mp2_mock_tree_enabled or mp2_unmatched_txtrs_enabled:
     if mp2_mock_tree_enabled:
         if os.path.exists(mp2_hecl_root):
             if not os.path.exists(mp2_tag_cache_file):
-                generate_mp2_tag_cache()
+                generate_tag_cache(
+                    'MP2/NTSC',
+                    mp2_hecl_root,
+                    mp2_tag_cache_file,
+                    os.path.join(mp2_hecl_root, r'MP2'),
+                    os.path.join(mp2_hecl_root, r'.hecl\cooked\MP2-ORIG.spec\MP2')
+                )
             mp2_tag_cache = json.load(open(mp2_tag_cache_file, 'r'))
         else:
             print(f'HECL root folder "{mp2_hecl_root}" does not exist, please choose an existing folder.')
             mp2_mock_tree_enabled = False
             mp2_unmatched_txtrs_enabled = False
+            
+if mp3_mock_tree_enabled or mp3_unmatched_txtrs_enabled:
+    if mp3_mock_tree_enabled:
+        if os.path.exists(mp3_hecl_root):
+            if not os.path.exists(mp3_tag_cache_file):
+                generate_tag_cache(
+                    'MP3/NTSC',
+                    mp3_hecl_root,
+                    mp3_tag_cache_file,
+                    os.path.join(mp3_hecl_root, r'MP3'),
+                    os.path.join(mp3_hecl_root, r'.hecl\cooked\MP3-ORIG.spec\MP3')
+                )
+            mp3_tag_cache = json.load(open(mp3_tag_cache_file, 'r'))
+        else:
+            print(f'HECL root folder "{mp3_hecl_root}" does not exist, please choose an existing folder.')
+            mp3_mock_tree_enabled = False
+            mp3_unmatched_txtrs_enabled = False
 
 
 def create_junction(link_name, target_path):
@@ -195,7 +238,7 @@ def create_junction(link_name, target_path):
         os.remove(link_name)
     subprocess.run(['mklink', '/J', link_name, target_path], shell=True, stdout=subprocess.DEVNULL)
 
-def update_mock_tree(resource_dict):
+def update_mock_tree_32(resource_dict):
     """
     Updates (or creates) a set of folders in the same structure of Retro's asset tree. Assets are displayed as shortcuts
     to HECL files. Folder location and HECL root directory must be set in 'config.toml'.
@@ -209,6 +252,19 @@ def update_mock_tree(resource_dict):
         update_game_mock_tree(resource_dict, mp1_hecl_root, mp1_mock_root, mp1_unmatched_root, mp1_tree_cache_file, mp1_tag_cache)
     if mp2_mock_tree_enabled:
         update_game_mock_tree(resource_dict, mp2_hecl_root, mp2_mock_root, mp2_unmatched_root, mp2_tree_cache_file, mp2_tag_cache)
+
+def update_mock_tree_64(resource_dict):
+    """
+    Updates (or creates) a set of folders in the same structure of Retro's asset tree. Assets are displayed as shortcuts
+    to HECL files. Folder location and HECL root directory must be set in 'config.toml'.
+    :param resource_dict: A dict of string hashes to string filenames. Unmatched filenames should be suffixed with "!!".
+    :return: None
+    """
+    if not mp3_mock_tree_enabled:
+        print("Mock tree disabled, skipping")
+        return
+    if mp3_mock_tree_enabled:
+        update_game_mock_tree(resource_dict, mp3_hecl_root, mp3_mock_root, mp3_unmatched_root, mp3_tree_cache_file, mp3_tag_cache)
 
 def update_game_mock_tree(resource_dict, hecl_root, mock_root, unmatched_root, tree_cache_file, tag_cache):
     if not os.path.isdir(mock_root):
@@ -266,7 +322,7 @@ def sync_directory(hecl_root, mock_root, unmatched_root, resource_dict, tag_cach
             else:
                 create_junction(abs_shortcut_path[:-4], abs_hecl_path)
 
-def update_unmatched_txtrs(resource_dict):
+def update_unmatched_txtrs_32(resource_dict):
     """
     Updates (or creates) a folder containing PNG copies of unmatched TXTR files, organized by originating PAK.
     Folder location and HECL root directory must be set in 'config.toml'.
@@ -289,6 +345,23 @@ def update_unmatched_txtrs(resource_dict):
             return
         else:
             update_txtr_folder('MP2/NTSC', mp2_unmatched_root, mp2_hecl_root, mp2_tag_cache, resource_dict)
+
+def update_unmatched_txtrs_64(resource_dict):
+    """
+    Updates (or creates) a folder containing PNG copies of unmatched TXTR files, organized by originating PAK.
+    Folder location and HECL root directory must be set in 'config.toml'.
+    :param resource_dict: A dict of string hashes to string filenames. Unmatched filenames should be suffixed with "!!".
+    :return: None
+    """
+    if not mp3_unmatched_txtrs_enabled:
+        print("Unmatched TXTR folder disabled, skipping")
+        return
+    if mp3_unmatched_txtrs_enabled:
+        if not os.path.isdir(mp3_unmatched_root):
+            print(f'Unmatched TXTR root "{mp3_unmatched_root}" does not exist, please choose an existing folder')
+            return
+        else:
+            update_txtr_folder('MP3/NTSC', mp3_unmatched_root, mp3_hecl_root, mp3_tag_cache, resource_dict)
 
 def update_txtr_folder(game_id: str, game_root: str, hecl_root: str, tag_cache, resource_dict):
     is_first_run = game_id == len(os.listdir(game_root)) == 0
@@ -327,4 +400,4 @@ def update_txtr_folder(game_id: str, game_root: str, hecl_root: str, tag_cache, 
 if __name__ == '__main__':
     resource_obj = json.load(open(resource_file, 'r'))
     res_dict: Dict[str, str] = {resource_obj[path]: path for path in resource_obj}
-    update_mock_tree(res_dict)
+    update_mock_tree_32(res_dict)

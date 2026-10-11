@@ -13,6 +13,8 @@ class Property:
     name: str
     type: str
     def matched(self):
+        if hex(self.hash)[2:] in [b'INAM'.hex(), b'XFRM'.hex(), b'ACTV'.hex()]:
+            return True  # Force success for hardcoded editor properties
         return crc32(self.name + self.type) == self.hash
 
     def __init__(self, element: ET.Element):
@@ -44,8 +46,9 @@ g_enums: Dict[int, List[EnumValue]] = dict()
 g_property_usages: List[PropertyUsage] = []
 
 start_red = '\033[91m'
-start_yellow = '\033[93m'
 start_green = '\033[92m'
+start_yellow = '\033[93m'
+start_blue = '\033[94m'
 end_color = '\033[0m'
 pwe_type_lookup = {
     "Int": "int",
@@ -57,7 +60,8 @@ pwe_type_lookup = {
     "Spline": "spline",
     "Choice": "choice",
     "Array": "array",
-    "Sound": "sound"
+    "Sound": "sound",
+    "Guid": "guid",
 }
 
 def parse_key_value_pairs(parent_node: ET.Element):
@@ -97,7 +101,8 @@ def validate_property_recursive(elem: ET.Element, structs: Dict[str, str], prope
     if ((elem_type != "Struct") and
         (elem_type != "AnimationSet") and # todo handle this better
         (elem_hash in property_map) and
-        (elem_type not in (expected_types := [prop.type for prop in property_map[elem_hash]]))):
+        (elem_type not in (expected_types := [prop.type for prop in property_map[elem_hash]])) and
+        (not (elem_type in ["enum", "choice"] and ("Archetype" in elem.attrib) and (elem.attrib["Archetype"] in expected_types)))):
         print(f"{start_red}Unexpected type for {hex(elem_hash)}: '{elem_type}' in {g_curr_template}. Expected {expected_types}{end_color}")
     g_property_usages.append(PropertyUsage(elem_hash, elem_type, g_curr_template, g_curr_game))
     subproperties = elem.find("SubProperties")
@@ -208,9 +213,8 @@ def generate_rewound_hashes(properties_by_id: Dict[int, List[Property]]) -> Dict
     rewound_hashes = dict()
     for i, key in enumerate(properties_by_id):
         for prop in properties_by_id[key]:
-            if not prop.matched():
-                rewound_hash = remove_suffix(prop.hash, prop.type)
-                rewound_hashes[rewound_hash] = (rewound_hashes.get(rewound_hash) or []) + [prop.hash]
+            rewound_hash = remove_suffix(prop.hash, prop.type)
+            rewound_hashes[rewound_hash] = (rewound_hashes.get(rewound_hash) or []) + [prop.hash]
 
     return rewound_hashes
 
@@ -242,7 +246,7 @@ def write_xml_in_pwe_format(tree: ET.ElementTree, out_path):
     with open(out_path, 'w') as out_file:
         out_file.write(f'<?xml version="1.0" encoding="UTF-8"?>\n{tree_str}\n')
 
-def rename_struct(game_root: str, old_name: str, new_name: str):
+def rename_struct(game_root: str, property_map_xml: str, old_name: str, new_name: str):
     assert old_name != new_name
     archive_path = os.path.join(game_root, 'Game.xml')
     archive = ET.parse(archive_path)
@@ -265,7 +269,37 @@ def rename_struct(game_root: str, old_name: str, new_name: str):
     struct_content.find('./PropertyArchetype/Name').text = new_name
     write_xml_in_pwe_format(struct_content, dest_abs_path)
     os.remove(target_abs_path)
-    print(f"Renamed {target_rel_path} -> {dest_rel_path}")
+
+    # update uses in structs
+    instances: set[int] = set()
+    for root, dirs, files in os.walk(game_root):
+        for file in files:
+            template_file_path = os.path.join(root, file)
+            template_content = ET.parse(template_file_path)
+            target_elements = template_content.findall(f".//Element[@Type='Struct'][@Archetype='{old_name}']")
+            if len(target_elements) > 0:
+                for element in target_elements:
+                    instances.add(int(element.attrib['ID'], 16))
+                    element.attrib['Archetype'] = new_name
+                write_xml_in_pwe_format(template_content, template_file_path)
+
+    # update propertymap
+    property_map_content = ET.parse(property_map_xml)
+    for instance in instances:
+        target_elements = property_map_content.findall(f".//Element/Key[@Type='{old_name}'][@ID='0x{instance:X}']")
+        existing_elements = property_map_content.findall(f".//Element/Key[@Type='{new_name}'][@ID='0x{instance:X}']/..")
+        if len(existing_elements) > 0:
+            assert len(existing_elements) == 1
+            for elem in target_elements:
+                property_map_content.getroot().find('PropertyMap').remove(elem)
+            continue
+        if len(target_elements) != 1:
+            print(f'{start_yellow}{len(target_elements)} matches found while renaming {old_name} {instance:#x}{end_color}')
+        for element in target_elements:
+            element.attrib['Type'] = new_name
+    write_xml_in_pwe_format(property_map_content, property_map_xml)
+
+    print(f"{start_blue}Renamed {target_rel_path} -> {dest_rel_path}{end_color}")
 
 def update_manual_guesses(property_map_xml: str, guesses: List[str]):
     property_map = build_property_map(property_map_xml)
@@ -286,6 +320,7 @@ def update_manual_guesses(property_map_xml: str, guesses: List[str]):
                 assert len(target) == 1
                 guessed_type = target[0].type
         else:
+            print(f'{start_red}No match: {guess}{end_color}')
             continue
         if len(list(filter(lambda x: x.name != guessed_name, property_map[guess_hash]))) == 0:
             # All target names already match
@@ -299,6 +334,31 @@ def update_manual_guesses(property_map_xml: str, guesses: List[str]):
                 else:
                     print(f"{start_yellow}Partial match: 0x{guess_hash:08x} = {guessed_name} "
                           f"({start_green}{guessed_type}{start_yellow}/{curr_type}){end_color}")
+                target_node.find("Value").attrib["Name"] = guessed_name
+
+    write_xml_in_pwe_format(tree, property_map_xml)
+
+def update_partial_matches(property_map_xml: str, partial_matches: Dict[int, str]):
+    property_map = build_property_map(property_map_xml)
+    tree = ET.parse(property_map_xml)
+
+    for key, name in partial_matches.items():
+        if key in property_map:
+            target = list(filter(lambda x: name.endswith(x.type), property_map[key]))
+            assert len(target) == 1, f'{len(target)} matches for {hex(key)}'
+            guessed_type = target[0].type
+            guessed_name = name[:-len(guessed_type)]
+        else:
+            raise Exception(f"No match found for key {key}")
+        if len(list(filter(lambda x: x.name != guessed_name, property_map[key]))) == 0:
+            # All target names already match
+            continue
+        target_nodes = tree.findall(f"./PropertyMap/Element/Key[@ID='0x{key:X}']/..")
+        assert len(target_nodes) > 0
+        for target_node in target_nodes:
+            if target_node.find("Value").attrib["Name"] != guessed_name:
+                curr_type = target_node.find("Key").attrib["Type"]
+                print(f"{start_yellow}Partial match: 0x{key:08x} = {guessed_name} ({curr_type}){end_color}")
                 target_node.find("Value").attrib["Name"] = guessed_name
 
     write_xml_in_pwe_format(tree, property_map_xml)
@@ -357,36 +417,29 @@ if __name__ == '__main__':
     # for k, v in rewound.items():
     #     print(f'0x{k:08x}: {", ".join([f"0x{r:08x}" for r in v])}')
     # parse_templates(r"F:\Documents\Code\retro-script-object-templates\MP3", prop_map)
-    # rename_struct(r'F:\Documents\Code\retro-script-object-templates\DKCR', 'BarrelCannonEnum', 'SetFacingBehavior')
-    # rename_struct(r'F:\Documents\Code\retro-script-object-templates\MP2', 'UnknownStruct40', 'SandBossStampedeData')
-    # rename_struct(r'F:\Documents\Code\retro-script-object-templates\MP3', 'UnknownStruct61', 'SteamDroneData')
+    # rename_struct(r'F:\Documents\Code\retro-script-object-templates\DKCR', prop_map_path, 'UnknownStruct167', 'InventoryScreen')
+    # rename_struct(r'F:\Documents\Code\retro-script-object-templates\MP2', prop_map_path, 'SafeZoneStructA', 'SafeZoneFog')
+    # rename_struct(r'F:\Documents\Code\retro-script-object-templates\MP2Demo', prop_map_path, 'SpawnPointStruct', 'PlayerInventory')
+    # rename_struct(r'F:\Documents\Code\retro-script-object-templates\MP3', prop_map_path, 'Inventory', 'PlayerInventory')
+    # rename_struct(r'F:\Documents\Code\retro-script-object-templates\DKCR', prop_map_path, 'TweakControls_UnknownStruct2', 'PlayerMovementControls')
 
+    # partial_matches = {}
+    # update_partial_matches(prop_map_path, partial_matches)
     manual_guesses = [
+        # *[f'Attack{o}ChickenFlyerAttackData' for o in [*string.digits]],
         # 'BallCameraCommonFullSpeedMinHeightfloat',
-        # 'HyperModeCheckTimeMinfloat',
-        # 'HyperModeCheckTimeMaxfloat',
-        # 'MaxTurnSpeedOccluded',
-        # 'MaximumSpeedForAudio',
-        # 'ShadowDashInvisible',
-        # 'LoadInMirrorModebool',
+        # 'MaxTurnSpeedOccludedfloat',
+        # 'ShadowDashInvisiblebool',
         # 'ChildrenAliveTimefloat',
-        # 'InitialDirectionAnglefloat',
-        # 'SoundVolume_ChargeBeamfloat',
         # 'AudioPeanutGunPitchfloat',
         # 'AudioScaleFactorfloat',
         # 'HelmetPitchFactorfloat',
-        # 'IgnoreInputIntervalfloat',
-        # 'InitialDirectionAnglefloat',
-        # 'InitialTurnThresholdfloat',
-        # 'MinimumSplitHeightfloat',
-        # 'MorphballThrowForcefloat',
         # 'NodeTypeButtonAlphafloat',
         # 'OverKillThresholdfloat',
-        # 'PreDelayTimeMaxfloat',
-        # 'AlwaysOnEffectstring',
-        # 'BlurPlayerVisorbool'
-        # 'EffectGenerationDistfloat'
-        # 'HasEaseInOnXraybool'
+        # 'EffectGenerationDistfloat',
+        # 'ConverseCastListenersbool',
+        # 'ConverseInsertVsAlignbool',
+        # 'HealthMessageThresholdfloat',
     ]
     update_manual_guesses(prop_map_path, manual_guesses)
     check_duplicate_hashes(prop_map_path)

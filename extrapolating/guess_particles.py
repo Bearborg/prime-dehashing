@@ -192,7 +192,7 @@ def guess_particles(res_dict: Dict[int, str], deep_search: bool = False, room_se
             alpha_num.add(f'0{i}{x}')
 
     for key in res_dict:
-        if res_dict[key][-4:] in ['part', 'swhc', 'elsc', 'wpsc', 'crsc', 'dpsc']:
+        if res_dict[key][-4:].lower() in ['part', 'swhc', 'elsc', 'wpsc', 'crsc', 'dpsc']:
             part_folder, part_name = os.path.split(res_dict[key])
             part_folders.add(part_folder)
             part_names.add(part_name)

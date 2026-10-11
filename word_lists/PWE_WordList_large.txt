@@ -1034,6 +1034,7 @@ codes
 coffin
 coffins
 cog
+cohesion
 coil
 coils
 coin
@@ -2089,6 +2090,7 @@ flareup
 flash
 flashback
 flashddd
+flashed
 flasher
 flashing
 flat
@@ -2626,6 +2628,7 @@ heating
 heatlh
 heavy
 heck
+heckle
 height
 heion
 heishi

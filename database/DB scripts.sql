@@ -2,7 +2,7 @@
 
 
 -- Display match stats
-with const as (select 'MP2/NTSC' as game, null as pak),
+with const as (select 'MP1/1.00' as game, null as pak),
 meta as (
 	select count(distinct(hash)) as total_assets from const, asset_usages us
 	where us.game = const.game
@@ -77,11 +77,23 @@ order by us.pak
 select *, group_concat(us.game, ',') from asset_paths ap
 inner join asset_usages us on ap.hash = us.hash
 where ap.path_matches = 0
-and us.game like 'MP1/1.00'
+-- and us.game like 'MP1/1.00'
 --and us.pak = 'TestAnim.pak' COLLATE NOCASE
-and us.type = 'DPSC'
+and us.type = 'ANIM'
 group by ap.hash
 order by us.game, us.pak, ap.path
+
+--Demo-only textures
+with mp1_assets as (select * from asset_usages us where us.game like 'MP1/%')
+select usd.*, ap.path, ap.path_matches from asset_usages usd
+left join mp1_textures usr on usr.hash = usd.hash
+inner join asset_paths ap on ap.hash = usd.hash
+where usd.game like 'MP1D%'
+-- and usd.type = 'TXTR'
+and usr.type is null
+group by usd.hash
+order by ap.path
+
 
 --particle textures
 select ap.hash, ap2.path from asset_paths ap
@@ -339,7 +351,8 @@ where apt.path like '%.gpsm.part'
 and (aps.path like '%.evnt' or aps.path like '%.acs')
 and apt.path_matches = 0
 and ar.game = 'MP1/1.00'
-order by rtrim(aps.path, replace(aps.path, '/', '')), apt.path -- fancy string manipulation to remove filename from path
+group by aps.hash, apt.hash
+order by rtrim(aps.path, replace(aps.path, '/', '')) COLLATE NOCASE, apt.path -- fancy string manipulation to remove filename from path
 
 --particle models
 select ap.hash, ap.path, ap2.path from asset_paths ap

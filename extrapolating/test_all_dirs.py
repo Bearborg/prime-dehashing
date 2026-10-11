@@ -173,7 +173,7 @@ def test_all_dirs(resource_dict: Dict[int, str], show_groups=False, potential_na
             if key not in rev_match:
                 rev_match[key] = unk_start
             if show_groups:
-                print(sorted(set(hash_cache[key])))
+                print({f'{crc32(name.lower(), key):08x}': name for name in sorted(set(hash_cache[key]))})
     for key in rev_match:
         # Test if known texture names can be matched to the same directory as any partially-matched textures
         for txtr in txtrs:

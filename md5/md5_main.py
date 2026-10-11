@@ -10,6 +10,7 @@ from md5.extrapolating.match_scans import match_scans
 from md5.extrapolating.guess_anim_paths import guess_anim_paths
 from md5.extrapolating.guess_character_paths import guess_character_paths
 from md5.extrapolating.guess_textures import guess_textures
+from md5.extrapolating.guess_fsms import guess_fsms
 mock_tree_enabled = True
 try:
     import mock_tree
@@ -76,6 +77,7 @@ def main(guesses: list[str], read_from_json=False):
     matched += guess_anim_paths(resource_dict)
     matched += guess_character_paths(resource_dict)
     matched += guess_textures(resource_dict)
+    matched += guess_fsms(resource_dict)
 
     sorted_paths: list[str] = sorted(resource_dict.values(), key=lambda x: x.casefold())
     printed_id_dict = {'{0:016x}'.format(x): resource_dict[x] for x in resource_dict}
@@ -146,59 +148,39 @@ if __name__ == '__main__':
     manual_guesses = [
         *resource_obj_32.keys(),
         # *[f'$/strings/metroid3/lore/bryyo_lore/bryyo_{n:03}.{ext}' for n in range(13) for ext in ('strg','scan')],
-        '$/strings/metroid3/area_names/bryyo/10_bryyo_pirates.strg',
-        '$/strings/metroid3/area_names/bryyo/0x_bryyo_generic_02.strg',
-        '$/strings/metroid3/area_names/bryyo/0x_bryyo_generic_03.strg',
-        '$/strings/metroid3/area_names/bryyo/0x_bryyo_generic_04.strg',
-        '$/strings/metroid3/area_names/bryyo/0x_bryyo_generic_05.strg',
-        '$/strings/metroid3/area_names/bryyo/0x_bryyo_generic_06.strg',
-        '$/strings/metroid3/area_names/bryyo/0x_bryyo_generic_07.strg',
-        '$/audio/worlds/skytown/global/skytown_wind_lp.caud',
-        '$/strings/metroid3/area_names/bryyo/0a_bryyo_bridge.strg',
-        '$/strings/metroid3/area_names/phaaze/04_phaaze_auroraunit2.strg',
-        '$/strings/metroid3/area_names/abandoned_ship/0b_abandoned_security_a.strg',
-        '$/strings/metroid3/area_names/abandoned_ship/0i_abandoned_boardingpod_a.strg',
-        '$/strings/metroid3/area_names/abandoned_ship/0j_abandoned_boardingpod_b.strg',
-        '$/characters/fuse_hint_scanbot/cooked/fuse_hint_scanbot_into_outofproximity.ani',
-        '$/characters/fuse_hint_scanbot/cooked/fuse_hint_scanbot_intoproximity.ani',
-        '$/characters/fuse_hint_scanbot/cooked/fuse_hint_scanbot_outofproximity.ani',
-        '$/characters/fuse_hint_scanbot/cooked/fuse_hint_scanbot_proximity.ani',
-        '$/characters/fuse_hint_scanbot/cooked/fuse_rattle_ready.ani',
-        '$/strings/metroid3/sourceimages/scans/atomic.txtr'
-        '$/objects/metroid_doors/gf_door/cooked/gf_door_orangeshield.cmdl',
-        '$/objects/metroid_doors/seed_door/cooked/seed_door_bound.cmdl',
-        '$/characters/gandrayda/cooked/gandrayda_bound.cskr',
-        '$/characters/snake_weed/cooked/snake_weed_bound.cskr',
-        '$/characters/space_pirate_elite/textures/space_pirate_elite_xray.txtr',
-        '$/characters/dark_samus/textures/darksamus_body_c.txtr',
-        '$/characters/dark_samus/textures/darksamus_reflected.txtr',
-        '$/characters/eyepod/textures/eyepod_c.txtr',
-        '$/characters/eyepod/textures/eyepod_c.txtr',
-        '$/characters/eyepod/textures/eyepod_i.txtr',
-        '$/characters/eyepod/textures/eyepod_reflected.txtr',
-        '$/characters/hatcher/cooked/hatcher_bound.cskr',
-        '$/worlds/gf_flagship/textures/ship_textures/temphull_3c_low.txtr',
-        '$/worlds/gf_flagship/textures/ship_textures/temphull_4c_low.txtr',
-        '$/worlds/gf_flagship/textures/ship_textures/temphull_5c_low.txtr',
-        '$/worlds/gf_flagship/textures/ship_textures/temphull_6c_low.txtr',
-        '$/worlds/gf_flagship/textures/ship_textures/temphull_7c_low.txtr',
-        '$/characters/sp_fighter/cooked/sp_fighter.cmdl',
-        '$/characters/sp_fighter/cooked/sp_fighter_lr.cmdl',
-        '$/animatedobjects/general/pickups/visor_combat/cooked/visor_combat.cskr',
-        '$/animatedobjects/general/pickups/visor_command/cooked/visor_command.cskr',
-        '$/animatedobjects/general/pickups/visor_scan/cooked/visor_scan.cskr',
-        '$/characters/gandrayda/textures/gandrayda_eye_c.txtr',
-        '$/characters/metaree_bryyo/cooked/metaree_bryyo_bound.cskr',
-        '$/characters/sprites/textures/sprites01a.txtr',
-        '$/characters/sprites/textures/sprites01a.txtr',
-        '$/characters/trooper_admiral/textures/trooper_admiral_c.txtr',
-        '$/characters/trooper_admiral/textures/trooper_admiral_c.txtr',
-        '$/characters/trooper_admiral/textures/trooper_admiral_i.txtr',
-        "$/characters/trooper_female_civilian/cooked/trooper_female_civilian_bound.cskr",
-        '$/characters/trooper_female_civilian/textures/trooper_female_civilian_body_c.txtr',
-        '$/characters/trooper_female_civilian/textures/trooper_female_civilian_eye_c.txtr',
-        '$/characters/trooper_female_civilian/textures/trooper_female_civilian_teeth_c.txtr',
-        "$/characters/korakk/cooked/korakk_bound.cmdl",
+        '$/strings/metroid3/scans_worlds/bryyo/13_statue_torches.strg',
+        '$/strings/metroid3/scans_worlds/skytown/01_chozo head.strg',
+        '$/strings/metroid3/scans_worlds/skytown/01_chozo head.scan',
+        '$/strings/metroid3/scans_worlds/pirate_planet/01_vent.strg',
+        '$/strings/metroid3/scans_worlds/phaaze/02_phazon_vines.strg',
+        '$/strings/metroid3/scans_worlds/phaaze/02_phazon_vines.scan',
+        '$/strings/metroid3/scans_worlds/abandoned_ship/05_cables.strg',
+        '$/strings/metroid3/scans_worlds/abandoned_ship/05_cables.scan',
+        '$/strings/metroid3/scans_worlds/seeds/00_ls_orb.strg',
+        '$/characters/blink_wolves_new/cooked/b_hop_back_blinkwolves.ani',
+        '$/characters/gragnol_flyer/cooked/gragnol_flyer_bound.cskr',
+        '$/characters/eyepod/textures/eyepodlight_i.txtr',
+        '$/characters/trooper_male_civilian/cooked/b_180_malecivilian.ani',
+        '$/characters/aurora_unit/cooked/r_stunned_c_unit.ani',
+        '$/characters/korba_maw/cooked/r_salivate_korbamaw.ani',
+        '$/characters/aurora_unit/cooked/auroraunit_bound.cskr',
+        '$/characters/korba_maw/cooked/korba_maw_bound.cskr',
+        '$/characters/metaree_skytown/cooked/r_death_metaree.ani',
+        '$/characters/metaree_skytown/cooked/metaree_skytown_bound.cskr',
+        '$/characters/space_pirate_standard/cooked/space_pirate_korakk/r_staggered_spkorakk.ani',
+        '$/objects/metroid_doors/sp_morphball_door/cooked/sp_morphball_door_bound.cskr',
+        '$/objects/metroid_doors/gf_morphball_door/cooked/gf_morphball_door_bound.cskr',
+        '$/characters/0e_phaaze_aazelion/cooked/b_bite_aazelion.ani',
+        '$/worlds/bryyo/objects/05_missle_racks/cooked/05_missleracks_ready_up.ani',
+        '$/worlds/phaaze/objects/0c_floorboss/cooked/0c_floorboss_bound.cskr',
+        '$/characters/snagvines/cooked/b_relaxed_c_snagvine.ani',
+        '$/cinematics/bountyhunters_meeting/cooked/rundas_shot1.ani',
+        '$/cinematics/corruption_of_hunters/cooked/run_shot13.ani',
+        '$/samus/samus_cinematic/cooked/cinematic/ridley_1_outro_samus/cooked/c_02_ridley1outro_samus.ani',
+        '$/samus/samus_cinematic/cooked/cinematic/ridley_1_outro/cooked/c_02_ridley1outro_samus.ani',
+        "$/characters/metroid/source_images/metroid_reflected.txtr",
+
+
     ]
 
     main(manual_guesses, False)

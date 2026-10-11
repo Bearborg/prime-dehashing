@@ -6,6 +6,47 @@ and ap.path_matches = 0
 group by ap.hash
 order by au.type, au.pak, ap.path
 
+--Unmatched character textures
+select * from asset_paths ap
+inner join asset_usages au on ap.hash = au.hash
+where au.pak = 'Logbook.pak'
+and au.type = 'TXTR'
+and ap.path_matches = 0
+group by ap.hash
+order by au.type, au.pak, ap.path
+
+--fetch all deps
+select ap2.path || IIF(ap2.path_matches, '', '!!') as path, ap2.hash, us.type
+from asset_paths ap
+inner join asset_references ar on ar.source = ap.hash
+inner join asset_usages us on us.hash = ar.target
+inner join asset_paths ap2 on ap2.hash = ar.target
+where ap.hash = 'c2bf1024724bfe15' COLLATE NOCASE
+--and us.game = 'MP1/1.00'
+group by ap2.hash
+order by us.type, ap2.path
+
+--fetch all refs
+select ap2.path || IIF(ap2.path_matches, '', '!!') as path, ap2.hash, us.type
+from asset_paths ap
+inner join asset_references ar on ar.target = ap.hash
+inner join asset_usages us on us.hash = ar.source
+inner join asset_paths ap2 on ap2.hash = ar.source
+where ap.hash = '7fb4ea35e24a100c' COLLATE NOCASE
+--and us.game = 'MP2/NTSC'
+group by ap2.hash
+order by us.type, ap2.path
+
+--Matches by pak and type
+select ap.*, us.pak, us.type, us.name, group_concat(us.game, ',') from asset_paths ap
+inner join asset_usages us on ap.hash = us.hash
+where ap.path_matches = 0
+and us.game like 'MP3/NTSC'
+--and us.pak = 'TestAnim.pak' COLLATE NOCASE
+and us.type = 'ANIM'
+group by ap.hash
+order by us.game, us.pak, ap.path
+
 --Unmatched area names
 select * from asset_paths
 where path like '$/strings/metroid3/area_names%'

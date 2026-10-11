@@ -243,6 +243,8 @@ def guess_character_paths(res_dict):
                 ]
                 tex_dirs = [
                     f'{path[:-7]}/sourceimages/',
+                    f'{path[:-7]}/source_images/',
+                    f'{path[:-7]}/sourcimages/',
                     f'{path[:-7]}/textures/',
                     f'$/Characters/common_textures/',
                     f'$/Characters/common_textures/{filename}/'

@@ -391,6 +391,7 @@ Closed
 Cloud
 Code
 Coin
+Cohesion
 Cold
 Collapse
 Collapsed
@@ -827,6 +828,7 @@ Flags
 FlameThrower
 Flare
 Flash
+Flashed
 Flashing
 Flat
 Flee
@@ -1033,6 +1035,7 @@ HorizontalMovement
 HorizontalRange
 HorizontalSpeed
 HorizontalSpread
+HorizontalTranslation
 HorizontalVelocity
 Horizontally
 Horz
@@ -1256,6 +1259,7 @@ LockonIndicator
 Locomotion
 Log
 LogBook
+Logbook
 Logic
 Long
 Look
@@ -1443,6 +1447,8 @@ NovaBeam
 Num
 Number
 NumberOf
+Nunchuk
+Nunchaku
 Object
 Objects
 Occlude
@@ -1671,6 +1677,7 @@ Purchase
 Pursuit
 Push
 Puzzle
+Quadratic
 Quake
 Quit
 RTrigger
@@ -1725,6 +1732,7 @@ Red
 Reduction
 Reflate
 Reform
+Refract
 Refresh
 Regen
 Regrow
@@ -1849,6 +1857,8 @@ Scannable
 ScannableInfo
 ScannableObject
 Scanning
+Scanline
+Scanlines
 Scatter
 Scheme
 Score
@@ -1934,8 +1944,11 @@ Shrubbery
 ShutDown
 Shutdown
 Side
+SideScroll
 SideScroller
 Sided
+Sidescroll
+Sidescroller
 Sight
 Silhouette
 Single
@@ -2046,6 +2059,10 @@ Squawk
 Stab
 Stackable
 Stage
+Stage1
+Stage2
+Stage3
+Stage4
 Stages
 Stall
 Stalled
@@ -2198,6 +2215,7 @@ Till
 Tilt
 Tilted
 Time
+TimeAttack
 TimeBetween
 TimeMax
 TimeMin
@@ -2291,6 +2309,7 @@ Unlocked
 Unselected
 Unsorted
 Until
+Unvisited
 Up
 Update
 Upgrade
@@ -2327,6 +2346,7 @@ VerticalMovement
 VerticalOffset
 VerticalSpeed
 VerticalSpread
+VerticalTranslation
 VerticalVelocity
 Vertically
 Video

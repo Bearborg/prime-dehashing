@@ -112,13 +112,12 @@ def main(guesses: List[str], read_from_json = False):
     matched += test_all_dirs(resource_dict, False)
     matched += guess_adjacent_files(resource_dict, False)
     # todo: scrape mpr cmdl names
-    # todo: scrape mp2 poi names (Use RDS?)
     # todo: scrape effect/actor/platform names (Use RDS?)
     # todo: scrape evnt contents for particle names
     # todo: get names for mp1/2 demo anims and chars
     # todo: match TEXT_RHSsystem|TEXT_Pickups strings from MPR
 
-    sorted_paths: List[str] = sorted(resource_dict.values(), key=str.casefold)
+    sorted_paths: List[str] = sorted(resource_dict.values(), key=lambda x: x.casefold())
     printed_id_dict = {'{0:08x}'.format(x): resource_dict[x] for x in resource_dict}
     flipped_dict = {printed_id_dict[x]: x for x in printed_id_dict}
     sorted_dict = {x: flipped_dict[x] for x in sorted_paths}
@@ -151,8 +150,8 @@ def main(guesses: List[str], read_from_json = False):
 
     if mock_tree_enabled:
         print('Updating mock tree...')
-        mock_tree.update_mock_tree(printed_id_dict)
-        mock_tree.update_unmatched_txtrs(printed_id_dict)
+        mock_tree.update_mock_tree_32(printed_id_dict)
+        mock_tree.update_unmatched_txtrs_32(printed_id_dict)
 
     print()
     print(f'Prime 1 progress: {mp1_stats[0]}/{mp1_stats[1]} - {mp1_stats[0]/mp1_stats[1]:.2%}')

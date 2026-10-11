@@ -23,12 +23,12 @@ def find_particle_groups(res_dict):
         'hblastsnow.gpsm.part',
     ])
     for key in res_dict:
-        if res_dict[key][-4:] in ['part']:
+        if res_dict[key][-4:].lower() in ['part']:
             part_folder, part_name = os.path.split(res_dict[key])
             part_names.add(part_name)
 
     groups: Dict[int, List[str]] = dict()
-    lowered_part_names = {n.lower() for n in filter(lambda p: p.endswith(".part"), part_names)}
+    lowered_part_names = {n.lower() for n in filter(lambda p: p.lower().endswith(".part"), part_names)}
     for key in res_dict:
         if res_dict[key].endswith('!!') and res_dict[key][-6:-2].lower() in ['part'] and ('MP2' not in res_dict[key]):
             for name in lowered_part_names:

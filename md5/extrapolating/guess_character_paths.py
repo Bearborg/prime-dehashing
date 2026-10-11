@@ -22,13 +22,19 @@ def guess_character_paths(res_dict):
             filename, ext = os.path.splitext(os.path.split(res_dict[key])[-1])
             if re.match(r'.*_\d$', filename):
                 filename = filename[:-2]
-            #filename = 'Samus_Morphball_Cinematic'
+            # filename = 'seed_core'
             actor_name = filename #'perch'
             for new_path in {
                 f'$/characters/{actor_name}/cooked/{filename}{ext[:-2]}',
+                f'$/characters/{actor_name}/cooked/{filename}_{filename}{ext[:-2]}',
                 f'$/characters/{actor_name}/cooked/{actor_name}{ext[:-2]}',
                 f'$/characters/{actor_name}/cooked/{filename}_bound{ext[:-2]}',
                 f'$/characters/{actor_name}/cooked/{actor_name}_{filename}{ext[:-2]}',
+                f'$/characters/ships/{actor_name}/cooked/{filename}{ext[:-2]}',
+                f'$/characters/ships/{actor_name}/cooked/{filename}_{filename}{ext[:-2]}',
+                f'$/characters/ships/{actor_name}/cooked/{actor_name}{ext[:-2]}',
+                f'$/characters/ships/{actor_name}/cooked/{filename}_bound{ext[:-2]}',
+                f'$/characters/ships/{actor_name}/cooked/{actor_name}_{filename}{ext[:-2]}',
                 f'$/characters/{actor_name}/cooked/b_bind_{actor_name}{ext[:-2]}',
                 f'$/characters/{actor_name}/cooked/b_bind_{filename}{ext[:-2]}',
                 f'$/characters/{actor_name}/cooked/{actor_name}_bound{ext[:-2]}',
@@ -141,6 +147,7 @@ def guess_character_paths(res_dict):
                 f'{cooked_dir}/{name}_bound.cmdl',
                 f'{cooked_dir}/b_bind_{name}.cmdl',
                 f'{cooked_dir}/{name}.cin',
+                f'{cooked_dir}/{name}.cskr',
                 f'{cooked_dir}/{name}_bound.cin',
                 f'{cooked_dir}/{name}_anim.char',
                 f'{cooked_dir}/{name}_animation.char',
@@ -214,7 +221,11 @@ def guess_character_paths(res_dict):
                 ]
                 tex_dirs = [
                     f'{path[:-7]}/sourceimages/',
+                    f'{path[:-7]}/sourcimages/',
+                    f'{path[:-7]}/source_images/',
+                    f'{path[:-7]}/common_textures/',
                     f'{path[:-7]}/textures/',
+                    f'{path[:-7]}/textues/',
                     f'$/characters/common_textures/',
                     f'$/characters/common_textures/{filename}/'
                 ]
@@ -357,6 +368,8 @@ def guess_character_paths(res_dict):
                     f'{filename}01ai.txtr',
                     f'{filename}02ai.txtr',
                     f'{filename}_parts.txtr',
+                    f'{filename}_texture.txtr',
+                    f'{filename}_texture_c.txtr',
                     f'parts/{filename}_parts.txtr',
                     f'{filename}_parts_c.txtr',
                     f'{filename}_partsi.txtr',
@@ -365,8 +378,11 @@ def guess_character_paths(res_dict):
                     f'{filename}_incan.txtr',
                     f'{filename}_incandes.txtr',
                     f'{filename}_incandescence.txtr',
-                    f'{filename}_c.txtr',
+                    f'{filename}c.txtr',
                     f'{filename}c_low.txtr',
+                    f'{filename}c_lr.txtr',
+                    f'{filename}_lr.txtr',
+                    f'{filename}_low.txtr',
                     f'{filename}_c.txtr',
                     f'{filename}_c_low.txtr',
                     f'{filename}_low.txtr',
@@ -375,6 +391,10 @@ def guess_character_paths(res_dict):
                     f'{filename}_color_dark.txtr',
                     f'{filename}i.txtr',
                     f'{filename}_i.txtr',
+                    f'{filename}lighti.txtr',
+                    f'{filename}light_i.txtr',
+                    f'{filename}_lighti.txtr',
+                    f'{filename}_light_i.txtr',
                     f'{filename}_reflected.txtr',
                     f'{filename}_reflectivity.txtr',
                     f'reflected_{filename}.txtr',
@@ -410,6 +430,7 @@ def guess_character_paths(res_dict):
                     f'{path}/{filename}_{filename}.char',
                     f'{path}/{filename}_anim.sand',
                     f'{path}/{filename}.sand',
+                    f'{path}/{filename}_bound.sand',
                     f'{path}/{filename}.cin',
                     f'{path}/{filename}_frozen.cmdl',
                     f'{path}/{filename}_frozen.cskr',
