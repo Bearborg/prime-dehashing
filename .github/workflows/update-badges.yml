@@ -62,14 +62,45 @@ jobs:
           gist_id: 0ea3960f15a095bff320b9672d3b85a3
           file_path: output_gists/mp2_breakdown.md
 
-      - name: All Badge
+      - name: All CRC32 Badge
         uses: Schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.BADGE_GIST_TOKEN }}
           gistID: 61acf4b94ac82edd024350a926c5d428
           filename: all_progress.svg
-          label: All hashes
-          message: ${{ env.ALL_MATCHED_PCT }}%
-          valColorRange: ${{ env.ALL_MATCHED_PCT }}
+          label: All CRC32s
+          message: ${{ env.ALL_CRC32_MATCHED_PCT }}%
+          valColorRange: ${{ env.ALL_CRC32_MATCHED_PCT }}
+          maxColorRange: 100
+          minColorRange: 0
+
+      - name: MP3 Badge
+        uses: Schneegans/dynamic-badges-action@v1.7.0
+        with:
+          auth: ${{ secrets.BADGE_GIST_TOKEN }}
+          gistID: 6b3ae406845dd34997d94e35edc2fa46
+          filename: mp3_progress.svg
+          label: MP3
+          message: ${{ env.MP3_MATCHED_PCT }}%
+          valColorRange: ${{ env.MP3_MATCHED_PCT }}
+          maxColorRange: 100
+          minColorRange: 0
+
+      - name: MP3 Breakdown
+        uses: exuanbo/actions-deploy-gist@v1
+        with:
+          token: ${{ secrets.BADGE_GIST_TOKEN }}
+          gist_id: df26332b7a72ab1853163b40b4e1a9c9
+          file_path: output_gists/mp3_breakdown.md
+
+      - name: All MD5 Badge
+        uses: Schneegans/dynamic-badges-action@v1.7.0
+        with:
+          auth: ${{ secrets.BADGE_GIST_TOKEN }}
+          gistID: eb9c01899015b5de729e836df47c5bbe
+          filename: all_md5_progress.svg
+          label: All MD5s
+          message: ${{ env.ALL_MD5_MATCHED_PCT }}%
+          valColorRange: ${{ env.ALL_MD5_MATCHED_PCT }}
           maxColorRange: 100
           minColorRange: 0

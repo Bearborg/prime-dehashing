@@ -79,15 +79,25 @@ if __name__ == '__main__':
 
     with open(env_file, "a") if env_file else stdout as env_out:
         asset_db_path = r'database/mp_resources.db'
+        asset_db_64_path = r'md5/md5_resources.db'
         with sqlite3.connect(asset_db_path) as connection:
             mp1_stats = Fraction(*total_matched_per_game(connection, 'MP1/1.00'))
             print(f'MP1_MATCHED_PCT={100 * mp1_stats:05.2f}', file=env_out)
             mp2_stats = Fraction(*total_matched_per_game(connection, 'MP2/NTSC'))
             print(f'MP2_MATCHED_PCT={100 * mp2_stats:05.2f}', file=env_out)
             all_stats = Fraction(*total_matched_overall(connection))
-            print(f'ALL_MATCHED_PCT={100 * all_stats:05.2f}', file=env_out)
+            print(f'ALL_CRC32_MATCHED_PCT={100 * all_stats:05.2f}', file=env_out)
             os.makedirs(out_folder, exist_ok=True)
             mp1_breakdown = detailed_breakdown(connection, 'MP1/1.00')
             save_as_markdown('mp1_breakdown', 'Metroid Prime 1 (NTSC 0-00)', mp1_breakdown)
             mp2_breakdown = detailed_breakdown(connection, 'MP2/NTSC')
             save_as_markdown('mp2_breakdown', 'Metroid Prime 2: Echoes (NTSC)', mp2_breakdown)
+
+        with sqlite3.connect(asset_db_64_path) as connection:
+            mp3_stats = Fraction(*total_matched_per_game(connection, 'MP3/NTSC'))
+            print(f'MP3_MATCHED_PCT={100 * mp3_stats:05.2f}', file=env_out)
+            all_stats = Fraction(*total_matched_overall(connection))
+            print(f'ALL_MD5_MATCHED_PCT={100 * all_stats:05.2f}', file=env_out)
+            os.makedirs(out_folder, exist_ok=True)
+            mp3_breakdown = detailed_breakdown(connection, 'MP3/NTSC')
+            save_as_markdown('mp3_breakdown', 'Metroid Prime 3: Corruption (NTSC)', mp3_breakdown)
